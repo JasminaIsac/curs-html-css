@@ -1,0 +1,193 @@
+<section class="lesson" id="s14" data-num="14" data-title="Text și fonturi">
+<script type="text/markdown">
+### 14.1. Fontul
+
+| Proprietate | Valori uzuale | Efect |
+|---|---|---|
+| `font-family` | `Georgia, serif` | familia, cu listă de rezervă |
+| `font-size` | `1.125rem`, `18px` | mărimea |
+| `font-weight` | `400`, `700` | grosimea |
+| `font-style` | `italic` | cursiv |
+| `font` | prescurtare | `italic 700 1.2rem/1.5 Georgia, serif` — obligatorii sunt mărimea și familia |
+
+`font-family` este o **listă**: browserul o folosește pe prima pe care o are instalată. La final pui o familie generică: `serif`, `sans-serif`, `monospace`, `cursive`, `fantasy`. Numele cu spații se scriu între ghilimele: `"Times New Roman", serif`.
+
+### 14.2. Textul
+
+| Proprietate | Efect |
+|---|---|
+| `color` | culoarea textului |
+| `text-align` | `left`, `right`, `center`, `justify` — alinierea **în interiorul** cutiei |
+| `text-decoration` | `underline`, `line-through`, `none` |
+| `text-transform` | `uppercase`, `lowercase`, `capitalize` |
+| `letter-spacing` / `word-spacing` | spațiul dintre litere / cuvinte |
+| `line-height` | înălțimea rândului; `1.5` fără unitate înseamnă 1,5 × fontul |
+| `text-indent` | indentarea primei linii |
+
+`text-align` nu mută cutia în pagină. Pentru asta folosești `margin` (de exemplu `margin-inline: auto` pe un bloc cu lățime).
+</script>
+
+<div class="demo" data-title="Laborator de text" data-desc="Toate glisoarele și listele rescriu CSS-ul live. Urmărește lizibilitatea: line-height mic înghesuie rândurile, letter-spacing mare le rarefiază." data-height="280" data-layout="stack" data-tab="css">
+<script type="text/css">
+.text {
+    margin: 0;
+    max-width: 36rem;
+    color: #263238;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: 400;
+    font-style: normal;
+    text-align: left;
+    text-transform: none;
+    text-decoration: none;
+    letter-spacing: 0px;
+    line-height: 1.5;
+    background: #f7f5f0;
+    padding: 14px 16px;
+    border-radius: 10px;
+}
+</script>
+<script type="text/html">
+<p class="text">Apa trebuie să fie aproape de fierbere pentru ceaiul negru, dar nu pentru cel verde. Un rând mai aerisit se citește mai ușor decât unul lipit.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"font-family","sel":".text","prop":"font-family","options":["Georgia, serif","system-ui, sans-serif","ui-monospace, monospace","\"Palatino Linotype\", Palatino, serif"]},
+  {"label":"font-size","sel":".text","prop":"font-size","type":"range","min":14,"max":36,"step":1,"unit":"px"},
+  {"label":"font-weight","sel":".text","prop":"font-weight","type":"range","min":300,"max":800,"step":100,"unit":""},
+  {"label":"font-style","sel":".text","prop":"font-style","options":["normal","italic"]},
+  {"label":"text-align","sel":".text","prop":"text-align","options":["left","center","right","justify"]},
+  {"label":"text-transform","sel":".text","prop":"text-transform","options":["none","uppercase","lowercase","capitalize"]},
+  {"label":"text-decoration","sel":".text","prop":"text-decoration","options":["none","underline","line-through"]},
+  {"label":"letter-spacing","sel":".text","prop":"letter-spacing","type":"range","min":-1,"max":8,"step":1,"unit":"px"},
+  {"label":"line-height","sel":".text","prop":"line-height","type":"range","min":1,"max":2.2,"step":0.1,"unit":""}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s15" data-num="15" data-title="Google Fonts">
+<script type="text/markdown">
+Fonturile de sistem (`Georgia`, `system-ui`) există pe calculator. Pentru un font care **nu** e instalat, îl aduci de pe un serviciu sau dintr-un fișier.
+
+**Google Fonts**, varianta cu `<link>` în `<head>` (recomandată):
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Source+Sans+3:wght@400;600&display=swap">
+```
+
+Apoi în CSS:
+
+```css
+h1 { font-family: Fraunces, Georgia, serif; }
+body { font-family: "Source Sans 3", system-ui, sans-serif; }
+```
+
+Într-un fișier `.css` poți folosi și `@import`, dar `<link>` în HTML pornește descărcarea mai devreme.
+
+Verifică că fontul are **diacriticele românești** (ă, â, î, ș, ț). `display=swap` arată textul imediat cu un font de rezervă, până se încarcă fișierul.
+
+În demo-ul de mai jos fontul e încărcat cu `@import`, ca să-l poți vedea direct în previzualizare.
+</script>
+
+<div class="demo" data-title="Fraunces de pe Google Fonts" data-desc="Comută familia: Fraunces (descărcat) față de Georgia (sistem). Dacă rețeaua e blocată, rămâne rezerva serif." data-height="180" data-tab="css">
+<script type="text/css">
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap");
+
+h2 {
+    margin: 0 0 8px;
+    font-family: Fraunces, Georgia, serif;
+    font-weight: 600;
+    font-size: 2rem;
+    color: #1d2430;
+}
+p {
+    margin: 0;
+    font-family: "Source Sans 3", system-ui, sans-serif;
+    font-size: 1.05rem;
+}
+</script>
+<script type="text/html">
+<h2>Atelier Mic</h2>
+<p>Ceramică și lumânări — ș, ț, ă, â, î trebuie să arate corect.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"titlu","sel":"h2","prop":"font-family","options":["Fraunces, Georgia, serif","Georgia, serif","system-ui, sans-serif"]},
+  {"label":"font-size","sel":"h2","prop":"font-size","type":"range","min":24,"max":56,"step":2,"unit":"px"}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s16" data-num="16" data-title="Rezumat">
+<script type="text/markdown">
+| Temă | Reții |
+|---|---|
+| Rol | HTML = structură, CSS = aspect |
+| Includere | inline / `<style>` / fișier `.css`; extern e varianta de proiect |
+| Sintaxă | `selector { proprietate: valoare; }` |
+| Selectori | element, `.clasă`, `#id`, `[atribut]`, descendent, `>`, `+`, `~` |
+| Pseudo | `:hover`, `:focus`, `:nth-child` · `::before` (cu `content`), `::first-letter` |
+| Cascadă | la specificitate egală câștigă regula de mai jos; inline bate foaia |
+| Specificitate | id > clasă/atribut/pseudo-clasă > element |
+| Moștenire | `color` și fontul da; `border`, `margin`, `background` nu |
+| `!important` | bate cascada normală; se evită |
+| Unități | `rem` pentru text, `%` pentru lățimi, `px` pentru detalii, `vw` față de fereastră |
+| Culori | hex, `rgb`, `hsl` — aceeași culoare, scrieri diferite |
+| Text | `font-family` cu rezervă, `line-height` fără unitate, Google Fonts prin `<link>` |
+</script>
+</section>
+
+<section class="lesson" id="s17" data-num="17" data-title="Greșeli frecvente">
+<script type="text/markdown">
+| Problemă | Cauză | Remediu |
+|---|---|---|
+| Regula nu se aplică | selector greșit, clasă scrisă diferit, fișier nelegat | verifică `.clasă` vs `class`, calea din `href` |
+| O proprietate e ignorată | literă greșită sau `;` lipsă înainte | DevTools, proprietatea apare tăiată |
+| Culoarea „nu e a clasei” | un `#id` sau `!important` câștigă | compară specificitatea |
+| `width: 50` nu face nimic | lipsește unitatea | `50%` sau `50px` |
+| `em` prea mare în adâncime | valorile se înmulțesc | `rem` pentru text |
+| `::before` invizibil | lipsește `content` | `content: ""` sau un text |
+| Fontul Google nu apare | link greșit sau fără diacritice | verifică URL-ul și lista de rezervă |
+</script>
+
+<div class="demo" data-title="Trei reguli, un singur câștigător" data-desc="Paragraful are class și id. Spune cu voce tare cine câștigă înainte să schimbi ceva, apoi scoate pe rând regulile din editor." data-height="120" data-tab="css">
+<script type="text/css">
+p { color: #546e7a; }
+.nota { color: #1565c0 !important; }
+#titlu { color: #c62828; }
+</script>
+<script type="text/html">
+<p class="nota" id="titlu" style="color: #2e7d32;">Ce culoare vezi și de ce?</p>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s18" data-num="18" data-title="Întrebări de autoverificare">
+<script type="text/markdown">
+Deschide răspunsul după ce ai formulat unul propriu.
+</script>
+
+<details class="qa"><summary>1. Ce face CSS și ce rămâne în seama HTML-ului?</summary><div class="qa-a">HTML descrie structura și sensul (titlu, paragraf, navigare). CSS descrie aspectul: culoare, font, spații, lățime. Conținutul poate rămâne neschimbat când schimbi doar stilul.</div></details>
+
+<details class="qa"><summary>2. Care sunt cele trei moduri de a adăuga CSS și care e potrivit pentru un site cu mai multe pagini?</summary><div class="qa-a">Inline (<code>style</code>), intern (<code>&lt;style&gt;</code> în <code>&lt;head&gt;</code>) și extern (fișier <code>.css</code> legat cu <code>&lt;link rel="stylesheet"&gt;</code>). Pentru mai multe pagini folosești foaia externă: o modifici o dată și se aplică peste tot unde e legată.</div></details>
+
+<details class="qa"><summary>3. La două reguli <code>p { color: … }</code>, care câștigă?</summary><div class="qa-a">Au aceeași specificitate, deci câștigă cea scrisă mai jos. Un <code>style</code> inline pe un paragraf anume bate ambele, dacă nu intervine <code>!important</code>.</div></details>
+
+<details class="qa"><summary>4. Ce specificitate au <code>p</code>, <code>.nota</code> și <code>#titlu</code>?</summary><div class="qa-a"><code>p</code> este 0,0,1 (un element). <code>.nota</code> este 0,1,0 (o clasă). <code>#titlu</code> este 1,0,0 (un id). Id-ul bate clasa, clasa bate elementul.</div></details>
+
+<details class="qa"><summary>5. Ce alege <code>article p</code> și ce alege <code>article &gt; p</code>?</summary><div class="qa-a"><code>article p</code> alege orice paragraf din interiorul articolului, inclusiv pe cei din alte elemente. <code>article &gt; p</code> alege doar paragrafele care sunt copii direcți ai articolului.</div></details>
+
+<details class="qa"><summary>6. De ce <code>li::before { color: red; }</code> nu afișează nimic?</summary><div class="qa-a">Pseudo-elementele <code>::before</code> și <code>::after</code> au nevoie de proprietatea <code>content</code>. Fără ea, nu se generează nimic.</div></details>
+
+<details class="qa"><summary>7. Ce diferență este între <code>em</code> și <code>rem</code>?</summary><div class="qa-a">La <code>font-size</code>, <code>em</code> se raportează la fontul părintelui și se înmulțește dacă imbrichezi elemente. <code>rem</code> se raportează mereu la fontul elementului <code>html</code>.</div></details>
+
+<details class="qa"><summary>8. De ce un fundal <code>rgba(…, 0.4)</code> e diferit de <code>opacity: 0.4</code>?</summary><div class="qa-a"><code>rgba</code> face transparent doar acea culoare (de obicei fundalul). <code>opacity</code> estompează tot elementul: text, bordură și copii.</div></details>
+
+<details class="qa"><summary>9. Ce pui la sfârșitul unei liste <code>font-family</code> și de ce?</summary><div class="qa-a">O familie generică (<code>serif</code>, <code>sans-serif</code>, <code>monospace</code>). Dacă fontul dorit nu e instalat sau nu s-a descărcat, browserul are totuși o rezervă din aceeași categorie.</div></details>
+
+<details class="qa"><summary>10. Când e justificat <code>!important</code>?</summary><div class="qa-a">Rar: de exemplu ca să oprești animațiile pentru cine a cerut <code>prefers-reduced-motion</code>. În rest îngreunează cascada; mai bine crești specificitatea sau schimbi ordinea regulilor.</div></details>
+</section>

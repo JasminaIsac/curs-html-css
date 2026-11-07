@@ -1,0 +1,448 @@
+<section class="lesson" id="s9" data-num="9" data-title="Hyperlinkuri">
+<script type="text/markdown">
+### 9.1. Elementul `<a>`
+
+```html
+<a href="https://developer.mozilla.org/">MDN</a>
+```
+
+| Atribut | Rol |
+|---|---|
+| `href` | destinația (URL absolut, cale relativă sau `#ancora`) |
+| `target="_blank"` | deschide într-un tab nou (adaugă și `rel="noopener noreferrer"`) |
+| `title` | tooltip |
+| `download` | sugerează descărcarea resursei |
+
+### 9.2. Căi absolute vs relative
+
+| Tip | Exemplu | Semnificație |
+|---|---|---|
+| Absolută | `https://usm.md/admitere/` | adresă completă, independentă de pagina curentă |
+| Relativă (același folder) | `contact.html` | lângă fișierul curent |
+| Relativă (subfolder) | `pagini/despre.html` | coboară în `pagini/` |
+| Relativă (în sus) | `../index.html` | urcă un nivel |
+| Rădăcina site-ului | `/cursuri/html/` | de la rădăcina domeniului (pe server) |
+| Ancoră | `#sectiune-2` | sare la `id="sectiune-2"` din **aceeași** pagină |
+| Mail / tel | `mailto:a@b.md`, `tel:+373…` | deschide clientul de mail / telefon |
+
+### 9.3. Ancore interne
+
+1. Pui un `id` pe țintă: `<h2 id="program">Program</h2>`
+2. Link: `<a href="#program">Sari la program</a>`
+
+`id` trebuie unic în pagină; potrivirea e exactă (inclusiv majuscule).
+</script>
+
+<div class="demo" data-title="Linkuri absolute, relative și mail" data-desc="Încearcă: schimbă un href relativ; adaugă target=&quot;_blank&quot; rel=&quot;noopener&quot; pe linkul extern." data-height="160" data-tab="html">
+<script type="text/css" data-hidden>
+nav { display: flex; flex-wrap: wrap; gap: 10px; }
+a { color: #1565c0; }
+a:hover { text-decoration: none; background: #e3f2fd; }
+</script>
+<script type="text/css">
+a { color: #1565c0; }
+</script>
+<script type="text/html">
+<nav>
+  <a href="https://www.usm.md/">USM (absolut)</a>
+  <a href="contact.html">Contact (relativ)</a>
+  <a href="../index.html">Acasă (în sus)</a>
+  <a href="mailto:secretariat@usm.md">Email</a>
+</nav>
+</script>
+</div>
+
+<div class="demo" data-title="Ancore în pagină" data-desc="Încearcă: click pe linkurile din meniu — previzualizarea derulează la id-ul potrivit. Redenumește un id și potrivește href." data-height="220" data-tab="html">
+<script type="text/css" data-hidden>
+nav { display: flex; gap: 12px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #cfd8dc; position: sticky; top: 0; background: #fff; }
+a { color: #1565c0; font-size: 14px; }
+section { padding: 8px 0 28px; }
+h2 { margin: 0 0 6px; font-size: 1.1rem; color: #263238; }
+p { margin: 0; color: #607d8b; font-size: 14px; }
+</script>
+<script type="text/css">
+nav a { color: #1565c0; }
+</script>
+<script type="text/html">
+<nav>
+  <a href="#despre">Despre</a>
+  <a href="#program">Program</a>
+  <a href="#contact">Contact</a>
+</nav>
+<section id="despre">
+  <h2>Despre</h2>
+  <p>Laboratorul introduce HTML și structura unui document.</p>
+</section>
+<section id="program">
+  <h2>Program</h2>
+  <p>Prelegerea durează aproximativ 90 de minute.</p>
+</section>
+<section id="contact">
+  <h2>Contact</h2>
+  <p>Scrie cadrului didactic pe platforma cursului.</p>
+</section>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s10" data-num="10" data-title="Imagini">
+<script type="text/markdown">
+### 10.1. Elementul `<img>`
+
+```html
+<img src="Imagini/ceai.svg" alt="Ceașcă de ceai verde" width="200" height="120">
+```
+
+| Atribut | Rol |
+|---|---|
+| `src` | calea / URL-ul fișierului (absolută sau relativă, ca la linkuri) |
+| `alt` | text alternativ — **obligatoriu** pentru accesibilitate și dacă imaginea nu se încarcă |
+| `width` / `height` | dimensiuni (preferabil și în HTML, ca să rezerve spațiul) |
+| `title` | tooltip (nu înlocuiește `alt`) |
+
+`<img>` e element vid: nu are tag de închidere.
+
+### 10.2. `alt` bun vs slab
+
+| Situație | `alt` |
+|---|---|
+| Imagine informativă | descrie conținutul: `alt="Diagrama client–server"` |
+| Imagine decorativă | `alt=""` (gol) — e ignorată de cititoarele de ecran |
+| Buton-imagine | `alt` trebuie să spună acțiunea: `alt="Caută"` |
+
+> [!INFO] În demourile de aici folosim SVG inline (data URI) ca să nu depindem de fișiere externe. În laborator vei pune imaginile într-un folder (ex. `Imagini/`) și vei scrie căi relative.
+</script>
+
+<div class="demo" data-title="Imagine cu alt și dimensiuni" data-desc="Încearcă: șterge alt sau pune alt=&quot;&quot;; strică src ca să vezi ce rămâne vizibil." data-height="220" data-tab="html">
+<script type="text/css" data-hidden>
+figure { margin: 0; max-width: 280px; }
+img { display: block; max-width: 100%; height: auto; border-radius: 8px; background: #eceff1; }
+figcaption { font-size: 13px; color: #607d8b; margin-top: 6px; }
+</script>
+<script type="text/css">
+img { border-radius: 8px; }
+</script>
+<script type="text/html">
+<figure>
+  <img
+    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='140'%3E%3Crect fill='%231565c0' width='240' height='140' rx='12'/%3E%3Ctext x='120' y='78' text-anchor='middle' fill='white' font-family='system-ui' font-size='20'%3ECeai%3C/text%3E%3C/svg%3E"
+    alt="Ilustrație: ceașcă stilizată pe fundal albastru"
+    width="240"
+    height="140">
+  <figcaption>Produs: ceai verde Sencha</figcaption>
+</figure>
+</script>
+</div>
+
+<div class="demo" data-title="Imagine lipsă — rolul lui alt" data-desc="Încearcă: repară src cu data URI-ul din exemplul anterior sau schimbă textul alt." data-height="120" data-tab="html">
+<script type="text/css" data-hidden>
+img { max-width: 100%; }
+</script>
+<script type="text/css">
+img { outline: 1px dashed #90a4ae; }
+</script>
+<script type="text/html">
+<img src="Imagini/nu-exista.png" alt="Diagramă: client trimite GET, server răspunde 200 OK" width="320" height="80">
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s11" data-num="11" data-title="Tabele">
+<script type="text/markdown">
+### 11.1. Structura unui tabel
+
+Un tabel HTML e un grid de **rânduri** și **celule**:
+
+```html
+<table>
+  <caption>Orar laborator</caption>
+  <thead>
+    <tr>
+      <th>Ziua</th>
+      <th>Ora</th>
+      <th>Sala</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Luni</td>
+      <td>10:00</td>
+      <td>212</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+| Element | Rol |
+|---|---|
+| `<table>` | containerul tabelului |
+| `<caption>` | titlul / legenda tabelului (opțional, recomandat) |
+| `<thead>`, `<tbody>`, `<tfoot>` | antet, corp, subsol (opțional, dar clarifică structura) |
+| `<tr>` | un **rând** |
+| `<th>` | celulă de **antet** (de obicei îngroșată; pentru coloane sau rânduri) |
+| `<td>` | celulă de **date** |
+
+### 11.2. Atribute utile
+
+| Atribut | Pe ce | Rol |
+|---|---|---|
+| `colspan="n"` | `<td>` / `<th>` | unește **n** celule pe orizontală |
+| `rowspan="n"` | `<td>` / `<th>` | unește **n** celule pe verticală |
+| `scope="col"` / `scope="row"` | `<th>` | leagă antetul de coloană / rând (accesibilitate) |
+| `border` | `<table>` | atribut vechi; preferă CSS (`border-collapse`, `border`) |
+
+> [!TIP] Nu folosi tabele pentru layout-ul întregii pagini — doar pentru date tabelare. Pentru aranjare modernă vei folosi Flexbox / Grid (în lecțiile de CSS).
+</script>
+
+<div class="demo" data-title="Tabel simplu" data-desc="Încearcă: adaugă un rând nou sau schimbă un th în td." data-height="200" data-tab="html">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; max-width: 420px; font-size: 14px; }
+th, td { border: 1px solid #90a4ae; padding: 8px 10px; text-align: left; }
+th { background: #e3f2fd; color: #0d47a1; }
+caption { caption-side: top; text-align: left; font-weight: 600; margin-bottom: 8px; color: #263238; }
+</script>
+<script type="text/css">
+th { background: #e3f2fd; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Orar laborator HTML</caption>
+  <thead>
+    <tr>
+      <th scope="col">Ziua</th>
+      <th scope="col">Ora</th>
+      <th scope="col">Sala</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Luni</td>
+      <td>10:00</td>
+      <td>212</td>
+    </tr>
+    <tr>
+      <td>Miercuri</td>
+      <td>12:00</td>
+      <td>105</td>
+    </tr>
+  </tbody>
+</table>
+</script>
+</div>
+
+<div class="demo" data-title="colspan și rowspan" data-desc="Încearcă: schimbă colspan=&quot;2&quot; în colspan=&quot;3&quot; sau rowspan pe o celulă — vezi cum se lipește grila." data-height="220" data-tab="html">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; max-width: 400px; font-size: 14px; }
+th, td { border: 1px solid #90a4ae; padding: 8px 10px; text-align: center; }
+th { background: #eceff1; }
+.span { background: #e8f5e9; }
+</script>
+<script type="text/css">
+.span { background: #e8f5e9; }
+</script>
+<script type="text/html">
+<table>
+  <tr>
+    <th>Produs</th>
+    <th>Q1</th>
+    <th>Q2</th>
+  </tr>
+  <tr>
+    <td>Ceai verde</td>
+    <td>40</td>
+    <td>55</td>
+  </tr>
+  <tr>
+    <td class="span" colspan="2">Total semestru I</td>
+    <td>95</td>
+  </tr>
+  <tr>
+    <td rowspan="2" class="span">Ceai negru</td>
+    <td>30</td>
+    <td>28</td>
+  </tr>
+  <tr>
+    <td colspan="2">stoc limitat</td>
+  </tr>
+</table>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s12" data-num="12" data-title="Instrumente: editor, DevTools, validator">
+<script type="text/markdown">
+### 12.1. Editorul
+
+Folosești un editor de cod (VS Code / Cursor, etc.):
+
+- evidențiere sintaxă, autocompletare, formatare;
+- extensii utile: Live Preview / Live Server, validare HTML;
+- salvare **UTF-8**;
+- structură de proiect: `index.html`, folder `Imagini/`, eventual `stil.css`.
+
+### 12.2. DevTools (F12 sau clic dreapta → Inspect)
+
+| Panou | La ce te uită |
+|---|---|
+| **Elements** | DOM-ul live — poți edita HTML/CSS temporar |
+| **Console** | mesaje și erori JavaScript |
+| **Network** | cereri HTTP: status, tip, durată (vezi 200 vs 404) |
+| **Sources** | fișierele încărcate |
+
+Exercițiu rapid: deschide orice site → Network → reîncarcă → filtrează `Doc` / `Img`.
+
+### 12.3. Validatorul
+
+Verifică markup-ul la [validator.w3.org](https://validator.w3.org/):
+
+- **By URI** — pagină online;
+- **By file upload** — fișier local;
+- **By direct input** — lipești codul.
+
+Erorile tipice la început: tag neînchis, atribut greșit, `alt` lipsă, `DOCTYPE` lipsă, imbricare invalidă.
+
+> [!TIP] Validatorul nu înlocuiește judecata: un document poate „trece” și totuși avea titluri sărite sau `alt` slab. Folosește-l ca pe un control de calitate, nu ca pe un scop în sine.
+</script>
+
+<div class="demo" data-title="Checklist înainte de predare" data-desc="Încearcă: bifează mental fiecare punct pe proiectul tău real; aici e doar memento vizual." data-height="200" data-tab="html">
+<script type="text/css" data-hidden>
+ul { list-style: none; margin: 0; padding: 0; }
+li { padding: 8px 10px; margin: 4px 0; background: #eceff1; border-radius: 6px; font-size: 14px; }
+li::before { content: "☐ "; color: #1565c0; font-weight: 700; }
+</script>
+<script type="text/css">
+li::before { content: "☐ "; }
+</script>
+<script type="text/html">
+<ul>
+  <li><code>&lt;!DOCTYPE html&gt;</code> pe prima linie</li>
+  <li><code>lang</code> pe <code>&lt;html&gt;</code> și <code>meta charset="UTF-8"</code></li>
+  <li><code>&lt;title&gt;</code> semnificativ; un singur <code>&lt;h1&gt;</code></li>
+  <li>Imbricare corectă; fără tag-uri rămase deschise</li>
+  <li>Fiecare <code>&lt;img&gt;</code> are <code>alt</code>; linkurile au <code>href</code> corect</li>
+  <li>Trece prin validator; 404-urile apar în Network</li>
+</ul>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s13" data-num="13" data-title="Întrebări de autoverificare">
+<script type="text/markdown">
+Încearcă să răspunzi singur, apoi deschide răspunsul. Poți folosi butoanele de deasupra listei pentru a deschide / închide toate.
+</script>
+
+<details class="qa"><summary>1. Care este diferența dintre client și server pe web?</summary><div class="qa-a"><b>Clientul</b> (de obicei browserul) cere resurse. <b>Serverul</b> le stochează sau le generează și răspunde. Tu nu „tragi” tot internetul: trimiți cereri către adrese concrete.</div></details>
+
+<details class="qa"><summary>2. Ce părți are un URL și care parte <em>nu</em> se trimite la server?</summary><div class="qa-a">Schemă, gazdă, port (opțional), cale, query, fragment. <b>Fragmentul</b> (<code>#...</code>) rămâne în browser pentru derulare / țintă; nu face parte din cererea HTTP către server.</div></details>
+
+<details class="qa"><summary>3. Ce adaugă HTTPS față de HTTP?</summary><div class="qa-a">Criptare și autenticitate prin <b>TLS</b> (certificat). Traficul e greu de citit sau modificat pe drum; portul implicit e 443.</div></details>
+
+<details class="qa"><summary>4. Ce rol au W3C și WHATWG pentru HTML?</summary><div class="qa-a"><b>WHATWG</b> menține HTML Living Standard (referința curentă). <b>W3C</b> e consorțiul mai larg al standardelor web; HTML5 e numele uzual al standardului modern pe care îl scrii azi.</div></details>
+
+<details class="qa"><summary>5. De ce e nevoie de <code>&lt;!DOCTYPE html&gt;</code>?</summary><div class="qa-a">Pune browserul în modul standard HTML5 (evită quirks mode). Nu e un element cu închidere; stă pe prima linie a fișierului.</div></details>
+
+<details class="qa"><summary>6. Ce diferență e între <code>&lt;head&gt;</code> și <code>&lt;body&gt;</code>?</summary><div class="qa-a"><code>head</code> = metadate (title, charset, description, link-uri către CSS…). <code>body</code> = conținutul vizibil pe pagină.</div></details>
+
+<details class="qa"><summary>7. De ce pui <code>&lt;meta charset="UTF-8"&gt;</code> imediat în <code>head</code>?</summary><div class="qa-a">Ca browserul să interpreteze corect diacriticele înainte să întâlnească text. Fișierul trebuie și salvat ca UTF-8 în editor.</div></details>
+
+<details class="qa"><summary>8. Ce este un atribut? Dă un exemplu pe <code>&lt;a&gt;</code> și pe <code>&lt;img&gt;</code>.</summary><div class="qa-a">O pereche nume/valoare pe tag-ul de deschidere. Exemple: <code>href</code> pe link, <code>src</code> și <code>alt</code> pe imagine.</div></details>
+
+<details class="qa"><summary>9. Ce e greșit la <code>&lt;p&gt;text &lt;strong&gt;x&lt;/p&gt;&lt;/strong&gt;</code>?</summary><div class="qa-a">Imbricare invalidă: <code>strong</code> trebuie închis <b>înainte</b> de închiderea lui <code>p</code>. Cutia interioară nu poate ieși din cutia exterioară.</div></details>
+
+<details class="qa"><summary>10. Când folosești <code>&amp;lt;</code> în loc de <code>&lt;</code>?</summary><div class="qa-a">Când vrei să <b>afișezi</b> caracterul „&lt;” ca text, nu să începi un tag. Altfel browserul crede că urmează markup.</div></details>
+
+<details class="qa"><summary>11. De ce preferi <code>&lt;strong&gt;</code> în loc de <code>&lt;b&gt;</code> pentru un avertisment?</summary><div class="qa-a"><code>strong</code> marchează <b>importanță</b> (semnanică); <code>b</code> e în principal prezentare. Cititoarele de ecran și SEO țin cont de semnanică.</div></details>
+
+<details class="qa"><summary>12. Cum faci un link intern la un subtitlu?</summary><div class="qa-a">Pui <code>id="nume"</code> pe țintă și <code>href="#nume"</code> pe <code>&lt;a&gt;</code>. Potrivirea trebuie să fie exactă.</div></details>
+
+<details class="qa"><summary>13. Ce diferență e între calea <code>Imagini/a.png</code> și <code>/Imagini/a.png</code>?</summary><div class="qa-a">Prima e <b>relativă</b> la folderul paginii curente. A doua e de la <b>rădăcina site-ului</b> (domeniului), indiferent unde e pagina.</div></details>
+
+<details class="qa"><summary>14. De ce e obligatoriu atributul <code>alt</code> pe imagini?</summary><div class="qa-a">Descrie imaginea când nu se încarcă și pentru accesibilitate (cititoare de ecran). Pentru imagini decorative se folosește <code>alt=""</code>.</div></details>
+
+<details class="qa"><summary>15. Ce verifici în panoul Network din DevTools dacă o imagine „nu apare”?</summary><div class="qa-a">Dacă cererea există, ce <b>status</b> are (ex. 404 = cale greșită), și tipul resursei. Apoi corectezi <code>src</code> sau locația fișierului.</div></details>
+</section>
+
+<section class="lesson" id="s14" data-num="14" data-title="Exerciții propuse">
+<script type="text/markdown">
+Lucrează în spațiul de mai jos (sau într-un fișier `index.html` separat). Ținta: un mini-site de o pagină, valid mental după checklist-ul din secțiunea Instrumente.
+
+1. Scrie scheletul HTML5 complet (`DOCTYPE`, `html lang="ro"`, `head` cu charset + title + description, `body`).
+2. Adaugă un `<h1>`, două secțiuni cu `<h2 id="...">`, paragrafe și o listă (ordonată sau nu).
+3. Folosește `<strong>`, `<em>`, un `<blockquote>` și cel puțin o entitate (`&amp;` sau `&copy;`).
+4. Meniu cu ancore către secțiuni + un link extern absolut + un `mailto:`.
+5. O imagine cu `alt` descriptiv (poți păstra data URI-ul din lecție sau un SVG scurt).
+6. Deschide documentul în browser, inspectează DOM-ul, apoi lipește sursa în [validator.w3.org](https://validator.w3.org/) (direct input).
+
+> [!TIP] În sandbox, conținutul din editor e doar fragment de `body`. Pentru exercițiul 1, scrie scheletul complet într-un fișier local; aici exersează secțiunile vizibile.
+</script>
+
+<div class="demo" data-title="Spațiu de lucru" data-desc="Construiește aici conținutul paginii. Reset readuce pornirea. Tab-ul HTML e cel principal." data-height="420" data-layout="stack" data-tab="html" data-resizable>
+<script type="text/css">
+body {
+    font: 16px/1.5 system-ui, sans-serif;
+    color: #263238;
+    max-width: 40rem;
+}
+
+h1 { color: #1565c0; }
+h2 { margin-top: 1.4em; border-bottom: 1px solid #cfd8dc; padding-bottom: 4px; }
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+nav a { color: #1565c0; }
+
+blockquote {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid #1565c0;
+    background: #eceff1;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* continuă stilurile dacă vrei… */
+</script>
+<script type="text/html">
+<nav>
+    <a href="#despre">Despre</a>
+    <a href="#pasi">Pași</a>
+    <a href="#resurse">Resurse</a>
+</nav>
+
+<h1>Prima mea pagină HTML</h1>
+
+<section id="despre">
+    <h2>Despre</h2>
+    <p>Înlocuiește acest text cu prezentarea ta. Folosește <strong>importanță</strong> și <em>accent</em>.</p>
+</section>
+
+<section id="pasi">
+    <h2>Pași</h2>
+    <ol>
+        <li>Schelet HTML5</li>
+        <li>Text și liste</li>
+        <li>Linkuri și imagine</li>
+    </ol>
+</section>
+
+<section id="resurse">
+    <h2>Resurse</h2>
+    <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML">MDN HTML</a></li>
+        <li><a href="mailto:exemplu@usm.md">Scrie un email</a></li>
+    </ul>
+    <blockquote>Web-ul e pentru toată lumea.</blockquote>
+    <p>&copy; 2026 — laborator HTML</p>
+</section>
+</script>
+</div>
+</section>

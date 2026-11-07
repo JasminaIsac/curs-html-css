@@ -1,0 +1,308 @@
+<section class="lesson" id="s5" data-num="5" data-title="Tabele HTML">
+<script type="text/markdown">
+### 5.1. Tabele pentru date, nu pentru layout
+
+Un `<table>` descrie **date tabulare** (rânduri × coloane cu relație). Nu-l folosi ca să pui două coloane de layout pe o pagină modernă — pentru asta există CSS (flexbox / grid).
+
+| Potrivit pentru tabel | Nepotrivit |
+|---|---|
+| orar, catalog, prețuri, rezultate | meniu pe două coloane, „carduri”, întreaga pagină |
+
+### 5.2. Anatomia minimă
+
+| Tag | Rol |
+|---|---|
+| `<table>` | containerul |
+| `<caption>` | titlul tabelului (vizibil + citit de cititoare) |
+| `<tr>` | un rând |
+| `<th>` | celulă de **antet** (implicit îngroșat, centrat) |
+| `<td>` | celulă de **date** |
+
+```html
+<table>
+  <caption>Prețuri — ceramică</caption>
+  <tr>
+    <th>Produs</th>
+    <th>Preț</th>
+  </tr>
+  <tr>
+    <td>Cană</td>
+    <td>79 lei</td>
+  </tr>
+</table>
+```
+</script>
+
+<div class="demo" data-title="Tabel minimal cu caption" data-desc="Încearcă: șterge caption-ul și adaugă un titlu h3 deasupra — observă de ce caption e legat semantic de tabel." data-height="220" data-tab="html">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; max-width: 420px; font-size: 14px; }
+caption { font-weight: 700; text-align: left; padding: 0 0 8px; color: #1565c0; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; text-align: left; }
+th { background: #1565c0; color: #fff; }
+tr:nth-child(even) td { background: #f5f7fa; }
+</script>
+<script type="text/css">
+th { background: #1565c0; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Prețuri — ceramică</caption>
+  <tr>
+    <th>Produs</th>
+    <th>Preț</th>
+  </tr>
+  <tr>
+    <td>Cană</td>
+    <td>79 lei</td>
+  </tr>
+  <tr>
+    <td>Farfurie</td>
+    <td>65 lei</td>
+  </tr>
+  <tr>
+    <td>Bol</td>
+    <td>55 lei</td>
+  </tr>
+</table>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s6" data-num="6" data-title="thead, tbody, tfoot">
+<script type="text/markdown">
+### 6.1. De ce le folosim
+
+Nu schimbă neapărat aspectul, dar:
+
+- separă **antetul**, **datele** și **subsolul** (totaluri);
+- permit stilizare clară (`thead th { … }`);
+- ajută cititoarele de ecran să anunțe structura;
+- la tabele lungi, unele browsere pot repeta antetul la tipărire.
+
+### 6.2. Ordinea în markup
+
+În HTML, ordinea recomandată în `<table>` este:
+
+1. `<caption>` (dacă există)
+2. `<thead>`
+3. `<tbody>` (poți avea mai multe)
+4. `<tfoot>` — în HTML5 poate apărea și **înainte** de `tbody` în sursă; browserul îl afișează tot jos
+
+> [!TIP] Pune întotdeauna celulele de antet în `thead` cu `<th>`, nu cu `<td>` îngroșat din CSS.
+</script>
+
+<div class="demo" data-title="Orar cu thead, tbody, tfoot" data-desc="Încearcă: mută rândul de total din tfoot în tbody — totalul rămâne vizibil, dar pierde rolul de sumar." data-height="320" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+caption { font-weight: 700; text-align: left; padding-bottom: 8px; color: #1565c0; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; text-align: left; }
+thead th { background: #1565c0; color: #fff; }
+tbody tr:nth-child(even) { background: #f5f7fa; }
+tfoot td { background: #fff8e1; font-weight: 700; }
+</script>
+<script type="text/css">
+thead th { background: #1565c0; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Orar — miercuri și joi</caption>
+  <thead>
+    <tr>
+      <th scope="col">Ora</th>
+      <th scope="col">Miercuri</th>
+      <th scope="col">Joi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>08:00–09:30</td>
+      <td>Programare web</td>
+      <td>Baze de date</td>
+    </tr>
+    <tr>
+      <td>09:45–11:15</td>
+      <td>Matematici discrete</td>
+      <td>Rețele</td>
+    </tr>
+    <tr>
+      <td>11:30–13:00</td>
+      <td>Engleză</td>
+      <td>POO</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">Total ore (2 zile)</td>
+      <td>9</td>
+    </tr>
+  </tfoot>
+</table>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s7" data-num="7" data-title="colspan și rowspan">
+<script type="text/markdown">
+### 7.1. Unirea celulelor
+
+| Atribut | Efect |
+|---|---|
+| `colspan="n"` | celula acoperă **n coloane** pe orizontală |
+| `rowspan="n"` | celula acoperă **n rânduri** pe verticală |
+
+Când folosești `rowspan` / `colspan`, **nu mai scrii** celulele pe care le-ai „acoperit” — altfel tabelul se strică.
+
+### 7.2. Exemplu mental
+
+Pentru o familie cu doi copii, „Nume părinte” și „Adresă” apar o singură dată (rowspan=2), iar fiecare copil pe rândul lui.
+</script>
+
+<div class="demo" data-title="rowspan și colspan pe același tabel" data-desc="Încearcă: schimbă rowspan=&quot;2&quot; în 1 și adaugă celulele lipsă — sau strică intenționat tabelul ca să vezi efectul." data-height="300" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+caption { font-weight: 700; text-align: left; padding-bottom: 8px; color: #1565c0; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; vertical-align: top; }
+thead th { background: #263238; color: #fff; }
+tfoot td { background: #e8f5e9; font-weight: 600; }
+.hl { background: #e3f2fd; }
+</script>
+<script type="text/css">
+.hl { background: #e3f2fd; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Familii — exemplu rowspan / colspan</caption>
+  <thead>
+    <tr>
+      <th scope="col">Nume, prenume</th>
+      <th scope="col">Adresă</th>
+      <th scope="col">Prenume copil</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="hl" rowspan="2">Ivanov Elena</td>
+      <td class="hl" rowspan="2">Str. Codrilor 45</td>
+      <td>Elena, 2006</td>
+    </tr>
+    <tr>
+      <td>Valeriu, 2011</td>
+    </tr>
+    <tr>
+      <td>Popescu Ana</td>
+      <td>Bd. Ștefan 12</td>
+      <td>Mihai, 2015</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">Total număr copii</td>
+      <td>3</td>
+    </tr>
+  </tfoot>
+</table>
+</script>
+</div>
+
+<div class="demo" data-title="Pauză pe tot rândul (colspan)" data-desc="Încearcă: înlocuiește colspan=&quot;3&quot; cu trei td-uri separate — vezi cum se rupe ideea de „pauză comună”." data-height="240" data-tab="html">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border: 1px solid #cfd8dc; padding: 8px; text-align: center; }
+th { background: #1565c0; color: #fff; }
+.pauza { background: #fff3e0; font-style: italic; }
+</script>
+<script type="text/css">
+.pauza { background: #fff3e0; }
+</script>
+<script type="text/html">
+<table>
+  <thead>
+    <tr>
+      <th>Ora</th>
+      <th>Luni</th>
+      <th>Marți</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>11:30–13:00</td>
+      <td>POO</td>
+      <td>Web</td>
+    </tr>
+    <tr>
+      <td>13:00–13:30</td>
+      <td class="pauza" colspan="2">Pauză de masă</td>
+    </tr>
+    <tr>
+      <td>13:30–15:00</td>
+      <td>Engleză</td>
+      <td>BD</td>
+    </tr>
+  </tbody>
+</table>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s8" data-num="8" data-title="Tabele accesibile">
+<script type="text/markdown">
+### 8.1. Ce înseamnă `scope`
+
+Un `<th>` este o **etichetă** pentru alte celule. Atributul `scope` spune **pe ce direcție** se aplică eticheta — ca un cititor de ecran să anunțe corect, de exemplu: „Categorie: Ceramică, În stoc: 24”, nu doar „24”.
+
+| Valoare | Sens | Exemplu |
+|---|---|---|
+| `scope="col"` | antetul descrie **toată coloana** de sub el | „Preț” deasupra tuturor prețurilor |
+| `scope="row"` | antetul descrie **tot rândul** din dreapta lui | „Ceramică” în fața cifrelor acelui rând |
+| `scope="colgroup"` / `rowgroup` | pentru tabele complexe, cu grupuri de coloane/rânduri | mai rar la început |
+
+Fără `scope`, tabelul poate arăta la fel pe ecran, dar tehnologiile asistive nu mai știu clar ce antet ține de ce celulă. Pentru tabele simple: `scope="col"` pe anteturile din prima linie; `scope="row"` pe prima celulă a rândului, dacă e etichetă (nu dată).
+
+### 8.2. Checklist rapid
+
+- ai `<caption>` (sau, în lipsă, un `aria-label` / `aria-labelledby` pe `table`);
+- anteturile sunt `<th>`, nu `<td>` stilizate;
+- `scope` e setat pe `th`;
+- nu folosești tabelul pentru layout;
+- pe ecrane înguste, un wrapper cu `overflow-x: auto` e mai bun decât a micșora textul ilizibil.
+</script>
+
+<div class="demo" data-title="Anteturi pe coloană și pe rând" data-desc="Încearcă: șterge scope de pe th — tabelul arată la fel vizual, dar pierde informația pentru cititoare." data-height="260" data-tab="html">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; max-width: 480px; font-size: 14px; }
+caption { font-weight: 700; text-align: left; padding-bottom: 8px; color: #1565c0; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; }
+th[scope="col"] { background: #1565c0; color: #fff; }
+th[scope="row"] { background: #e3f2fd; text-align: left; }
+</script>
+<script type="text/css">
+th[scope="col"] { background: #1565c0; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Stoc pe categorii</caption>
+  <thead>
+    <tr>
+      <th scope="col">Categorie</th>
+      <th scope="col">În stoc</th>
+      <th scope="col">Rezervat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Ceramică</th>
+      <td>24</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th scope="row">Lumânări</th>
+      <td>40</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+</script>
+</div>
+
+<details class="qa"><summary>De ce nu e suficient să îngroșez prima linie cu CSS în loc de <code>th</code>?</summary><div class="qa-a">Aspectul nu transmite rolul. Cititoarele de ecran și unele instrumente se bazează pe <code>th</code> (și pe <code>scope</code>) ca să anunțe „Produs: Cană, Preț: 79 lei”. Un <code>td</code> îngroșat e doar o celulă de date stilizată.</div></details>
+</section>

@@ -1,0 +1,205 @@
+<section class="lesson" id="s3" data-num="3" data-title="Istoria HTML și rolul W3C / WHATWG">
+<script type="text/markdown">
+### 3.1. Ce este HTML?
+
+**HTML** (*HyperText Markup Language*) este limbajul de **marcare** cu care descrii structura unei pagini web: titluri, paragrafe, liste, linkuri, imagini etc.
+
+- Nu este un limbaj de programare (nu are „logică” ca variabilele sau buclele — asta e rolul JavaScript).
+- **Marchezi** conținutul cu etichete (`<h1>`, `<p>`, `<a>`…); browserul interpretează etichetele și afișează pagina.
+- **HyperText** = text legat de alte resurse prin hiperlinkuri — ideea fondatoare a web-ului.
+
+### 3.2. De la idee la HTML5
+
+| An (aprox.) | Moment |
+|---|---|
+| 1991 | Tim Berners-Lee publică primele etichete HTML |
+| 1995 | HTML 2.0 — primul standard „oficial” |
+| 1997–1999 | HTML 3.2 / 4.0 / 4.01 — tabele, formulare, frame-uri |
+| ~2000 | XHTML 1.0 — HTML reformulat în XML (strictețe) |
+| 2004+ | WHATWG pornește HTML „viu” (living standard) |
+| 2014 | **HTML5** recomandare W3C |
+| azi | HTML = *living standard* WHATWG; HTML5 = numele uzual al standardului curent |
+
+```text
+1991        1995      1997–99      ~2000       2004+        2014         azi
+  |           |          |           |           |            |           |
+  ●───────────●──────────●───────────●───────────●────────────●───────────●──→
+ început    HTML 2    HTML 3/4     XHTML      WHATWG      HTML5     Living
+  HTML                                                              Standard
+```
+
+### 3.3. W3C și WHATWG
+
+| Organizație | Rol |
+|---|---|
+| **W3C** (*World Wide Web Consortium*) | Consorțiu care publică specificații (HTML, CSS, accesibilitate…). Site: [w3.org](https://www.w3.org/) |
+| **WHATWG** (*Web Hypertext Application Technology Working Group*) | Menține **HTML Living Standard** — sursa de adevăr pentru HTML modern: [html.spec.whatwg.org](https://html.spec.whatwg.org/) |
+
+Practic: înveți HTML5 / living standard (semantica modernă, `<!DOCTYPE html>`, API-uri din browser). Validatorul și MDN urmează această linie.
+
+> [!INFO] Nu trebuie să memorezi anii. Reține: HTML5 e standardul curent; specificația evoluează continuu (WHATWG), iar W3C rămâne un actor important al ecosistemului web.
+</script>
+</section>
+
+<section class="lesson" id="s4" data-num="4" data-title="Structura unui document HTML">
+<script type="text/markdown">
+### 4.1. Scheletul minimal HTML5
+
+Orice pagină modernă pornește de la același schelet:
+
+```html
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Titlul în tab</title>
+</head>
+<body>
+    <h1>Conținutul vizibil</h1>
+    <p>Paragraf pe pagină.</p>
+</body>
+</html>
+```
+
+| Element | Rol |
+|---|---|
+| `<!DOCTYPE html>` | Declară modul **HTML5** (nu e un tag clasic; stă pe prima linie) |
+| `<html>` | Rădăcina documentului; `lang="ro"` ajută accesibilitatea și SEO |
+| `<head>` | **Metadate** — nu se văd ca text pe pagină |
+| `<body>` | Tot ce e vizibil (și majoritatea scripturilor interactive) |
+
+> [!TIP] Salvează fișierul cu extensia `.html` (sau `.htm`) și deschide-l în browser (dublu-clic sau Live Preview din editor).
+
+### 4.2. Arborele documentului
+
+Documentul este un **arbore**: `html` are doi copii principali (`head`, `body`), iar în `body` imbrici titluri, paragrafe, liste etc. Browserul nu afișează „tag-uri”, ci construiește noduri în DOM.
+</script>
+
+<div class="demo" data-title="Arborele documentului (vizual)" data-desc="Încearcă: adaugă un <p> sub h1 în „body”-ul din previzualizare (editează HTML-ul arborului)." data-height="280" data-tab="html">
+<script type="text/css" data-hidden>
+body { font: 14px/1.4 system-ui, sans-serif; }
+.tree { margin: 0; padding-left: 0; list-style: none; }
+.tree ul { list-style: none; margin: 4px 0; padding-left: 18px; border-left: 2px solid #cfd8dc; }
+.nod { display: inline-block; padding: 2px 8px; border-radius: 4px; background: #e3f2fd; color: #0d47a1; font-family: ui-monospace, monospace; font-size: 13px; margin: 2px 0; }
+.head { background: #fff3e0; color: #e65100; }
+.body { background: #e8f5e9; color: #1b5e20; }
+.meta { background: #f3e5f5; color: #6a1b9a; }
+.muted { color: #607d8b; font-size: 12px; margin-left: 6px; }
+</script>
+<script type="text/css">
+.nod { font-weight: 600; }
+</script>
+<script type="text/html">
+<ul class="tree">
+  <li><span class="nod">&lt;html lang="ro"&gt;</span>
+    <ul>
+      <li><span class="nod head">&lt;head&gt;</span>
+        <ul>
+          <li><span class="nod meta">&lt;meta charset&gt;</span><span class="muted">codificare</span></li>
+          <li><span class="nod meta">&lt;title&gt;</span><span class="muted">tab browser</span></li>
+        </ul>
+      </li>
+      <li><span class="nod body">&lt;body&gt;</span>
+        <ul>
+          <li><span class="nod body">&lt;h1&gt;</span><span class="muted">titlu vizibil</span></li>
+          <li><span class="nod body">&lt;p&gt;</span><span class="muted">paragraf</span></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s5" data-num="5" data-title="Metadate și codificarea UTF-8">
+<script type="text/markdown">
+### 5.1. Ce stă în `<head>`
+
+Conținutul din `head` descrie documentul, nu „textul paginii”:
+
+| Element / atribut | Rol |
+|---|---|
+| `<title>` | Titlul din tab, istoric, rezultate de căutare |
+| `<meta charset="UTF-8">` | Codificarea caracterelor (diacritice: ă â î ș ț) |
+| `<meta name="description" content="…">` | Rezumat scurt (deseori în Google) |
+| `<meta name="author" content="…">` | Autor |
+| `<meta name="viewport" …>` | Adaptare pe mobil |
+| `<link rel="icon" href="…">` | Favicon |
+| `<link rel="stylesheet" href="…">` | CSS extern (în lecțiile următoare) |
+
+`keywords` există istoric, dar motoarele moderne îl ignoră aproape complet — concentrează-te pe `title` și `description`.
+
+### 5.2. De ce UTF-8
+
+Fără `charset` corect (sau dacă fișierul e salvat în altă codificare), diacriticele apar ca `Äƒ`, `ÅŸ`, romburi etc.
+
+Regula practică:
+
+1. Prima linie utilă din `head`: `<meta charset="UTF-8">` (înainte de text cu diacritice).
+2. Salvează fișierul ca **UTF-8** în editor.
+3. Verifică în browser: View Page Source / Encoding.
+
+```html
+<head>
+    <meta charset="UTF-8">
+    <title>Laborator HTML — USM</title>
+    <meta name="description" content="Introducere în structura unui document HTML5.">
+    <meta name="author" content="Studenta Ana">
+</head>
+```
+
+> [!WARN] Dacă `title` sau un paragraf cu „ș” apare înainte de `meta charset`, unele browsere ghicesc greșit codificarea. Pune charset-ul imediat după `<head>`.
+</script>
+
+<div class="demo" data-title="Titlu vs conținut vizibil" data-desc="Încearcă: schimbă textul din h1 — pe pagină se vede; title-ul din tab nu e în body (în acest sandbox vezi efectul pe conținut)." data-height="160" data-tab="html">
+<script type="text/css" data-hidden>
+.card { padding: 14px; border-radius: 10px; background: #eceff1; }
+.tab { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: #fff; border-radius: 8px 8px 0 0; border: 1px solid #cfd8dc; border-bottom: 0; font-size: 13px; }
+.tab b { color: #1565c0; }
+.pagina { padding: 16px; background: #fff; border: 1px solid #cfd8dc; border-radius: 0 8px 8px 8px; }
+h1 { margin: 0 0 6px; font-size: 1.25rem; }
+p { margin: 0; color: #607d8b; font-size: 14px; }
+</script>
+<script type="text/css">
+.tab b { color: #1565c0; }
+</script>
+<script type="text/html">
+<div class="card">
+  <div class="tab">🔖 <b>Laborator HTML — USM</b></div>
+  <div class="pagina">
+    <h1>Bine ai venit</h1>
+    <p>Acest text e în &lt;body&gt;. Titlul din „tab” vine din &lt;title&gt; (în &lt;head&gt;).</p>
+  </div>
+</div>
+</script>
+</div>
+
+<div class="demo" data-title="Diacritice: UTF-8 vs „stricat”" data-desc="Încearcă: compară cele două coloane. În proiectele reale, coloana din dreapta apare când lipsește charset sau fișierul nu e UTF-8." data-height="160" data-tab="html">
+<script type="text/css" data-hidden>
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.box { padding: 12px; border-radius: 8px; }
+.ok { background: #e8f5e9; border: 1px solid #a5d6a7; }
+.bad { background: #ffebee; border: 1px solid #ef9a9a; }
+h3 { margin: 0 0 8px; font-size: 14px; }
+p { margin: 0; font-size: 15px; }
+</script>
+<script type="text/css">
+.ok { background: #e8f5e9; }
+.bad { background: #ffebee; }
+</script>
+<script type="text/html">
+<div class="grid">
+  <div class="box ok">
+    <h3>UTF-8 corect</h3>
+    <p>Școala, cărți, România, înalt, ânecat.</p>
+  </div>
+  <div class="box bad">
+    <h3>Codificare greșită</h3>
+    <p>Åžcoala, cÄƒrÈ›i, RomÃ¢nia…</p>
+  </div>
+</div>
+</script>
+</div>
+</section>

@@ -1,0 +1,307 @@
+<section class="lesson" id="s0" data-num="0" data-title="Ce urmează după Prelegerea 1">
+<script type="text/markdown">
+### 0.1. Unde ne aflăm
+
+În Prelegerea 1 ai învățat scheletul unui document HTML5, textul, listele, legăturile și imaginile. Browserul afișează însă la fel de bine și o pagină făcută doar din `div` și `span`. Diferența apare când:
+
+- un **cititor de ecran** trebuie să sară la meniu sau la conținutul principal;
+- un **motor de căutare** vrea să înțeleagă ce e articol, ce e navigare;
+- tu (sau colegul) trebuie să **întreții** o pagină peste câteva luni.
+
+### 0.2. Obiectivele prelegerii
+
+| Temă | Ce vei putea face |
+|---|---|
+| HTML semantic | alege landmark-urile potrivite (`header`, `nav`, `main`…) în loc de `div` generice |
+| Tabele | structurezi date tabelare cu `thead`/`tbody`, `colspan`/`rowspan` și `scope` |
+| Formulare | construiești un formular complet, cu `label`, tipuri potrivite și validare nativă |
+| Media | inserezi `audio`, `video` și `iframe` corect |
+| A11y + SEO | aplici `alt`, o ierarhie de titluri curată, ARIA de bază și metadate esențiale |
+
+> [!INFO] **Instrumente**  
+> Pe lângă browser + DevTools (F12), merită să ai la îndemână [validator.w3.org](https://validator.w3.org/) și, opțional, o extensie de accesibilitate (axe, WAVE) sau panoul Lighthouse → Accessibility.
+</script>
+</section>
+
+<section class="lesson" id="s1" data-num="1" data-title="De ce HTML semantic">
+<script type="text/markdown">
+### 1.1. Semantic vs. prezentare
+
+**HTML semantic** = alegi tagul după **sens**, nu după cum arată. Aspectul rămâne treaba CSS-ului.
+
+| Abordare | Exemplu | Probleme |
+|---|---|---|
+| Doar prezentare | `<div class="titlu-mare">Magazin</div>` | fără ierarhie pentru cititoare / SEO |
+| Semantică | `<h1>Magazin</h1>` | sens clar; stilul îl pui separat |
+
+`div` și `span` rămân utile ca **recipiente fără sens propriu** — când nu există un element semantic potrivit.
+
+### 1.2. Ce câștigi concret
+
+1. **Accesibilitate** — cititoarele de ecran anunță „navigation”, „main”, „banner”; utilizatorul sare direct la zona dorită.
+2. **SEO** — motoarele de căutare înțeleg mai bine structura (articol, navigare, conținut principal).
+3. **Mentenanță** — citind markup-ul, vezi intenția, nu doar o grămadă de `div`.
+4. **Implicit mai bun** — unele taguri aduc stiluri și comportamente utile (`nav` în liste, `button` vs `div` clicabil).
+
+### 1.3. Landmark-uri (pe scurt)
+
+Un **landmark** (în română: „punct de reper“ sau „regiune de reper“) este o zonă mare și importantă a paginii, marcată astfel încât tehnologiile asistive (cititoarele de ecran, de exemplu) să o recunoască și să permită utilizatorului să sară direct la ea, fără să citească toată pagina de la început.
+
+Browserul și tehnologiile asistive tratează anumite elemente HTML ca landmark-uri:
+
+| Element | Rol tipic (landmark) |
+|---|---|
+| `<header>` | antetul paginii sau al unei secțiuni |
+| `<nav>` | zonă de navigare principală |
+| `<main>` | conținutul principal (unul pe pagină) |
+| `<aside>` | conținut complementar (sidebar, legături laterale) |
+| `<footer>` | subsolul paginii sau al unei secțiuni |
+| `<section>` / `<article>` | regiuni de conținut (cu titlu) |
+</script>
+</section>
+
+<section class="lesson" id="s2" data-num="2" data-title="Landmark-uri: header, nav, main, footer">
+<script type="text/markdown">
+### 2.1. Scheletul tipic al unei pagini
+
+```text
+body
+├── header          ← logo, titlu site, uneori nav
+│   └── nav         ← meniul principal (poate fi și în afara header)
+├── main            ← UN SINGUR main pe pagină
+│   ├── section…
+│   └── article…
+├── aside           ← opțional: legături laterale, publicitate contextuală
+└── footer          ← copyright, linkuri secundare, contact
+```
+
+### 2.2. Reguli practice
+
+| Element | Reguli |
+|---|---|
+| `<header>` | Antetul **paginii** sau al unui `article`/`section`. Nu e obligatoriu să conțină `nav`. |
+| `<nav>` | Doar pentru **blocuri de navigare** (meniu principal, cuprins, breadcrumb). Nu înfășura fiecare listă de linkuri în `nav`. |
+| `<main>` | **Unul** pe document (fără a număra pe cele din `template` / ascunse). Nu pune `main` în `article`/`aside`. |
+| `<footer>` | Subsolul paginii sau al unei secțiuni. Poate conține `nav` secundar. |
+
+> [!TIP] Poți avea mai multe `header` / `footer` / `nav` pe pagină — câte unul per regiune. Nu poți avea mai multe `main` vizibile.
+</script>
+
+<div class="demo" data-title="Schelet de pagină cu landmark-uri" data-desc="Încearcă: mută &lt;nav&gt; în afara &lt;header&gt; sau adaugă un al doilea &lt;main&gt; — observă ce rămâne valid conceptual." data-height="340" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.page-shell { display: block; border: 1px solid #cfd8dc; border-radius: 12px; overflow: hidden; font-size: 14px; }
+.page-shell > * { display: block; padding: 10px 14px; }
+.page-shell > header { background: #1565c0; color: #fff; }
+.page-shell > header a { color: #fff; margin-right: 12px; text-decoration: none; font-weight: 600; }
+.page-shell > .body { display: grid; grid-template-columns: 1fr 160px; gap: 0; padding: 0; }
+.page-shell main { padding: 14px; background: #fff; }
+.page-shell aside { padding: 14px; background: #eceff1; border-left: 1px solid #cfd8dc; font-size: 13px; }
+.page-shell > footer { background: #263238; color: #cfd8dc; font-size: 13px; }
+.page-shell h1 { margin: 0 0 8px; font-size: 1.2rem; }
+.page-shell h2 { margin: 0 0 6px; font-size: 1rem; color: #1565c0; }
+.label { display: inline-block; font: 600 10px/1 JetBrains Mono, monospace; background: rgba(0,0,0,.15); padding: 2px 6px; border-radius: 4px; margin-bottom: 6px; }
+.page-shell aside .label, .page-shell main .label { background: #cfd8dc; color: #37474f; }
+.page-shell > footer .label { background: rgba(255,255,255,.15); }
+</script>
+<script type="text/css">
+.page-shell > header { background: #1565c0; }
+</script>
+<script type="text/html">
+<div class="page-shell">
+  <header>
+    <span class="label">header</span>
+    <strong>Atelier Mic</strong>
+    <nav>
+      <span class="label">nav</span>
+      <a href="#">Acasă</a>
+      <a href="#">Produse</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+  <div class="body">
+    <main>
+      <span class="label">main</span>
+      <h1>Bun venit</h1>
+      <p>Conținutul principal al magazinului — unic pe pagină.</p>
+    </main>
+    <aside>
+      <span class="label">aside</span>
+      <h2>Program</h2>
+      <p>Luni–Vineri, 10–18</p>
+    </aside>
+  </div>
+  <footer>
+    <span class="label">footer</span>
+    © 2026 Atelier Mic · <a href="#" style="color:#90caf9">Politica de confidențialitate</a>
+  </footer>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s3" data-num="3" data-title="section, article, aside">
+<script type="text/markdown">
+### 3.1. `<section>` vs `<article>`
+
+Ambele grupează conținut legat tematic și **ar trebui să aibă un titlu** (`h2`–`h6`).
+
+| | `<section>` | `<article>` |
+|---|---|---|
+| Sens | o **secțiune** a paginii (parte dintr-un întreg) | un bloc **de sine stătător** (ar putea fi redistribuit singur) |
+| Exemple | „Despre noi”, „Servicii”, „Contact” | post pe blog, card de produs, comentariu, știre |
+| Independent? | nu neapărat | da — are sens și scos din context |
+
+### 3.2. `<aside>`
+
+Conținut **complementar**: tipuri, legături înrudite, glosar, publicitate legată de pagină. Dacă scoți `aside`-ul, conținutul din `main` trebuie să rămână înțeles.
+
+### 3.3. Greșeli frecvente
+
+- a înfășura tot body-ul într-un singur `section` fără titlu;
+- a folosi `article` pentru orice „cutie” vizuală (card stilizat) fără conținut independent;
+- a pune navigarea principală în `aside` doar pentru că „e pe laterală”.
+</script>
+
+<div class="demo" data-title="section și article pe aceeași pagină" data-desc="Încearcă: transformă un article într-un section (sau invers) și decide care e mai potrivit pentru „știre” vs „Despre atelier”." data-height="360" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.wrap { max-width: 640px; margin: 0 auto; font-size: 14px; }
+header.site { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+header.site strong { color: #1565c0; font-size: 1.1rem; }
+nav a { margin-left: 10px; color: #1565c0; text-decoration: none; font-weight: 600; }
+.layout { display: grid; grid-template-columns: 1fr 150px; gap: 14px; }
+section, article, aside { border: 1px solid #cfd8dc; border-radius: 10px; padding: 12px; background: #fff; }
+section h2, article h2, aside h2 { margin: 0 0 8px; font-size: 1rem; }
+article + article { margin-top: 10px; }
+.meta { color: #607d8b; font-size: 12px; margin: 0 0 6px; }
+.badge { font: 600 10px/1 JetBrains Mono, monospace; background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; }
+aside { background: #f5f7fa; }
+</script>
+<script type="text/css">
+article { border-color: #90caf9; }
+</script>
+<script type="text/html">
+<div class="wrap">
+  <header class="site">
+    <strong>Atelier Mic</strong>
+    <nav><a href="#">Blog</a><a href="#">Contact</a></nav>
+  </header>
+  <div class="layout">
+    <main>
+      <section>
+        <span class="badge">section</span>
+        <h2>Despre atelier</h2>
+        <p>Lucrăm ceramică și lumânări din 2019. Această secțiune ține de pagina „Despre”.</p>
+      </section>
+      <article>
+        <span class="badge">article</span>
+        <h2>Cum glazurăm canile</h2>
+        <p class="meta">12 octombrie 2026 · 4 min</p>
+        <p>Un articol de blog: ar putea apărea și în feed, singur.</p>
+      </article>
+      <article>
+        <span class="badge">article</span>
+        <h2>Trei idei de cadouri</h2>
+        <p class="meta">5 octombrie 2026 · 3 min</p>
+        <p>Alt articol independent.</p>
+      </article>
+    </main>
+    <aside>
+      <span class="badge">aside</span>
+      <h2>Pe același subiect</h2>
+      <p>Ghidul începătorului · Glazuri mate</p>
+    </aside>
+  </div>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s4" data-num="4" data-title="Alte elemente semantice utile">
+<script type="text/markdown">
+### 4.1. Figuri, timp, adresă
+
+| Element | Rol |
+|---|---|
+| `<figure>` + `<figcaption>` | imagine / diagramă / citat cu legendă legată de el |
+| `<time datetime="…">` | dată/oră; `datetime` e forma lizibilă de mașină |
+| `<address>` | date de contact ale autorului paginii / articolului (nu orice adresă poștală din text) |
+| `<search>` | (HTML recent) zona formularului de căutare pe site |
+</script>
+
+<div class="demo" data-title="figure, time, address" data-desc="Încearcă: schimbă valoarea datetime și textul din time; adaugă o a doua figcaption (greșit — o legendă per figure)." data-height="300" data-tab="html">
+<script type="text/css" data-hidden>
+figure { margin: 0 0 14px; border: 1px solid #cfd8dc; border-radius: 10px; overflow: hidden; background: #fff; max-width: 360px; }
+.pic { height: 120px; background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+figcaption { padding: 8px 12px; font-size: 13px; color: #546e7a; }
+time { color: #1565c0; font-weight: 600; }
+address { font-style: normal; padding: 10px 12px; background: #eceff1; border-radius: 8px; font-size: 14px; max-width: 360px; }
+address a { color: #1565c0; }
+</script>
+<script type="text/css">
+time { color: #1565c0; }
+</script>
+<script type="text/html">
+<figure>
+  <div class="pic" role="img" aria-label="Cană ceramică pe masă"></div>
+  <figcaption>
+    Cană glazurată — publicată pe
+    <time datetime="2026-10-12">12 octombrie 2026</time>
+  </figcaption>
+</figure>
+<address>
+  Contact atelier:
+  <a href="mailto:atelier@exemplu.md">atelier@exemplu.md</a><br>
+  Str. Florilor 10, Chișinău
+</address>
+</script>
+</div>
+
+<script type="text/markdown">
+### 4.2. `div`, `span` și când nu folosești `section`
+
+`<div>` și `<span>` sunt **recipiente generice**: nu au sens semantic propriu. Le folosești când ai nevoie de o cutie pentru stil sau layout, dar nu există un element HTML care să descrie mai bine grupul.
+
+| | `<div>` | `<span>` |
+|---|---|---|
+| Tip | **bloc** — ocupă (de obicei) toată lățimea, începe pe rând nou | **în linie (inline)** — stă în fluxul textului |
+| Exemplu tipic | un rând cu două coloane, un card-container pentru CSS | evidențiezi câteva cuvinte în interiorul unui paragraf |
+| Conține | alte blocuri, liste, formulare… | de obicei text sau elemente inline |
+
+**`div` vs `section`:**
+
+- folosește **`section`** când grupul are o **temă clară** și un **titlu** (`h2`–`h6`) — e o parte a documentului;
+- folosește **`div`** când grupezi doar pentru CSS (flex/grid, fundal, spațiere) și grupul **nu** merită un titlu în cuprinsul paginii.
+
+> [!TIP] Nu „promova” un `div` la `section` doar ca să arate bine în inspector. Fără titlu și fără temă, `section` e folosit greșit — rămâi la `div`.
+</script>
+
+<div class="demo" data-title="div vs span" data-desc="Încearcă: schimbă span-ul din paragraf într-un div — vezi cum „iese” pe rând nou. Apoi pune din nou span." data-height="240" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.demo-box { border: 1px solid #cfd8dc; border-radius: 10px; padding: 14px; background: #fff; max-width: 480px; }
+.toolbar { display: flex; gap: 8px; padding: 10px; background: #e3f2fd; border-radius: 8px; margin-bottom: 12px; }
+.toolbar .btn { padding: 6px 12px; background: #1565c0; color: #fff; border-radius: 6px; font-size: 13px; font-weight: 600; }
+p { margin: 0 0 8px; line-height: 1.5; }
+.accent { background: #fff59d; padding: 0 4px; border-radius: 3px; font-weight: 600; }
+.note { font-size: 13px; color: #607d8b; margin: 0; }
+code { background: #eceff1; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</script>
+<script type="text/css">
+.accent { background: #fff59d; }
+</script>
+<script type="text/html">
+<div class="demo-box">
+  <div class="toolbar">
+    <span class="btn">Salvează</span>
+    <span class="btn">Anulează</span>
+  </div>
+  <p class="note"><code>div.toolbar</code> — cutie de tip bloc pentru layout (rând de butoane).</p>
+  <p>
+    Apa trebuie să fie
+    <span class="accent">aproape de fierbere</span>,
+    dar nu pentru ceaiul verde.
+  </p>
+  <p class="note"><code>span.accent</code> — evidențiere în interiorul textului, fără a rupe rândul.</p>
+</div>
+</script>
+</div>
+</section>

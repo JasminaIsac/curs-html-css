@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HTML semantic, tabele, formulare și media — documentație interactivă</title>
+    <meta name="description" content="Elemente semantice, tabele accesibile, formulare cu validare nativă, audio/video/iframe, ARIA de bază și SEO — fiecare exemplu rulează live și se poate edita.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="assets/app.css">
+    <link rel="stylesheet" href="../../assets/course-nav.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <button class="icon-btn menu-btn" id="menu" type="button" aria-label="Deschide cuprinsul" aria-expanded="false" aria-controls="sidebar">☰</button>
+        <a class="brand" href="#top">
+            <span class="brand-mark">HTML<span>.</span>semantic</span>
+            <span class="brand-sub">Landmark-uri · Tabele · Formulare · Media</span>
+        </a>
+        <div class="topbar-actions">
+            <button class="icon-btn" id="theme" type="button">Temă: auto</button>
+        </div>
+        <span class="progress" aria-hidden="true"></span>
+    </header>
+
+    <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar" aria-label="Cuprins">
+            <div class="search">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="m11 11 3.5 3.5"/></svg>
+                <input id="search" type="search" placeholder="Caută (apasă /)" aria-label="Caută în lecție">
+            </div>
+            <ol class="toc" id="toc"></ol>
+            <p class="toc-empty" id="toc-empty" hidden>Niciun rezultat.</p>
+        </aside>
+
+        <main class="content" id="top">
+            <div class="hero">
+                <span class="kicker">Prelegerea 2 · documentație interactivă</span>
+                <h1>HTML semantic, tabele, formulare și media</h1>
+                <p>De la scheletul semantic al unei pagini până la tabele accesibile, formulare cu validare nativă și elemente media. Fiecare fragment de HTML rulează live: modifică-l, compară variantele greșite cu cele corecte și verifică-ți înțelegerea la final.</p>
+                <div class="hero-stats">
+                    <span class="chip"><b id="stat-sections">0</b> secțiuni</span>
+                    <span class="chip"><b id="stat-demos">0</b> exemple live</span>
+                    <span class="chip"><b id="stat-qa">0</b> întrebări cu răspuns</span>
+                    <span class="chip">Tasta <b>/</b> pentru căutare</span>
+                </div>
+            </div>
+
+<section class="lesson" id="s0" data-num="0" data-title="Ce urmează după Prelegerea 1">
+<script type="text/markdown">
+### 0.1. Unde ne aflăm
+
+În Prelegerea 1 ai învățat scheletul unui document HTML5, textul, listele, legăturile și imaginile. Browserul afișează însă la fel de bine și o pagină făcută doar din `div` și `span`. Diferența apare când:
+
+- un **cititor de ecran** trebuie să sară la meniu sau la conținutul principal;
+- un **motor de căutare** vrea să înțeleagă ce e articol, ce e navigare;
+- tu (sau colegul) trebuie să **întreții** o pagină peste câteva luni.
+
+### 0.2. Obiectivele prelegerii
+
+| Temă | Ce vei putea face |
+|---|---|
+| HTML semantic | alege landmark-urile potrivite (`header`, `nav`, `main`…) în loc de `div` generice |
+| Tabele | structurezi date tabelare cu `thead`/`tbody`, `colspan`/`rowspan` și `scope` |
+| Formulare | construiești un formular complet, cu `label`, tipuri potrivite și validare nativă |
+| Media | inserezi `audio`, `video` și `iframe` corect |
+| A11y + SEO | aplici `alt`, o ierarhie de titluri curată, ARIA de bază și metadate esențiale |
+
+> [!INFO] **Instrumente**  
+> Pe lângă browser + DevTools (F12), merită să ai la îndemână [validator.w3.org](https://validator.w3.org/) și, opțional, o extensie de accesibilitate (axe, WAVE) sau panoul Lighthouse → Accessibility.
+</script>
+</section>
+
+<section class="lesson" id="s1" data-num="1" data-title="De ce HTML semantic">
+<script type="text/markdown">
+### 1.1. Semantic vs. prezentare
+
+**HTML semantic** = alegi tagul după **sens**, nu după cum arată. Aspectul rămâne treaba CSS-ului.
+
+| Abordare | Exemplu | Probleme |
+|---|---|---|
+| Doar prezentare | `<div class="titlu-mare">Magazin</div>` | fără ierarhie pentru cititoare / SEO |
+| Semantică | `<h1>Magazin</h1>` | sens clar; stilul îl pui separat |
+
+`div` și `span` rămân utile ca **recipiente fără sens propriu** — când nu există un element semantic potrivit.
+
+### 1.2. Ce câștigi concret
+
+1. **Accesibilitate** — cititoarele de ecran anunță „navigation”, „main”, „banner”; utilizatorul sare direct la zona dorită.
+2. **SEO** — motoarele de căutare înțeleg mai bine structura (articol, navigare, conținut principal).
+3. **Mentenanță** — citind markup-ul, vezi intenția, nu doar o grămadă de `div`.
+4. **Implicit mai bun** — unele taguri aduc stiluri și comportamente utile (`nav` în liste, `button` vs `div` clicabil).
+
+### 1.3. Landmark-uri (pe scurt)
+
+Un **landmark** (în română: „punct de reper“ sau „regiune de reper“) este o zonă mare și importantă a paginii, marcată astfel încât tehnologiile asistive (cititoarele de ecran, de exemplu) să o recunoască și să permită utilizatorului să sară direct la ea, fără să citească toată pagina de la început.
+
+Browserul și tehnologiile asistive tratează anumite elemente HTML ca landmark-uri:
+
+| Element | Rol tipic (landmark) |
+|---|---|
+| `<header>` | antetul paginii sau al unei secțiuni |
+| `<nav>` | zonă de navigare principală |
+| `<main>` | conținutul principal (unul pe pagină) |
+| `<aside>` | conținut complementar (sidebar, legături laterale) |
+| `<footer>` | subsolul paginii sau al unei secțiuni |
+| `<section>` / `<article>` | regiuni de conținut (cu titlu) |
+</script>
+</section>
+
+<section class="lesson" id="s2" data-num="2" data-title="Landmark-uri: header, nav, main, footer">
+<script type="text/markdown">
+### 2.1. Scheletul tipic al unei pagini
+
+```text
+body
+├── header          ← logo, titlu site, uneori nav
+│   └── nav         ← meniul principal (poate fi și în afara header)
+├── main            ← UN SINGUR main pe pagină
+│   ├── section…
+│   └── article…
+├── aside           ← opțional: legături laterale, publicitate contextuală
+└── footer          ← copyright, linkuri secundare, contact
+```
+
+### 2.2. Reguli practice
+
+| Element | Reguli |
+|---|---|
+| `<header>` | Antetul **paginii** sau al unui `article`/`section`. Nu e obligatoriu să conțină `nav`. |
+| `<nav>` | Doar pentru **blocuri de navigare** (meniu principal, cuprins, breadcrumb). Nu înfășura fiecare listă de linkuri în `nav`. |
+| `<main>` | **Unul** pe document (fără a număra pe cele din `template` / ascunse). Nu pune `main` în `article`/`aside`. |
+| `<footer>` | Subsolul paginii sau al unei secțiuni. Poate conține `nav` secundar. |
+
+> [!TIP] Poți avea mai multe `header` / `footer` / `nav` pe pagină — câte unul per regiune. Nu poți avea mai multe `main` vizibile.
+</script>
+
+<div class="demo" data-title="Schelet de pagină cu landmark-uri" data-desc="Încearcă: mută &lt;nav&gt; în afara &lt;header&gt; sau adaugă un al doilea &lt;main&gt; — observă ce rămâne valid conceptual." data-height="340" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.page-shell { display: block; border: 1px solid #cfd8dc; border-radius: 12px; overflow: hidden; font-size: 14px; }
+.page-shell > * { display: block; padding: 10px 14px; }
+.page-shell > header { background: #1565c0; color: #fff; }
+.page-shell > header a { color: #fff; margin-right: 12px; text-decoration: none; font-weight: 600; }
+.page-shell > .body { display: grid; grid-template-columns: 1fr 160px; gap: 0; padding: 0; }
+.page-shell main { padding: 14px; background: #fff; }
+.page-shell aside { padding: 14px; background: #eceff1; border-left: 1px solid #cfd8dc; font-size: 13px; }
+.page-shell > footer { background: #263238; color: #cfd8dc; font-size: 13px; }
+.page-shell h1 { margin: 0 0 8px; font-size: 1.2rem; }
+.page-shell h2 { margin: 0 0 6px; font-size: 1rem; color: #1565c0; }
+.label { display: inline-block; font: 600 10px/1 JetBrains Mono, monospace; background: rgba(0,0,0,.15); padding: 2px 6px; border-radius: 4px; margin-bottom: 6px; }
+.page-shell aside .label, .page-shell main .label { background: #cfd8dc; color: #37474f; }
+.page-shell > footer .label { background: rgba(255,255,255,.15); }
+</script>
+<script type="text/css">
+.page-shell > header { background: #1565c0; }
+</script>
+<script type="text/html">
+<div class="page-shell">
+  <header>
+    <span class="label">header</span>
+    <strong>Atelier Mic</strong>
+    <nav>
+      <span class="label">nav</span>
+      <a href="#">Acasă</a>
+      <a href="#">Produse</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+  <div class="body">
+    <main>
+      <span class="label">main</span>
+      <h1>Bun venit</h1>
+      <p>Conținutul principal al magazinului — unic pe pagină.</p>
+    </main>
+    <aside>
+      <span class="label">aside</span>
+      <h2>Program</h2>
+      <p>Luni–Vineri, 10–18</p>
+    </aside>
+  </div>
+  <footer>
+    <span class="label">footer</span>
+    © 2026 Atelier Mic · <a href="#" style="color:#90caf9">Politica de confidențialitate</a>
+  </footer>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s3" data-num="3" data-title="section, article, aside">
+<script type="text/markdown">
+### 3.1. `<section>` vs `<article>`
+
+Ambele grupează conținut legat tematic și **ar trebui să aibă un titlu** (`h2`–`h6`).
+
+| | `<section>` | `<article>` |
+|---|---|---|
+| Sens | o **secțiune** a paginii (parte dintr-un întreg) | un bloc **de sine stătător** (ar putea fi redistribuit singur) |
+| Exemple | „Despre noi”, „Servicii”, „Contact” | post pe blog, card de produs, comentariu, știre |
+| Independent? | nu neapărat | da — are sens și scos din context |
+
+### 3.2. `<aside>`
+
+Conținut **complementar**: tipuri, legături înrudite, glosar, publicitate legată de pagină. Dacă scoți `aside`-ul, conținutul din `main` trebuie să rămână înțeles.
+
+### 3.3. Greșeli frecvente
+
+- a înfășura tot body-ul într-un singur `section` fără titlu;
+- a folosi `article` pentru orice „cutie” vizuală (card stilizat) fără conținut independent;
+- a pune navigarea principală în `aside` doar pentru că „e pe laterală”.
+</script>
+
+<div class="demo" data-title="section și article pe aceeași pagină" data-desc="Încearcă: transformă un article într-un section (sau invers) și decide care e mai potrivit pentru „știre” vs „Despre atelier”." data-height="360" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.wrap { max-width: 640px; margin: 0 auto; font-size: 14px; }
+header.site { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+header.site strong { color: #1565c0; font-size: 1.1rem; }
+nav a { margin-left: 10px; color: #1565c0; text-decoration: none; font-weight: 600; }
+.layout { display: grid; grid-template-columns: 1fr 150px; gap: 14px; }
+section, article, aside { border: 1px solid #cfd8dc; border-radius: 10px; padding: 12px; background: #fff; }
+section h2, article h2, aside h2 { margin: 0 0 8px; font-size: 1rem; }
+article + article { margin-top: 10px; }
+.meta { color: #607d8b; font-size: 12px; margin: 0 0 6px; }
+.badge { font: 600 10px/1 JetBrains Mono, monospace; background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; }
+aside { background: #f5f7fa; }
+</script>
+<script type="text/css">
+article { border-color: #90caf9; }
+</script>
+<script type="text/html">
+<div class="wrap">
+  <header class="site">
+    <strong>Atelier Mic</strong>
+    <nav><a href="#">Blog</a><a href="#">Contact</a></nav>
+  </header>
+  <div class="layout">
+    <main>
+      <section>
+        <span class="badge">section</span>
+        <h2>Despre atelier</h2>
+        <p>Lucrăm ceramică și lumânări din 2019. Această secțiune ține de pagina „Despre”.</p>
+      </section>
+      <article>
+        <span class="badge">article</span>
+        <h2>Cum glazurăm canile</h2>
+        <p class="meta">12 octombrie 2026 · 4 min</p>
+        <p>Un articol de blog: ar putea apărea și în feed, singur.</p>
+      </article>
+      <article>
+        <span class="badge">article</span>
+        <h2>Trei idei de cadouri</h2>
+        <p class="meta">5 octombrie 2026 · 3 min</p>
+        <p>Alt articol independent.</p>
+      </article>
+    </main>
+    <aside>
+      <span class="badge">aside</span>
+      <h2>Pe același subiect</h2>
+      <p>Ghidul începătorului · Glazuri mate</p>
+    </aside>
+  </div>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s4" data-num="4" data-title="Alte elemente semantice utile">
+<script type="text/markdown">
+### 4.1. Figuri, timp, adresă
+
+| Element | Rol |
+|---|---|
+| `<figure>` + `<figcaption>` | imagine / diagramă / citat cu legendă legată de el |
+| `<time datetime="…">` | dată/oră; `datetime` e forma lizibilă de mașină |
+| `<address>` | date de contact ale autorului paginii / articolului (nu orice adresă poștală din text) |
+| `<search>` | (HTML recent) zona formularului de căutare pe site |
+</script>
+
+<div class="demo" data-title="figure, time, address" data-desc="Încearcă: schimbă valoarea datetime și textul din time; adaugă o a doua figcaption (greșit — o legendă per figure)." data-height="300" data-tab="html">
+<script type="text/css" data-hidden>
+figure { margin: 0 0 14px; border: 1px solid #cfd8dc; border-radius: 10px; overflow: hidden; background: #fff; max-width: 360px; }
+.pic { height: 120px; background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+figcaption { padding: 8px 12px; font-size: 13px; color: #546e7a; }
+time { color: #1565c0; font-weight: 600; }
+address { font-style: normal; padding: 10px 12px; background: #eceff1; border-radius: 8px; font-size: 14px; max-width: 360px; }
+address a { color: #1565c0; }
+</script>
+<script type="text/css">
+time { color: #1565c0; }
+</script>
+<script type="text/html">
+<figure>
+  <div class="pic" role="img" aria-label="Cană ceramică pe masă"></div>
+  <figcaption>
+    Cană glazurată — publicată pe
+    <time datetime="2026-10-12">12 octombrie 2026</time>
+  </figcaption>
+</figure>
+<address>
+  Contact atelier:
+  <a href="mailto:atelier@exemplu.md">atelier@exemplu.md</a><br>
+  Str. Florilor 10, Chișinău
+</address>
+</script>
+</div>
+
+<script type="text/markdown">
+### 4.2. `div`, `span` și când nu folosești `section`
+
+`<div>` și `<span>` sunt **recipiente generice**: nu au sens semantic propriu. Le folosești când ai nevoie de o cutie pentru stil sau layout, dar nu există un element HTML care să descrie mai bine grupul.
+
+| | `<div>` | `<span>` |
+|---|---|---|
+| Tip | **bloc** — ocupă (de obicei) toată lățimea, începe pe rând nou | **în linie (inline)** — stă în fluxul textului |
+| Exemplu tipic | un rând cu două coloane, un card-container pentru CSS | evidențiezi câteva cuvinte în interiorul unui paragraf |
+| Conține | alte blocuri, liste, formulare… | de obicei text sau elemente inline |
+
+**`div` vs `section`:**
+
+- folosește **`section`** când grupul are o **temă clară** și un **titlu** (`h2`–`h6`) — e o parte a documentului;
+- folosește **`div`** când grupezi doar pentru CSS (flex/grid, fundal, spațiere) și grupul **nu** merită un titlu în cuprinsul paginii.
+
+> [!TIP] Nu „promova” un `div` la `section` doar ca să arate bine în inspector. Fără titlu și fără temă, `section` e folosit greșit — rămâi la `div`.
+</script>
+
+<div class="demo" data-title="div vs span" data-desc="Încearcă: schimbă span-ul din paragraf într-un div — vezi cum „iese” pe rând nou. Apoi pune din nou span." data-height="240" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.demo-box { border: 1px solid #cfd8dc; border-radius: 10px; padding: 14px; background: #fff; max-width: 480px; }
+.toolbar { display: flex; gap: 8px; padding: 10px; background: #e3f2fd; border-radius: 8px; margin-bottom: 12px; }
+.toolbar .btn { padding: 6px 12px; background: #1565c0; color: #fff; border-radius: 6px; font-size: 13px; font-weight: 600; }
+p { margin: 0 0 8px; line-height: 1.5; }
+.accent { background: #fff59d; padding: 0 4px; border-radius: 3px; font-weight: 600; }
+.note { font-size: 13px; color: #607d8b; margin: 0; }
+code { background: #eceff1; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</script>
+<script type="text/css">
+.accent { background: #fff59d; }
+</script>
+<script type="text/html">
+<div class="demo-box">
+  <div class="toolbar">
+    <span class="btn">Salvează</span>
+    <span class="btn">Anulează</span>
+  </div>
+  <p class="note"><code>div.toolbar</code> — cutie de tip bloc pentru layout (rând de butoane).</p>
+  <p>
+    Apa trebuie să fie
+    <span class="accent">aproape de fierbere</span>,
+    dar nu pentru ceaiul verde.
+  </p>
+  <p class="note"><code>span.accent</code> — evidențiere în interiorul textului, fără a rupe rândul.</p>
+</div>
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s5" data-num="5" data-title="Tabele HTML">
+<script type="text/markdown">
+### 5.1. Tabele pentru date, nu pentru layout
+
+Un `<table>` descrie **date tabulare** (rânduri × coloane cu relație). Nu-l folosi ca să pui două coloane de layout pe o pagină modernă — pentru asta există CSS (flexbox / grid).
+
+| Potrivit pentru tabel | Nepotrivit |
+|---|---|
+| orar, catalog, prețuri, rezultate | meniu pe două coloane, „carduri”, întreaga pagină |
+
+### 5.2. Anatomia minimă
+
+| Tag | Rol |
+|---|---|
+| `<table>` | containerul |
+| `<caption>` | titlul tabelului (vizibil + citit de cititoare) |
+| `<tr>` | un rând |
+| `<th>` | celulă de **antet** (implicit îngroșat, centrat) |
+| `<td>` | celulă de **date** |
+
+```html
+<table>
+  <caption>Prețuri — ceramică</caption>
+  <tr>
+    <th>Produs</th>
+    <th>Preț</th>
+  </tr>
+  <tr>
+    <td>Cană</td>
+    <td>79 lei</td>
+  </tr>
+</table>
+```
+</script>
+
+<div class="demo" data-title="Tabel minimal cu caption" data-desc="Încearcă: șterge caption-ul și adaugă un titlu h3 deasupra — observă de ce caption e legat semantic de tabel." data-height="220" data-tab="html">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; max-width: 420px; font-size: 14px; }
+caption { font-weight: 700; text-align: left; padding: 0 0 8px; color: #1565c0; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; text-align: left; }
+th { background: #1565c0; color: #fff; }
+tr:nth-child(even) td { background: #f5f7fa; }
+</script>
+<script type="text/css">
+th { background: #1565c0; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Prețuri — ceramică</caption>
+  <tr>
+    <th>Produs</th>
+    <th>Preț</th>
+  </tr>
+  <tr>
+    <td>Cană</td>
+    <td>79 lei</td>
+  </tr>
+  <tr>
+    <td>Farfurie</td>
+    <td>65 lei</td>
+  </tr>
+  <tr>
+    <td>Bol</td>
+    <td>55 lei</td>
+  </tr>
+</table>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s6" data-num="6" data-title="thead, tbody, tfoot">
+<script type="text/markdown">
+### 6.1. De ce le folosim
+
+Nu schimbă neapărat aspectul, dar:
+
+- separă **antetul**, **datele** și **subsolul** (totaluri);
+- permit stilizare clară (`thead th { … }`);
+- ajută cititoarele de ecran să anunțe structura;
+- la tabele lungi, unele browsere pot repeta antetul la tipărire.
+
+### 6.2. Ordinea în markup
+
+În HTML, ordinea recomandată în `<table>` este:
+
+1. `<caption>` (dacă există)
+2. `<thead>`
+3. `<tbody>` (poți avea mai multe)
+4. `<tfoot>` — în HTML5 poate apărea și **înainte** de `tbody` în sursă; browserul îl afișează tot jos
+
+> [!TIP] Pune întotdeauna celulele de antet în `thead` cu `<th>`, nu cu `<td>` îngroșat din CSS.
+</script>
+
+<div class="demo" data-title="Orar cu thead, tbody, tfoot" data-desc="Încearcă: mută rândul de total din tfoot în tbody — totalul rămâne vizibil, dar pierde rolul de sumar." data-height="320" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+caption { font-weight: 700; text-align: left; padding-bottom: 8px; color: #1565c0; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; text-align: left; }
+thead th { background: #1565c0; color: #fff; }
+tbody tr:nth-child(even) { background: #f5f7fa; }
+tfoot td { background: #fff8e1; font-weight: 700; }
+</script>
+<script type="text/css">
+thead th { background: #1565c0; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Orar — miercuri și joi</caption>
+  <thead>
+    <tr>
+      <th scope="col">Ora</th>
+      <th scope="col">Miercuri</th>
+      <th scope="col">Joi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>08:00–09:30</td>
+      <td>Programare web</td>
+      <td>Baze de date</td>
+    </tr>
+    <tr>
+      <td>09:45–11:15</td>
+      <td>Matematici discrete</td>
+      <td>Rețele</td>
+    </tr>
+    <tr>
+      <td>11:30–13:00</td>
+      <td>Engleză</td>
+      <td>POO</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">Total ore (2 zile)</td>
+      <td>9</td>
+    </tr>
+  </tfoot>
+</table>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s7" data-num="7" data-title="colspan și rowspan">
+<script type="text/markdown">
+### 7.1. Unirea celulelor
+
+| Atribut | Efect |
+|---|---|
+| `colspan="n"` | celula acoperă **n coloane** pe orizontală |
+| `rowspan="n"` | celula acoperă **n rânduri** pe verticală |
+
+Când folosești `rowspan` / `colspan`, **nu mai scrii** celulele pe care le-ai „acoperit” — altfel tabelul se strică.
+
+### 7.2. Exemplu mental
+
+Pentru o familie cu doi copii, „Nume părinte” și „Adresă” apar o singură dată (rowspan=2), iar fiecare copil pe rândul lui.
+</script>
+
+<div class="demo" data-title="rowspan și colspan pe același tabel" data-desc="Încearcă: schimbă rowspan=&quot;2&quot; în 1 și adaugă celulele lipsă — sau strică intenționat tabelul ca să vezi efectul." data-height="300" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+caption { font-weight: 700; text-align: left; padding-bottom: 8px; color: #1565c0; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; vertical-align: top; }
+thead th { background: #263238; color: #fff; }
+tfoot td { background: #e8f5e9; font-weight: 600; }
+.hl { background: #e3f2fd; }
+</script>
+<script type="text/css">
+.hl { background: #e3f2fd; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Familii — exemplu rowspan / colspan</caption>
+  <thead>
+    <tr>
+      <th scope="col">Nume, prenume</th>
+      <th scope="col">Adresă</th>
+      <th scope="col">Prenume copil</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="hl" rowspan="2">Ivanov Elena</td>
+      <td class="hl" rowspan="2">Str. Codrilor 45</td>
+      <td>Elena, 2006</td>
+    </tr>
+    <tr>
+      <td>Valeriu, 2011</td>
+    </tr>
+    <tr>
+      <td>Popescu Ana</td>
+      <td>Bd. Ștefan 12</td>
+      <td>Mihai, 2015</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">Total număr copii</td>
+      <td>3</td>
+    </tr>
+  </tfoot>
+</table>
+</script>
+</div>
+
+<div class="demo" data-title="Pauză pe tot rândul (colspan)" data-desc="Încearcă: înlocuiește colspan=&quot;3&quot; cu trei td-uri separate — vezi cum se rupe ideea de „pauză comună”." data-height="240" data-tab="html">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border: 1px solid #cfd8dc; padding: 8px; text-align: center; }
+th { background: #1565c0; color: #fff; }
+.pauza { background: #fff3e0; font-style: italic; }
+</script>
+<script type="text/css">
+.pauza { background: #fff3e0; }
+</script>
+<script type="text/html">
+<table>
+  <thead>
+    <tr>
+      <th>Ora</th>
+      <th>Luni</th>
+      <th>Marți</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>11:30–13:00</td>
+      <td>POO</td>
+      <td>Web</td>
+    </tr>
+    <tr>
+      <td>13:00–13:30</td>
+      <td class="pauza" colspan="2">Pauză de masă</td>
+    </tr>
+    <tr>
+      <td>13:30–15:00</td>
+      <td>Engleză</td>
+      <td>BD</td>
+    </tr>
+  </tbody>
+</table>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s8" data-num="8" data-title="Tabele accesibile">
+<script type="text/markdown">
+### 8.1. Ce înseamnă `scope`
+
+Un `<th>` este o **etichetă** pentru alte celule. Atributul `scope` spune **pe ce direcție** se aplică eticheta — ca un cititor de ecran să anunțe corect, de exemplu: „Categorie: Ceramică, În stoc: 24”, nu doar „24”.
+
+| Valoare | Sens | Exemplu |
+|---|---|---|
+| `scope="col"` | antetul descrie **toată coloana** de sub el | „Preț” deasupra tuturor prețurilor |
+| `scope="row"` | antetul descrie **tot rândul** din dreapta lui | „Ceramică” în fața cifrelor acelui rând |
+| `scope="colgroup"` / `rowgroup` | pentru tabele complexe, cu grupuri de coloane/rânduri | mai rar la început |
+
+Fără `scope`, tabelul poate arăta la fel pe ecran, dar tehnologiile asistive nu mai știu clar ce antet ține de ce celulă. Pentru tabele simple: `scope="col"` pe anteturile din prima linie; `scope="row"` pe prima celulă a rândului, dacă e etichetă (nu dată).
+
+### 8.2. Checklist rapid
+
+- ai `<caption>` (sau, în lipsă, un `aria-label` / `aria-labelledby` pe `table`);
+- anteturile sunt `<th>`, nu `<td>` stilizate;
+- `scope` e setat pe `th`;
+- nu folosești tabelul pentru layout;
+- pe ecrane înguste, un wrapper cu `overflow-x: auto` e mai bun decât a micșora textul ilizibil.
+</script>
+
+<div class="demo" data-title="Anteturi pe coloană și pe rând" data-desc="Încearcă: șterge scope de pe th — tabelul arată la fel vizual, dar pierde informația pentru cititoare." data-height="260" data-tab="html">
+<script type="text/css" data-hidden>
+table { border-collapse: collapse; width: 100%; max-width: 480px; font-size: 14px; }
+caption { font-weight: 700; text-align: left; padding-bottom: 8px; color: #1565c0; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; }
+th[scope="col"] { background: #1565c0; color: #fff; }
+th[scope="row"] { background: #e3f2fd; text-align: left; }
+</script>
+<script type="text/css">
+th[scope="col"] { background: #1565c0; }
+</script>
+<script type="text/html">
+<table>
+  <caption>Stoc pe categorii</caption>
+  <thead>
+    <tr>
+      <th scope="col">Categorie</th>
+      <th scope="col">În stoc</th>
+      <th scope="col">Rezervat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Ceramică</th>
+      <td>24</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th scope="row">Lumânări</th>
+      <td>40</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+</script>
+</div>
+
+<details class="qa"><summary>De ce nu e suficient să îngroșez prima linie cu CSS în loc de <code>th</code>?</summary><div class="qa-a">Aspectul nu transmite rolul. Cititoarele de ecran și unele instrumente se bazează pe <code>th</code> (și pe <code>scope</code>) ca să anunțe „Produs: Cană, Preț: 79 lei”. Un <code>td</code> îngroșat e doar o celulă de date stilizată.</div></details>
+</section>
+
+
+<section class="lesson" id="s9" data-num="9" data-title="Formulare: ideea de bază">
+<script type="text/markdown">
+### 9.1. Ce este un formular
+
+Un formular colectează date de la utilizator și le trimite (sau le procesează). Containerul este `<form>`.
+
+| Atribut | Rol |
+|---|---|
+| `action` | URL-ul unde se trimit datele (ex. `proceseaza.php` sau `#` la exerciții) |
+| `method` | `get` (datele apar în URL) sau `post` (în corpul cererii — preferat pentru date sensibile / lungi) |
+| `novalidate` | dezactivează validarea nativă la submit (rar necesar) |
+
+### 9.2. Piesele de bază: `label`, `input` și atributele lor
+
+Înainte de detalii, trei idei esențiale:
+
+| Element | Ce este |
+|---|---|
+| `<label>` | **eticheta** vizibilă (și anunțată de cititoare) a unui câmp — textul pe care îl citește utilizatorul („E-mail”, „Nume”) |
+| `<input>` | **câmpul** în care se tastează sau se alege o valoare |
+| legătura dintre ele | atributul `for` al etichetei trebuie să coincidă cu `id`-ul câmpului |
+
+Atributele pe care le vei folosi aproape mereu pe un câmp:
+
+| Atribut | Unde | Sens |
+|---|---|---|
+| `id` | pe `input` (și în `for` pe `label`) | identificator **unic în pagină**; leagă eticheta de câmp; util și în CSS/JS |
+| `name` | pe `input` | numele sub care se **trimite** valoarea la server (ex. `email=tu@exemplu.md`). Fără `name`, câmpul **nu apare** în datele trimise |
+| `placeholder` | pe `input` | text gri de **sugestie**, care dispare când începi să scrii. **Nu** înlocuiește `label` |
+| `type` | pe `input` | tipul câmpului (`text`, `email`, `number`…) — vezi secțiunea următoare |
+| `for` | pe `label` | trebuie să fie egal cu `id`-ul câmpului asociat |
+
+```html
+<form action="#" method="post">
+  <label for="email">E-mail</label>
+  <input type="email" id="email" name="email" placeholder="tu@exemplu.md">
+  <button type="submit">Trimite</button>
+</form>
+```
+
+- `for="email"` + `id="email"` → clic pe „E-mail” focusează câmpul;
+- `name="email"` → la trimitere există parametrul `email`;
+- `placeholder` → doar un indiciu vizual, nu eticheta.
+</script>
+
+<div class="demo" data-title="Formular minimal" data-desc="Încearcă: șterge name de pe input, apoi apasă Trimite — în URL (method get) vei vedea că lipsește parametrul." data-height="200" data-tab="html">
+<script type="text/css" data-hidden>
+form { display: grid; gap: 8px; max-width: 320px; }
+label { font-weight: 600; font-size: 14px; }
+input { padding: 8px 10px; border: 1px solid #90a4ae; border-radius: 6px; }
+button { padding: 8px 14px; border: 0; border-radius: 6px; background: #1565c0; color: #fff; font-weight: 600; cursor: pointer; width: fit-content; }
+</script>
+<script type="text/css">
+button { background: #1565c0; }
+</script>
+<script type="text/html">
+<form action="#" method="get">
+  <label for="email">E-mail</label>
+  <input type="email" id="email" name="email" placeholder="tu@exemplu.md">
+  <button type="submit">Trimite</button>
+</form>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s10" data-num="10" data-title="label și asocierea cu câmpul">
+<script type="text/markdown">
+### 10.1. De ce `label` e obligatoriu în practică
+
+- clic pe text → focus pe câmp (mai ales util la checkbox / radio);
+- cititoarele de ecran anunță eticheta când ajungi pe input;
+- zona de apăsare e mai mare pe mobil.
+
+### 10.2. Două moduri corecte
+
+1. **`for` + `id`** (recomandat când eticheta e lângă câmp):
+   `<label for="nume">Nume</label>` + `<input id="nume" …>`
+2. **Înfășurare**: `<label><input type="checkbox"> Accept</label>` — potrivit pentru opțiuni scurte.
+
+> [!WARN] Un `placeholder` **nu** înlocuiește `label`. Placeholderul dispare la scriere și nu e o etichetă accesibilă de încredere.
+</script>
+
+<div class="demo" data-title="label corect vs. text liber" data-desc="Încearcă: dă clic pe textul „Nume” din stânga (nu pe câmp) — focusul sare. În dreapta, clic pe text nu face nimic." data-height="240" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.box { border: 1px solid #cfd8dc; border-radius: 10px; padding: 12px; }
+.box h3 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; color: #607d8b; letter-spacing: .04em; }
+.rand { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+input { padding: 8px; border: 1px solid #90a4ae; border-radius: 6px; }
+.ok { border-color: #81c784; background: #f1f8e9; }
+.bad { border-color: #e57373; background: #fff5f5; }
+</script>
+<script type="text/css">
+input:focus { outline: 2px solid #1565c0; outline-offset: 1px; }
+</script>
+<script type="text/html">
+<div class="grid">
+  <div class="box ok">
+    <h3>Corect — for / id</h3>
+    <div class="rand">
+      <label for="nume">Nume</label>
+      <input type="text" id="nume" name="nume">
+    </div>
+    <label><input type="checkbox" name="ok"> Sunt de acord</label>
+  </div>
+  <div class="box bad">
+    <h3>Greșit — fără label</h3>
+    <div class="rand">
+      <span>Nume</span>
+      <input type="text" name="nume2">
+    </div>
+    <div><input type="checkbox" name="ok2"> Sunt de acord</div>
+  </div>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s11" data-num="11" data-title="Tipuri de input">
+<script type="text/markdown">
+### 11.1. Alege tipul după sens
+
+Browserul oferă tastatură potrivită (mobil), validare și UI nativ.
+
+| `type` | Rol |
+|---|---|
+| `text` | text pe o linie |
+| `email` | format e-mail |
+| `tel` | telefon (fără validare strictă implicită) |
+| `url` | adresă web |
+| `number` | număr; opțional `min` / `max` / `step` |
+| `date` / `time` / `datetime-local` | selectoare de dată/oră |
+| `password` | text mascat |
+| `radio` | o singură alegere din grup (`name` identic) |
+| `checkbox` | zero sau mai multe alegeri |
+| `color` | selector de culoare |
+| `file` | încărcare fișier |
+| `hidden` | valoare invizibilă, totuși trimisă |
+| `submit` / `reset` / `button` | butoane (preferă `<button>` când ai nevoie de conținut bogat) |
+
+### 11.2. Atribute utile pe orice câmp
+
+| Atribut | Efect |
+|---|---|
+| `required` | obligatoriu |
+| `placeholder` | sugestie (nu etichetă!) |
+| `maxlength` / `minlength` | lungime text |
+| `pattern` | regex pentru validare |
+| `autocomplete` | indiciu pentru completare automată (`name`, `email`…) |
+| `disabled` / `readonly` | nu se editează (`disabled` nici nu se trimite) |
+</script>
+
+<div class="demo" data-title="Galerie de tipuri de input" data-desc="Încearcă: pe mobil (sau DevTools device mode) apasă în email/tel/number — tastatura se schimbă. Schimbă type=&quot;email&quot; în text." data-height="420" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+form { display: grid; gap: 10px; max-width: 420px; }
+.rand { display: grid; grid-template-columns: 130px 1fr; gap: 8px; align-items: center; }
+label { font-size: 14px; font-weight: 600; }
+input, select { padding: 7px 9px; border: 1px solid #90a4ae; border-radius: 6px; }
+.optiuni { display: flex; gap: 12px; flex-wrap: wrap; font-weight: 400; }
+input[type="color"] { padding: 0; height: 34px; }
+</script>
+<script type="text/css">
+input:focus { border-color: #1565c0; }
+</script>
+<script type="text/html">
+<form action="#" method="post">
+  <div class="rand">
+    <label for="nume">Nume</label>
+    <input type="text" id="nume" name="nume" autocomplete="name">
+  </div>
+  <div class="rand">
+    <label for="mail">E-mail</label>
+    <input type="email" id="mail" name="mail" autocomplete="email">
+  </div>
+  <div class="rand">
+    <label for="tel">Telefon</label>
+    <input type="tel" id="tel" name="tel" placeholder="0XXXXXXXX">
+  </div>
+  <div class="rand">
+    <label for="nr">Cantitate</label>
+    <input type="number" id="nr" name="nr" min="1" max="20" value="1">
+  </div>
+  <div class="rand">
+    <label for="zi">Data</label>
+    <input type="date" id="zi" name="zi">
+  </div>
+  <div class="rand">
+    <label for="culoare">Culoare</label>
+    <input type="color" id="culoare" name="culoare" value="#1565c0">
+  </div>
+  <div class="rand">
+    <span>Livrare</span>
+    <div class="optiuni">
+      <label><input type="radio" name="livrare" value="curier" checked> Curier</label>
+      <label><input type="radio" name="livrare" value="ridicare"> Ridicare</label>
+    </div>
+  </div>
+  <div class="rand">
+    <span>Extra</span>
+    <div class="optiuni">
+      <label><input type="checkbox" name="extra" value="card"> Felicitare</label>
+      <label><input type="checkbox" name="extra" value="urgent"> Urgent</label>
+    </div>
+  </div>
+</form>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s12" data-num="12" data-title="select, textarea, datalist, fieldset">
+<script type="text/markdown">
+### 12.1. Liste și text lung
+
+| Element | Când |
+|---|---|
+| `<select>` + `<option>` | alegere dintr-o listă **fixă** (utilizatorul nu poate scrie altceva) |
+| `<datalist>` + `<input list="…">` | sugestii; utilizatorul **poate** scrie altă valoare |
+| `<textarea>` | text pe mai multe linii (`rows`, `maxlength`) |
+
+### 12.2. `fieldset` și `legend`
+
+Grupează vizual și semantic câmpurile înrudite („Date personale”, „Livrare”). `legend` e titlul grupului — cititoarele îl anunță pentru fiecare câmp din grup.
+</script>
+
+<div class="demo" data-title="select, datalist, textarea, fieldset" data-desc="Încearcă: la Oraș scrie o valoare care nu e în listă (merge). La Produs, din select, nu poți inventa altceva." data-height="420" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+form { max-width: 480px; display: grid; gap: 12px; }
+fieldset { margin: 0; border: 2px groove #5c6bc0; border-radius: 8px; padding: 10px 12px; }
+legend { padding: 0 6px; font-weight: 700; color: #283593; }
+.rand { display: grid; grid-template-columns: 120px 1fr; gap: 8px; align-items: start; margin: 8px 0; }
+label, .eticheta { font-size: 14px; font-weight: 600; padding-top: 8px; }
+input, select, textarea { padding: 8px; border: 1px solid #90a4ae; border-radius: 6px; font: inherit; width: 100%; box-sizing: border-box; }
+</script>
+<script type="text/css">
+legend { color: #283593; }
+</script>
+<script type="text/html">
+<form action="#" method="post">
+  <fieldset>
+    <legend>Date comandă</legend>
+    <div class="rand">
+      <label for="produs">Produs</label>
+      <select id="produs" name="produs">
+        <option>Cană ceramică</option>
+        <option selected>Lumânare</option>
+        <option>Set de ceai</option>
+      </select>
+    </div>
+    <div class="rand">
+      <label for="oras">Oraș</label>
+      <div>
+        <input list="orase" id="oras" name="oras" placeholder="Începe să scrii…">
+        <datalist id="orase">
+          <option value="Chișinău">
+          <option value="Bălți">
+          <option value="Orhei">
+          <option value="Cahul">
+        </datalist>
+      </div>
+    </div>
+    <div class="rand">
+      <label for="msg">Comentariu</label>
+      <textarea id="msg" name="msg" rows="3" maxlength="200" placeholder="Instrucțiuni livrare"></textarea>
+    </div>
+  </fieldset>
+</form>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s13" data-num="13" data-title="Validare nativă">
+<script type="text/markdown">
+### 13.1. Browserul validează înainte de trimitere
+
+Dacă un câmp e invalid, formularul **nu se trimite**, iar browserul arată un mesaj. Nu e nevoie de JavaScript pentru cazurile de bază.
+
+| Mecanism | Exemplu |
+|---|---|
+| tipul câmpului | `type="email"` |
+| `required` | câmp gol → invalid |
+| `min` / `max` / `step` | pe `number` și `date` |
+| `minlength` / `maxlength` | lungime |
+| `pattern` | expresie regulată pe întregul câmp |
+
+### 13.2. `pattern` — regex pe scurt
+
+Browserul aplică pattern-ul pe **tot** conținutul (ca și cum ar avea `^…$`).
+
+| Pattern | Sens |
+|---|---|
+| `[A-Za-zĂÂÎȘȚăâîșț\s-]+` | litere (inclusiv diacritice), spații, cratimă |
+| `0[0-9]{8}` | 0 urmat de exact 8 cifre (telefon MD, simplificat) |
+
+Atributul `title` pe input e folosit adesea ca **explicație** în mesajul de eroare.
+
+### 13.3. Butoane
+
+```html
+<button type="submit">Trimite</button>
+<button type="reset">Anulează</button>
+```
+
+`type="button"` = fără acțiune implicită (pentru JS). Pe un `<button>` din form, tipul implicit e `submit`.
+
+### 13.4. De ce apar câmpurile „roșii” din start în CSS
+
+Un câmp cu `required` **gol** este deja `:invalid` la încărcarea paginii. Dacă stilizezi `input:invalid { border-color: red; }`, tot formularul pare greșit înainte ca utilizatorul să fi scris ceva.
+
+Soluții: stilizează doar după interacțiune (`:user-invalid`) sau folosește `input:not(:placeholder-shown):invalid` împreună cu un `placeholder` (chiar și `placeholder=" "`).
+</script>
+
+<div class="demo" data-title="required, email, pattern" data-desc="Încearcă: apasă Trimite cu câmpurile goale; apoi completează greșit telefonul; apoi corect. Observă mesajele native." data-height="320" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+form { display: grid; gap: 10px; max-width: 400px; }
+.rand { display: flex; flex-direction: column; gap: 4px; }
+label { font-weight: 600; font-size: 14px; }
+input { padding: 8px 10px; border: 1px solid #90a4ae; border-radius: 6px; }
+input:invalid:not(:placeholder-shown) { border-color: #c62828; }
+input:valid:not(:placeholder-shown) { border-color: #2e7d32; }
+.actiuni { display: flex; gap: 8px; }
+button { padding: 8px 14px; border-radius: 6px; border: 1px solid #546e7a; cursor: pointer; font-weight: 600; }
+button[type="submit"] { background: #1565c0; color: #fff; border-color: #0d47a1; }
+.nota { font-size: 13px; color: #c62828; margin: 0; }
+</script>
+<script type="text/css">
+button[type="submit"] { background: #1565c0; }
+</script>
+<script type="text/html">
+<form action="#" method="post">
+  <div class="rand">
+    <label for="n">Nume *</label>
+    <input type="text" id="n" name="n" required
+           pattern="[A-Za-zăâîșțĂÂÎȘȚ\s-]+"
+           title="Doar litere, spații și cratimă"
+           placeholder=" ">
+  </div>
+  <div class="rand">
+    <label for="e">E-mail *</label>
+    <input type="email" id="e" name="e" required placeholder=" ">
+  </div>
+  <div class="rand">
+    <label for="t">Telefon</label>
+    <input type="tel" id="t" name="t" pattern="0[0-9]{8}"
+           title="Format: 0 urmat de 8 cifre" placeholder="0XXXXXXXX">
+  </div>
+  <p class="nota">* obligatoriu</p>
+  <div class="actiuni">
+    <button type="reset">Anulează</button>
+    <button type="submit">Trimite</button>
+  </div>
+</form>
+</script>
+</div>
+
+<details class="qa"><summary>De ce formularul meu e „roșu” din start dacă stilizez <code>:invalid</code> în CSS?</summary><div class="qa-a">Un câmp <code>required</code> gol este invalid încă de la încărcare. Stilizează doar după interacțiune: <code>:user-invalid</code> sau <code>input:not(:placeholder-shown):invalid</code> (cu <code>placeholder</code> prezent).</div></details>
+</section>
+
+<section class="lesson" id="s14" data-num="14" data-title="Formular complet — exemplu ghidat">
+<script type="text/markdown">
+### 14.1. Pune piesele împreună
+
+Mai jos: un formular scurt de comandă cu `fieldset`, tipuri mixte, `required` și butoane.
+</script>
+
+<div class="demo" data-title="Comandă rapidă" data-desc="Încearcă: completează formularul și apasă Trimite; apoi lasă e-mailul invalid. Adaugă un câmp nou (ex. type=date) cu label." data-height="480" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+form { max-width: 440px; display: grid; gap: 12px; padding: 14px; border: 1px solid #cfd8dc; border-radius: 10px; background: #fafafa; }
+fieldset { border: 1px solid #90a4ae; border-radius: 8px; margin: 0; }
+legend { font-weight: 700; color: #1565c0; padding: 0 6px; }
+.rand { display: grid; grid-template-columns: 110px 1fr; gap: 8px; align-items: center; margin: 8px 0; }
+label { font-size: 14px; font-weight: 600; }
+input, select, textarea { padding: 7px 9px; border: 1px solid #90a4ae; border-radius: 6px; font: inherit; width: 100%; box-sizing: border-box; }
+.opt { display: flex; gap: 12px; font-weight: 400; }
+.actiuni { display: flex; gap: 8px; justify-content: flex-end; }
+button { padding: 8px 14px; border-radius: 6px; border: 1px solid #546e7a; font-weight: 600; cursor: pointer; }
+button[type="submit"] { background: #1565c0; color: #fff; border-color: #0d47a1; }
+</script>
+<script type="text/css">
+legend { color: #1565c0; }
+</script>
+<script type="text/html">
+<form action="#" method="post">
+  <fieldset>
+    <legend>Date personale</legend>
+    <div class="rand">
+      <label for="nume">Nume *</label>
+      <input id="nume" name="nume" type="text" required autocomplete="name">
+    </div>
+    <div class="rand">
+      <label for="email">E-mail *</label>
+      <input id="email" name="email" type="email" required autocomplete="email">
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Comanda</legend>
+    <div class="rand">
+      <label for="prod">Produs</label>
+      <select id="prod" name="prod">
+        <option>Cană</option>
+        <option>Lumânare</option>
+        <option>Set ceai</option>
+      </select>
+    </div>
+    <div class="rand">
+      <span>Livrare</span>
+      <div class="opt">
+        <label><input type="radio" name="liv" value="curier" checked> Curier</label>
+        <label><input type="radio" name="liv" value="ridicare"> Ridicare</label>
+      </div>
+    </div>
+    <div class="rand">
+      <label for="note">Note</label>
+      <textarea id="note" name="note" rows="2" maxlength="150"></textarea>
+    </div>
+  </fieldset>
+  <label><input type="checkbox" name="acord" required> Accept termenii *</label>
+  <div class="actiuni">
+    <button type="reset">Anulează</button>
+    <button type="submit">Trimite comanda</button>
+  </div>
+</form>
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s15" data-num="15" data-title="Media: imagine, audio, video">
+<script type="text/markdown">
+### 15.1. Imaginea: `<img>` și `<picture>`
+
+`<img>` inserează o imagine în pagină. Este un element **vid** (fără tag de închidere) și se bazează pe atribute:
+
+| Atribut | Rol |
+|---|---|
+| `src` | calea către fișierul imagine (relativă sau URL) |
+| `alt` | text alternativ — citit de cititoarele de ecran; afișat dacă imaginea nu se încarcă. Obligatoriu din punct de vedere al accesibilității (poate fi `alt=""` dacă e doar decor) |
+| `title` | tooltip la hover (opțional; nu înlocuiește `alt`) |
+| `width` / `height` | dimensiuni în pixeli (sau lasă CSS-ul să le controleze; ajută browserul să rezerve spațiul) |
+| `loading="lazy"` | încarcă imaginea abia când e aproape de zona vizibilă |
+
+```html
+<img src="Imagini/cana.jpg" alt="Cană ceramică glazurată" width="400" height="300">
+```
+
+`<picture>` servește **variante** ale aceleiași imagini (de ex. una mai îngustă pe telefon), fără JavaScript:
+
+```html
+<picture>
+  <source media="(max-width: 600px)" srcset="banner-mic.jpg">
+  <img src="banner-mare.jpg" alt="Vitrina atelierului">
+</picture>
+```
+
+- fiecare `<source>` are o condiție `media` și un `srcset`;
+- browserul alege primul `<source>` a cărui condiție se potrivește;
+- dacă niciuna nu se potrivește, folosește `<img>`-ul de la final (varianta implicită — și tot el poartă `alt`).
+
+### 15.2. `<audio>` și `<video>`
+
+| Atribut | Rol |
+|---|---|
+| `controls` | afișează play / pauză / volum |
+| `autoplay` | pornește singur (adesea blocat dacă are sunet) |
+| `muted` | fără sunet (permite autoplay în multe browsere) |
+| `loop` | repetă |
+| `poster` | (doar video) imagine înainte de redare |
+| `preload` | `none` / `metadata` / `auto` |
+
+Oferă **mai multe** `<source>` cu tipuri diferite (`mp3`/`ogg`, `mp4`/`webm`) — browserul alege ce știe.
+
+> [!INFO] În demourile de mai jos nu încărcăm fișiere reale de pe disc (motorul rulează izolat). Markup-ul e cel pe care îl folosești în proiect; previzualizarea arată structura și controalele.
+</script>
+
+<div class="demo" data-title="Structura audio și video" data-desc="Încearcă: adaugă muted și loop pe video; schimbă textul alternativ din interior (apare dacă formatul nu e suportat)." data-height="340" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.grid { display: grid; gap: 16px; }
+.card { border: 1px solid #cfd8dc; border-radius: 10px; padding: 12px; background: #fff; }
+h3 { margin: 0 0 8px; font-size: 14px; color: #1565c0; }
+audio, video { width: 100%; max-width: 420px; background: #263238; border-radius: 8px; }
+.fake { height: 160px; display: grid; place-items: center; background: linear-gradient(135deg, #455a64, #263238); color: #eceff1; border-radius: 8px; font-size: 13px; text-align: center; padding: 12px; }
+code { background: #eceff1; padding: 1px 5px; border-radius: 4px; }
+</script>
+<script type="text/css">
+h3 { color: #1565c0; }
+</script>
+<script type="text/html">
+<div class="grid">
+  <div class="card">
+    <h3>audio</h3>
+    <audio controls>
+      <source src="Audio/melodie.mp3" type="audio/mpeg">
+      <source src="Audio/melodie.ogg" type="audio/ogg">
+      Browserul tău nu suportă audio HTML5.
+    </audio>
+    <p style="font-size:13px;color:#607d8b">În proiect: pune fișierele în mapa <code>Audio/</code>.</p>
+  </div>
+  <div class="card">
+    <h3>video + poster</h3>
+    <video controls poster="" width="480">
+      <source src="Video/clip.mp4" type="video/mp4">
+      <source src="Video/clip.webm" type="video/webm">
+      <div class="fake">Zona video · poster-ul apare aici când există fișierul</div>
+    </video>
+  </div>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s16" data-num="16" data-title="iframe — conținut înglobat">
+<script type="text/markdown">
+### 16.1. Ce face `<iframe>`
+
+Inserează **un alt document** (pagină, hartă, video de pe o platformă) într-un dreptunghi din pagina ta.
+
+| Atribut | Rol |
+|---|---|
+| `src` | URL-ul documentului înglobat |
+| `title` | obligatoriu pentru accesibilitate (descrie conținutul) |
+| `width` / `height` | dimensiuni (sau CSS + `aspect-ratio`) |
+| `loading="lazy"` | încarcă când e aproape de viewport |
+| `sandbox` | restricții de securitate (scripturi, formulare, etc.) |
+| `allowfullscreen` | permite ecran complet (ex. video / hartă) |
+
+### 16.2. Securitate și bune practici
+
+- nu îngloba site-uri în care nu ai încredere fără `sandbox`;
+- pentru hărți Google: Share → Embed a map → copiază codul;
+- preferă `title` descriptiv: `title="Harta locației atelierului"`, nu `title="iframe"`.
+
+> [!WARN] Unele site-uri **refuză** să fie afișate în iframe (`X-Frame-Options` / CSP). Nu e o greșeală a ta — e politica lor.
+</script>
+
+<div class="demo" data-title="iframe — harta Catedralei din Chișinău" data-desc="Încearcă: schimbă title-ul; pe Google Maps poți obține alt embed cu Share → Embed a map." data-height="380" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.wrap { display: grid; gap: 8px; }
+iframe { width: 100%; height: 280px; border: 0; border-radius: 10px; }
+.meta { font-size: 13px; color: #607d8b; margin: 0; }
+</script>
+<script type="text/css">
+iframe { border-radius: 10px; }
+</script>
+<script type="text/html">
+<div class="wrap">
+  <iframe
+    title="Harta — Catedrala Mitropolitană Nașterea Domnului, Chișinău"
+    src="https://www.google.com/maps?q=Catedrala+Mitropolitan%C4%83+Na%C8%99terea+Domnului,+Chi%C8%99in%C4%83u&hl=ro&z=16&output=embed"
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    allowfullscreen=""></iframe>
+  <p class="meta">Obținut tipic din Google Maps: Share → Embed a map. <code>title</code> descrie locația pentru cititoarele de ecran.</p>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s17" data-num="17" data-title="Accesibilitate: alt, titluri, ARIA de bază">
+<script type="text/markdown">
+### 17.1. `alt` pe imagini
+
+| Situație | Ce pui la `alt` |
+|---|---|
+| imagine informativă | descriere scurtă a conținutului / mesajului |
+| imagine decorativă | `alt=""` (gol) — cititorul o sare |
+| buton-imagine | textul acțiunii („Caută”, „Închide”) |
+
+Nu scrie `alt="imagine"` sau `alt="poza1.jpg"`. Nu duplica un caption vizibil deja lângă imagine.
+
+### 17.2. Ordinea titlurilor
+
+- un singur `<h1>` pe pagină (de regulă);
+- cobori treaptă cu treaptă: `h1` → `h2` → `h3`…;
+- nu alege nivelul după mărimea CSS — alege după **structură**.
+
+### 17.3. Ce este ARIA
+
+**ARIA** (*Accessible Rich Internet Applications*) este un set de atribute HTML care **completează** semnificația pentru tehnologiile asistive (cititoare de ecran, navigare de pe tastatură etc.) atunci când HTML-ul nativ nu e suficient.
+
+Exemple de situații: un buton care e doar o iconiță (☰), un meniu în care vrei să marchezi pagina curentă, un `div` decorativ pe care cititorul nu trebuie să-l anunțe.
+
+Regula de aur: **HTML semantic întâi** (`button`, `nav`, `label`…). ARIA doar ca **completare**. ARIA greșit e mai rău decât deloc — de ex. nu pune `role="button"` pe un `div` dacă poți folosi `<button>`.
+
+### 17.4. Atribute ARIA folosite des (pe zone)
+
+**Etichetare (când lipsește text vizibil sau vrei un nume clar)**
+
+| Atribut | Sens | Unde apare tipic |
+|---|---|---|
+| `aria-label="…"` | nume / etichetă citită de tehnologii asistive | buton cu iconiță, `nav` („Principal”), căutare |
+| `aria-labelledby="id"` | ia textul de etichetă de la elementul cu acel `id` | regiune / dialog etichetat de un `h2` existent |
+| `aria-describedby="id"` | descriere suplimentară (hint, mesaj de eroare) | câmp de formular + paragraful cu explicația |
+
+**Navigare și starea curentă**
+
+| Atribut | Sens | Unde |
+|---|---|---|
+| `aria-current="page"` | „acesta e linkul paginii curente” | item din meniu (`nav` + `ul`/`a`) |
+| `aria-current="step"` / `"true"` | pasul curent într-un proces | wizard, breadcrumb, pași de checkout |
+
+**Liste și meniuri**
+
+| Atribut / rol | Sens | Unde |
+|---|---|---|
+| `role="list"` / pe `ul` nativ | rareori necesar — preferă `<ul>`/`<ol>` reale | doar dacă ai „listă” făcută din `div`-uri |
+| `aria-expanded="true\|false"` | submeniul e deschis / închis | buton care deschide un dropdown |
+| `aria-haspopup="true"` | anunță că există un meniu asociat | buton „Cont” cu meniu |
+
+**Tabele și regiuni**
+
+| Atribut | Sens | Unde |
+|---|---|---|
+| `aria-label` pe `<table>` | nume al tabelului dacă lipsește `<caption>` | tabele de date |
+| `role="region"` + `aria-label` | zonă importantă care nu e landmark HTML | panou custom |
+| landmark-uri HTML | `header`, `nav`, `main`… | preferă-le în loc de `role="navigation"` pe `div` |
+
+**Ascundere și imagini decorative**
+
+| Atribut | Sens | Unde |
+|---|---|---|
+| `aria-hidden="true"` | elementul e ignorat de cititoare | iconițe decorative lângă text deja anunțat |
+| `role="img"` + `aria-label` | un `div`/SVG tratat ca imagine | ilustrație făcută doar cu CSS/SVG, fără `<img>` |
+
+> [!TIP] Începe cu `aria-label`, `aria-labelledby`, `aria-current` și `aria-hidden`. Restul le înveți când construiești componente interactive (meniuri, dialoguri).
+</script>
+
+<div class="demo" data-title="alt bun vs. alt slab" data-desc="Încearcă: schimbă alt-urile; imaginează că nu vezi poza — care variantă are sens citită cu voce tare?" data-height="280" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+figure { margin: 0; border: 1px solid #cfd8dc; border-radius: 10px; overflow: hidden; background: #fff; }
+.pic { height: 100px; }
+.p1 { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+.p2 { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+figcaption { padding: 8px 10px; font-size: 13px; }
+.ok { border-color: #81c784; }
+.bad { border-color: #e57373; }
+.badge { font: 600 10px/1 JetBrains Mono, monospace; padding: 2px 6px; border-radius: 4px; }
+.ok .badge { background: #e8f5e9; color: #2e7d32; }
+.bad .badge { background: #ffebee; color: #c62828; }
+code { font-size: 12px; }
+</script>
+<script type="text/css">
+.ok { border-color: #81c784; }
+</script>
+<script type="text/html">
+<div class="grid">
+  <figure class="ok">
+    <div class="pic p1" role="img" aria-label="Cană ceramică glazurată pe masă de lemn"></div>
+    <figcaption>
+      <span class="badge">bun</span><br>
+      <code>alt="Cană ceramică glazurată pe masă de lemn"</code>
+    </figcaption>
+  </figure>
+  <figure class="bad">
+    <div class="pic p2" role="img" aria-label="imagine"></div>
+    <figcaption>
+      <span class="badge">slab</span><br>
+      <code>alt="imagine"</code> / <code>alt="foto2.jpg"</code>
+    </figcaption>
+  </figure>
+</div>
+</script>
+</div>
+
+<div class="demo" data-title="Meniu cu aria-current" data-desc="Încearcă: mută aria-current=&quot;page&quot; pe alt link — „pagina curentă” se mută semantic și vizual." data-height="120" data-tab="html">
+<script type="text/css" data-hidden>
+nav { display: flex; gap: 6px; }
+a { display: block; padding: 8px 14px; border-radius: 6px; color: #263238; text-decoration: none; font-weight: 600; }
+a[aria-current="page"] { background: #1565c0; color: #fff; }
+a:hover { background: #e3f2fd; }
+a[aria-current="page"]:hover { background: #0d47a1; }
+</script>
+<script type="text/css">
+a[aria-current="page"] { background: #1565c0; }
+</script>
+<script type="text/html">
+<nav aria-label="Principal">
+  <a href="#acasa">Acasă</a>
+  <a href="#produse" aria-current="page">Produse</a>
+  <a href="#contact">Contact</a>
+</nav>
+</script>
+</div>
+
+<div class="demo" data-title="Ierarhia titlurilor — greșit vs corect" data-desc="Încearcă: repară coloana din stânga ca să nu mai sară de la h1 la h3." data-height="260" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.box { border: 1px solid #cfd8dc; border-radius: 10px; padding: 12px; }
+.box h3.lbl { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; color: #607d8b; }
+.bad { background: #fff5f5; }
+.ok { background: #f1f8e9; }
+h1 { font-size: 1.25rem; margin: 0 0 6px; }
+h2 { font-size: 1.05rem; margin: 10px 0 4px; color: #1565c0; }
+h3 { font-size: .95rem; margin: 8px 0 4px; }
+p { margin: 0; font-size: 13px; color: #546e7a; }
+</script>
+<script type="text/css">
+h2 { color: #1565c0; }
+</script>
+<script type="text/html">
+<div class="grid">
+  <div class="box bad">
+    <h3 class="lbl">Greșit — salt de nivel</h3>
+    <h1>Atelier Mic</h1>
+    <h3>Produse</h3>
+    <p>Am sărit peste h2.</p>
+    <h2>Contact</h2>
+    <p>Acum urcăm înapoi — confuz.</p>
+  </div>
+  <div class="box ok">
+    <h3 class="lbl">Corect</h3>
+    <h1>Atelier Mic</h1>
+    <h2>Produse</h2>
+    <h3>Ceramică</h3>
+    <p>Subsecțiune.</p>
+    <h2>Contact</h2>
+    <p>Secțiune de același nivel cu Produse.</p>
+  </div>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s18" data-num="18" data-title="SEO de bază în HTML">
+<script type="text/markdown">
+### 18.1. Ce este SEO și de ce ne pasă
+
+**SEO** (*Search Engine Optimization* — optimizare pentru motoarele de căutare) înseamnă să faci pagina **ușor de înțeles și de găsit** de Google (și altele): despre ce e, cum e structurată, ce merită afișat în rezultate.
+
+Ne străduim pentru SEO ca:
+
+- utilizatorii să **găsească** site-ul când caută un subiect relevant;
+- în rezultate să apară un **titlu și un rezumat clare**, nu „Untitled” / „pagina1”;
+- conținutul bun să nu fie ascuns din cauza unui HTML confuz (fără `h1`, fără `title`, text pe linkuri de tip „click aici”).
+
+Din perspectiva HTML (fără marketing sau reclame), controlezi mai ales ce e în tabelul de mai jos.
+
+### 18.2. Ce controlezi din HTML
+
+| Element / atribut | De ce contează |
+|---|---|
+| `<title>` | textul din tab-ul browserului **și** titlul albastru din rezultatele Google. Trebuie să fie unic pe site și să spună tema paginii (brand + subiect). |
+| `<meta name="description">` | rezumatul scurt afișat adesea sub titlu în căutare. Nu e o „comandă magică”, dar un text bun crește șansa unui clic. |
+| un singur `<h1>` clar | spune motorului (și omului) **despre ce e pagina**; restul titlurilor (`h2`…) organizează secțiunile. |
+| legături cu text meaningful | „Catalog ceramică” e indexabil și clar; „click aici” nu spune nimic despre destinație. |
+| `alt` pe imagini | ajută indexarea imaginilor și accesibilitatea; e tot conținut textual legat de pagină. |
+| URL / nume de fișiere clare | `comanda.html` e mai ușor de înțeles decât `page2.html` — atât pentru oameni, cât și pentru crawlere. |
+| `lang="ro"` pe `<html>` | anunță limba documentului; influențează interpretarea textului și instrumentele de accesibilitate. |
+
+Pe scurt: tabelul de mai sus e **lista minimă** de lucruri pe care le scrii corect în HTML ca pagina să fie prezentabilă în căutare — înainte de trucuri sau unelte externe.
+
+### 18.3. Meta-uri utile (recapitulare)
+
+```html
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atelier Mic — ceramică și lumânări</title>
+  <meta name="description" content="Obiecte lucrate manual în Chișinău. Cană, lumânări, seturi de ceai.">
+  <meta name="author" content="Maria Popescu">
+</head>
+```
+
+### 18.4. Ce nu e „SEO magic”
+
+- nu umple `keywords` cu zeci de cuvinte (motorii moderni îl ignoră aproape total);
+- nu ascunde text doar pentru Google;
+- conținutul bun + structură clară bat trucurile.
+</script>
+
+<div class="demo" data-title="Titluri de pagină: slab vs bun" data-desc="Încearcă: rescrie titlul slab ca să includă brandul și subiectul, sub ~60 de caractere." data-height="200" data-tab="html">
+<script type="text/css" data-hidden>
+.tabs { display: grid; gap: 10px; }
+.tabbar { display: flex; gap: 8px; background: #eceff1; padding: 8px; border-radius: 10px 10px 0 0; }
+.tab { background: #fff; border: 1px solid #cfd8dc; border-bottom: 0; border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 13px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.panel { border: 1px solid #cfd8dc; border-radius: 0 10px 10px 10px; padding: 12px; }
+.serp-title { color: #1a0dab; font-size: 16px; margin: 0 0 4px; }
+.serp-url { color: #006621; font-size: 13px; margin: 0 0 4px; }
+.serp-desc { color: #545454; font-size: 13px; margin: 0; }
+.lbl { font-size: 11px; text-transform: uppercase; color: #607d8b; letter-spacing: .04em; margin-bottom: 6px; }
+</script>
+<script type="text/css">
+.serp-title { color: #1a0dab; }
+</script>
+<script type="text/html">
+<div class="tabs">
+  <div>
+    <div class="lbl">Tab browser / SERP — slab</div>
+    <div class="tabbar"><div class="tab">Untitled / pagina1</div></div>
+    <div class="panel">
+      <p class="serp-title">pagina1</p>
+      <p class="serp-url">exemplu.md/pagina1.html</p>
+      <p class="serp-desc">Bine ați venit pe site-ul nostru. Click aici pentru mai multe.</p>
+    </div>
+  </div>
+  <div>
+    <div class="lbl">Tab browser / SERP — bun</div>
+    <div class="tabbar"><div class="tab">Atelier Mic — ceramică handmade</div></div>
+    <div class="panel">
+      <p class="serp-title">Atelier Mic — ceramică și lumânări</p>
+      <p class="serp-url">exemplu.md</p>
+      <p class="serp-desc">Obiecte lucrate manual în Chișinău. Cană, lumânări parfumate, seturi de ceai.</p>
+    </div>
+  </div>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s19" data-num="19" data-title="Exemplu final: pagină semantică">
+<script type="text/markdown">
+### 19.1. Toate piesele pe o singură pagină
+
+Landmark-uri, articol, aside, tabel scurt, formular minimal și un `iframe` local. Folosește-l ca model pentru proiecte.
+</script>
+
+<div class="demo" data-title="Atelier Mic — schelet complet" data-desc="Încearcă: adaugă un al doilea article; mută aria-current; completează formularul din footer." data-height="640" data-tab="html" data-layout="stack" data-resizable>
+<script type="text/css" data-hidden>
+:root { --accent: #1565c0; --ink: #263238; --muted: #607d8b; --line: #cfd8dc; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 14px/1.5 system-ui, sans-serif; color: var(--ink); }
+.site-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; }
+.logo { font-weight: 800; color: var(--accent); text-decoration: none; font-size: 1.1rem; }
+.menu { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.menu a { display: block; padding: 6px 10px; border-radius: 6px; color: var(--ink); text-decoration: none; font-weight: 600; }
+.menu a[aria-current="page"] { background: var(--accent); color: #fff; }
+.hero { padding: 28px 16px; background: linear-gradient(135deg, #0d47a1, #42a5f5); color: #fff; }
+.hero h1 { margin: 0 0 6px; font-size: 1.6rem; }
+.hero p { margin: 0; opacity: .95; }
+.layout { display: grid; grid-template-columns: 1fr 180px; gap: 16px; padding: 16px; }
+article, aside, section { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+article h2, aside h2, section h2 { margin: 0 0 8px; font-size: 1.05rem; color: var(--accent); }
+.meta { color: var(--muted); font-size: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+th { background: #e3f2fd; }
+aside { background: #f5f7fa; height: fit-content; }
+.site-footer { padding: 16px; background: #263238; color: #cfd8dc; }
+.site-footer a { color: #90caf9; }
+form.mini { display: grid; gap: 6px; max-width: 320px; margin-top: 8px; }
+form.mini input, form.mini button { padding: 7px 9px; border-radius: 6px; border: 1px solid #78909c; }
+form.mini button { background: var(--accent); color: #fff; border: 0; font-weight: 700; cursor: pointer; }
+iframe { width: 100%; height: 120px; border: 1px solid var(--line); border-radius: 8px; }
+@media (max-width: 640px) {
+  .layout { grid-template-columns: 1fr; }
+}
+</script>
+<script type="text/css">
+:root { --accent: #1565c0; }
+</script>
+<script type="text/html">
+<header class="site-header">
+  <a class="logo" href="#">Atelier Mic</a>
+  <nav aria-label="Principal">
+    <ul class="menu">
+      <li><a href="#despre">Despre</a></li>
+      <li><a href="#preturi" aria-current="page">Prețuri</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+<section class="hero">
+  <h1>Ceramică făcută cu grijă</h1>
+  <p>Cană, boluri și seturi de ceai — direct din atelier.</p>
+</section>
+<div class="layout">
+  <main>
+    <article id="despre">
+      <h2>Despre atelier</h2>
+      <p class="meta">Actualizat <time datetime="2026-10-20">20 octombrie 2026</time></p>
+      <p>Lucrăm manual fiecare piesă. Poți comanda online sau ridica din atelier.</p>
+    </article>
+    <section id="preturi">
+      <h2>Prețuri orientative</h2>
+      <table>
+        <caption>Catalog scurt</caption>
+        <thead>
+          <tr><th scope="col">Produs</th><th scope="col">Preț</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Cană</td><td>79 lei</td></tr>
+          <tr><td>Lumânare</td><td>49 lei</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section id="contact">
+      <h2>Program (înglobat)</h2>
+      <iframe title="Programul atelierului"
+        srcdoc="<!DOCTYPE html><html lang='ro'><body style='font:13px system-ui;padding:12px'><strong>Luni–Vineri</strong> 10–18<br><strong>Sâmbătă</strong> 11–15</body></html>"></iframe>
+    </section>
+  </main>
+  <aside>
+    <h2>Legături</h2>
+    <p><a href="#">Ghid cadouri</a><br><a href="#">Îngrijirea ceramicii</a></p>
+  </aside>
+</div>
+<footer class="site-footer" id="newsletter">
+  <p>© 2026 Atelier Mic · <a href="https://developer.mozilla.org/">MDN</a></p>
+  <form class="mini" action="#" method="post">
+    <label for="nl">Newsletter</label>
+    <input type="email" id="nl" name="nl" required placeholder="E-mailul tău">
+    <button type="submit">Abonează-mă</button>
+  </form>
+</footer>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s20" data-num="20" data-title="Rezumat">
+<script type="text/markdown">
+| Temă | Reține |
+|---|---|
+| Semantică | alege tagul după **sens**; `main` o singură dată; `section`/`article` cu titlu |
+| Landmark-uri | `header`, `nav`, `main`, `aside`, `footer` — repere pentru navigare asistivă |
+| Tabele | date tabulare; `thead`/`tbody`/`tfoot`; `colspan`/`rowspan`; `caption` + `scope` |
+| Formulare | `label` + `name`; tipul potrivit; `fieldset`/`legend`; validare cu `required` / `pattern` |
+| Media | `audio`/`video` cu `controls` + mai multe `source`; `iframe` cu `title` |
+| A11y | `alt` bun, ierarhie de titluri, ARIA doar ca completare (`aria-current`, `aria-label`) |
+| SEO | `title`, `description`, `h1` clar, text pe legături, `lang` |
+</script>
+</section>
+
+<section class="lesson" id="s21" data-num="21" data-title="Greșeli frecvente">
+<script type="text/markdown">
+| Problemă | Cauză tipică | Remediu |
+|---|---|---|
+| Pagina e „doar div-uri” | layout gândit în cutii vizuale | landmark-uri + titluri reale |
+| Două `main` | copiere de șabloane | un singur `main` vizibil |
+| Tabel stricat după rowspan | ai lăsat celulele acoperite | șterge `td`/`th` pe care le unește rowspan/colspan |
+| Clic pe text nu focusează câmpul | lipsește `label` / `for` | leagă `for` de `id` |
+| Formularul nu trimite un câmp | lipsește `name` | adaugă `name` |
+| Validarea nu pornește | `button` în afara `form` sau `type="button"` | `type="submit"` în formular |
+| Cititorul anunță „unlabeled image” | `alt` lipsă | pune `alt` descriptiv sau `alt=""` dacă e decor |
+| iframe „gol” / refuzat | site-ul blochează înglobarea | folosește embed oficial sau pagină proprie |
+</script>
+
+<div class="demo" data-title="Diagnostic: ce e greșit aici?" data-desc="Încearcă: repară HTML-ul — label, name, th/scope, un singur h1, alt pe „imagine”." data-height="300" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.box { border: 1px dashed #e57373; border-radius: 10px; padding: 12px; background: #fff8f8; }
+input { display: block; margin: 6px 0 10px; padding: 6px; }
+</script>
+<script type="text/css">
+.box { border-color: #e57373; }
+</script>
+<script type="text/html">
+<div class="box">
+  <h3>Magazin</h3>
+  <h1>Produse</h1>
+  <h1>Contact</h1>
+  <img src="x" width="80" height="40">
+  <table border="1">
+    <tr><td>Produs</td><td>Preț</td></tr>
+    <tr><td>Cană</td><td>79</td></tr>
+  </table>
+  <form>
+    <span>E-mail</span>
+    <input type="email">
+    <button>Trimite</button>
+  </form>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s22" data-num="22" data-title="Întrebări de autoverificare">
+<script type="text/markdown">
+Deschide răspunsul după ce te-ai gândit. Ideal: explică cu voce tare, ca la examen oral.
+</script>
+
+<details class="qa"><summary>1. Care este diferența dintre <code>section</code> și <code>article</code>?</summary><div class="qa-a"><code>section</code> e o parte tematică a unui întreg (pagină / capitol). <code>article</code> e un bloc de sine stătător (post, știre, card de produs) care ar avea sens și redistribuit singur. Ambele merită un titlu.</div></details>
+
+<details class="qa"><summary>2. Câte elemente <code>main</code> poți avea pe o pagină? De ce?</summary><div class="qa-a">Unul singur (vizibil). Este reperul „conținut principal”; mai multe ar confunda cititoarele de ecran și harta landmark-urilor.</div></details>
+
+<details class="qa"><summary>3. Ce fac <code>colspan</code> și <code>rowspan</code>? Ce greșeală apare des după ce le folosești?</summary><div class="qa-a">Unesc celula pe orizontală, respectiv pe verticală. Greșeala tipică: lași în continuare celulele pe care le-ai acoperit, iar tabelul se decalează.</div></details>
+
+<details class="qa"><summary>4. De ce <code>placeholder</code> nu înlocuiește <code>label</code>?</summary><div class="qa-a">Dispare când utilizatorul scrie, nu e anunțat la fel de fiabil de cititoare și nu mărește zona de clic. E doar o sugestie vizuală.</div></details>
+
+<details class="qa"><summary>5. Ce diferență este între <code>select</code> și <code>datalist</code>?</summary><div class="qa-a"><code>select</code> forțează o opțiune din listă. <code>datalist</code> oferă sugestii, dar utilizatorul poate introduce și altă valoare.</div></details>
+
+<details class="qa"><summary>6. Cum validezi un telefon moldovenesc simplificat fără JavaScript?</summary><div class="qa-a"><code>&lt;input type="tel" pattern="0[0-9]{8}" title="0 urmat de 8 cifre"&gt;</code> (poți combina cu <code>required</code> dacă e obligatoriu).</div></details>
+
+<details class="qa"><summary>7. Ce atribute esențiale are un <code>iframe</code> accesibil?</summary><div class="qa-a">Cel puțin <code>src</code> (sau <code>srcdoc</code>) și un <code>title</code> descriptiv. Util: <code>loading="lazy"</code>, dimensiuni / CSS, uneori <code>sandbox</code>.</div></details>
+
+<details class="qa"><summary>8. Când pui <code>alt=""</code> (gol)?</summary><div class="qa-a">Când imaginea e pur decorativă și nu aduce informație. Astfel cititorul de ecran o ignoră, în loc să anunțe un nume de fișier inutil.</div></details>
+
+<details class="qa"><summary>9. Ce face <code>aria-current="page"</code> într-un meniu?</summary><div class="qa-a">Marchează linkul către pagina (sau secțiunea) curentă, atât pentru cititoare cât și ca selector CSS util. Nu înlocuiește un URL corect.</div></details>
+
+<details class="qa"><summary>10. Enumeră trei elemente HTML care ajută SEO-ul de bază.</summary><div class="qa-a"><code>&lt;title&gt;</code>, <code>&lt;meta name="description"&gt;</code>, un <code>&lt;h1&gt;</code> clar; plus <code>alt</code> pe imagini, <code>lang</code>, texte de legătură descriptive.</div></details>
+</section>
+
+
+            <footer class="page-foot">
+                <p>Documentație generată pentru Prelegerea 2. Exemplele rulează izolat, fiecare în propriul document; modificările nu se salvează. Continuă pe baza Prelegerii 1 (structura documentului HTML).</p>
+            </footer>
+        </main>
+    </div>
+
+    <button class="icon-btn to-top" type="button" aria-label="Înapoi sus">↑ Sus</button>
+
+    <script src="assets/app.js"></script>
+    <script src="../../assets/course-nav.js"></script>
+</body>
+</html>

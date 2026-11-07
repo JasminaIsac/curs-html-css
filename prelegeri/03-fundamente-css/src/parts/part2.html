@@ -1,0 +1,286 @@
+<section class="lesson" id="s4" data-num="4" data-title="Selectorul de atribut">
+<script type="text/markdown">
+Alege elemente după **atribute**, fără o clasă în plus.
+
+| Selector | Alege elementele care… |
+|---|---|
+| `[required]` | au atributul, indiferent de valoare |
+| `[type="email"]` | au atributul **exact** cu valoarea dată |
+| `[href^="https"]` | valoarea **începe** cu textul |
+| `[href$=".pdf"]` | valoarea **se termină** cu textul |
+| `[href*="usm"]` | valoarea **conține** textul |
+
+Se combină cu un element: `input[type="email"]`, `a[href^="https"]`.
+</script>
+
+<div class="demo" data-title="input după type și required" data-desc="Schimbă culoarea bordurii la câmpurile obligatorii. Doar input[required] se schimbă, nu și câmpul opțional." data-height="160" data-tab="css">
+<script type="text/css">
+label { display: block; font-size: 13px; font-weight: 600; margin: 8px 0 4px; }
+input { padding: 8px 10px; border: 1px solid #90a4ae; border-radius: 6px; width: 100%; max-width: 280px; }
+input[required] { border-left: 4px solid #c62828; }
+input[type="email"] { background: #f3f8ff; }
+</script>
+<script type="text/html">
+<label>Nume (obligatoriu)</label>
+<input type="text" required placeholder="Nume">
+<label>E-mail</label>
+<input type="email" placeholder="tu@exemplu.md">
+<label>Oraș (opțional)</label>
+<input type="text" placeholder="Chișinău">
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"bara required","sel":"input[required]","prop":"border-left","options":["4px solid #c62828","4px solid #1565c0","4px solid #2e7d32","4px solid #e65100"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Linkuri după începutul adresei" data-desc="Doar linkul https primește culoarea. Cel relativ (href intern) nu se potrivește cu [href^=https]." data-height="100" data-tab="css">
+<script type="text/css">
+a { margin-right: 16px; }
+a[href^="https"] { color: #2e7d32; font-weight: 700; }
+</script>
+<script type="text/html">
+<a href="https://developer.mozilla.org/">MDN (https)</a>
+<a href="#contact">Contact (intern)</a>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color https","sel":"a[href^=\"https\"]","prop":"color","options":["#2e7d32","#1565c0","#c62828","#6a1b9a"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s5" data-num="5" data-title="Descendent, copil, frați">
+<script type="text/markdown">
+Un **combinator** leagă doi selectori și descrie relația din arborele HTML. Se alege elementul din **dreapta**.
+
+| Combinator | Scriere | Alege |
+|---|---|---|
+| descendent | `article p` | orice `p` din interiorul lui `article`, la orice adâncime |
+| copil direct | `article > p` | `p` care este copil **direct** al lui `article` |
+| frate adiacent | `h2 + p` | `p` care vine **imediat** după un `h2` |
+| frate general | `h2 ~ p` | orice `p` care vine **după** un `h2`, cu același părinte |
+
+`+` și `~` privesc doar înainte: nu poți selecta un element în funcție de frații de după el.
+</script>
+
+<div class="demo" data-title="Descendent: article p" data-desc="Schimbă fundalul. Se colorează ambele paragrafe: article p prinde și paragraful din blockquote. Exemplul următor limitează selecția la copilul direct." data-height="200" data-tab="css">
+<script type="text/css">
+article p {
+    background: #fff3e0;
+    margin: 0 0 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+blockquote { margin: 0 0 8px; padding: 8px 10px; border-left: 3px solid #90a4ae; }
+</script>
+<script type="text/html">
+<article>
+  <p>Copil direct al article.</p>
+  <blockquote>
+    <p>Nepot: stă în blockquote, nu direct în article.</p>
+  </blockquote>
+</article>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"background","sel":"article p","prop":"background","options":["#fff3e0","#e3f2fd","#e8f5e9"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Copil direct: article > p" data-desc="Aici regula e article > p. Doar primul paragraf are fundal. Schimbă culoarea ca să vezi limita selectorului." data-height="180" data-tab="css">
+<script type="text/css">
+article > p {
+    background: #e3f2fd;
+    margin: 0 0 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+blockquote { margin: 0; padding: 8px 10px; border-left: 3px solid #90a4ae; }
+p { margin: 0; }
+</script>
+<script type="text/html">
+<article>
+  <p>Copil direct — prins de article &gt; p.</p>
+  <blockquote><p>În blockquote — nu e copil direct.</p></blockquote>
+</article>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"background","sel":"article > p","prop":"background","options":["#e3f2fd","#e8f5e9","#fce4ec","transparent"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="h2 + p față de h2 ~ p" data-desc="Sus: doar paragraful imediat de după h2. Jos: toate paragrafele de după h2. Schimbă fundalul ca să vezi diferența." data-height="280" data-layout="stack" data-tab="css">
+<script type="text/css">
+.langa h2 + p { background: #fff3e0; }
+.lat h2 ~ p { background: #e8f5e9; }
+h2 { margin: 0 0 6px; font-size: 1rem; }
+p { margin: 0 0 6px; padding: 4px 8px; border-radius: 6px; }
+.col { margin-bottom: 12px; }
+.eticheta { font-size: 12px; font-weight: 700; color: #607d8b; letter-spacing: .04em; text-transform: uppercase; }
+</script>
+<script type="text/html">
+<div class="col langa">
+  <p class="eticheta">h2 + p — doar următorul</p>
+  <h2>Program</h2>
+  <p>Imediat după titlu.</p>
+  <p>Al doilea paragraf — nu e adiacent.</p>
+</div>
+<div class="col lat">
+  <p class="eticheta">h2 ~ p — toți de după</p>
+  <h2>Program</h2>
+  <p>Primul după titlu.</p>
+  <p>Și al doilea.</p>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"adiacent +","sel":".langa h2 + p","prop":"background","options":["#fff3e0","#ffe0b2","#ffccbc"]},
+  {"label":"general ~","sel":".lat h2 ~ p","prop":"background","options":["#e8f5e9","#c8e6c9","#b2dfdb"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s6" data-num="6" data-title="Pseudo-clase">
+<script type="text/markdown">
+O **pseudo-clasă** descrie o **stare** sau o **poziție**, fără o clasă scrisă în HTML. Se scrie cu **două puncte**: `a:hover`.
+
+| Pseudo-clasă | Când |
+|---|---|
+| `:hover` | mouse-ul e deasupra |
+| `:focus` / `:focus-visible` | elementul are focus (câmp, link cu Tab) |
+| `:active` | în momentul clicului |
+| `:first-child` / `:last-child` | primul / ultimul copil |
+| `:nth-child(even)` sau `(odd)` | rândurile pare / impare |
+| `:not(selector)` | elementele care **nu** se potrivesc |
+
+Pentru linkuri, ordinea utilă când le stilizezi pe toate este `:link`, `:visited`, `:hover`, `:active` (aceeași specificitate, câștigă cea scrisă mai jos).
+</script>
+
+<div class="demo" data-title=":hover și :focus-visible" data-desc="Treci cu mouse-ul peste buton și apasă Tab până ajunge pe el. Schimbă culoarea de la hover." data-height="120" data-tab="css">
+<script type="text/css">
+a.buton {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #1565c0;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+}
+a.buton:hover { background: #0d47a1; }
+a.buton:focus-visible { outline: 3px solid #f9a825; outline-offset: 3px; }
+</script>
+<script type="text/html">
+<a class="buton" href="#sus">Vezi produsele</a>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"hover","sel":"a.buton:hover","prop":"background","options":["#0d47a1","#c62828","#2e7d32","#6a1b9a"]},
+  {"label":"normal","sel":"a.buton","prop":"background","options":["#1565c0","#00897b","#e65100","#263238"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Rânduri alternate :nth-child" data-desc="Schimbă fundalul rândurilor pare. Nu e nevoie de clasă pe fiecare tr." data-height="220" data-tab="css">
+<script type="text/css">
+table { border-collapse: collapse; width: 100%; max-width: 360px; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; text-align: left; }
+th { background: #263238; color: #fff; }
+tbody tr:nth-child(even) { background: #e3f2fd; }
+tbody tr:hover { background: #fff3e0; }
+</script>
+<script type="text/html">
+<table>
+  <thead><tr><th>Produs</th><th>Preț</th></tr></thead>
+  <tbody>
+    <tr><td>Cană</td><td>79</td></tr>
+    <tr><td>Bol</td><td>55</td></tr>
+    <tr><td>Farfurie</td><td>65</td></tr>
+    <tr><td>Lumânare</td><td>49</td></tr>
+  </tbody>
+</table>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"rând par","sel":"tbody tr:nth-child(even)","prop":"background","options":["#e3f2fd","#e8f5e9","#fce4ec","#fff8e1"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s7" data-num="7" data-title="Pseudo-elemente">
+<script type="text/markdown">
+Un **pseudo-element** reprezintă o **parte** a elementului sau conținut **generat** de CSS. Se scrie cu **două puncte duble**: `p::first-letter`.
+
+| Pseudo-element | Ce reprezintă |
+|---|---|
+| `::before` / `::after` | conținut generat înainte / după (obligatoriu `content`) |
+| `::first-letter` | prima literă |
+| `::first-line` | prima linie afișată |
+| `::placeholder` | textul sugestie dintr-un câmp |
+| `::selection` | textul selectat cu mouse-ul |
+
+Fără `content`, `::before` și `::after` nu apar. Poți pune text (`"lei"`) sau un șir gol (`""`) pentru o linie decorativă.
+</script>
+
+<div class="demo" data-title="::before și ::after" data-desc="Schimbă textul din content și culoarea liniei de sub titlu. content este obligatoriu." data-height="160" data-tab="css">
+<script type="text/css">
+.pret::after {
+    content: " lei";
+    color: #607d8b;
+    font-weight: 400;
+}
+h2 { margin: 0 0 8px; font-size: 1.25rem; }
+h2::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 3px;
+    margin-top: 6px;
+    background: #c62828;
+}
+.pret { font-size: 1.4rem; font-weight: 800; }
+</script>
+<script type="text/html">
+<h2>Cană ceramică</h2>
+<p class="pret">79</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"după preț","sel":".pret::after","prop":"content","options":["\" lei\"","\" MDL\"","\" €\""]},
+  {"label":"linia","sel":"h2::after","prop":"background","options":["#c62828","#1565c0","#2e7d32","#e65100"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="::first-letter și ::selection" data-desc="Selectează textul cu mouse-ul ca să vezi ::selection. Schimbă mărimea inițialei." data-height="160" data-tab="css">
+<script type="text/css">
+p { margin: 0; max-width: 460px; line-height: 1.5; }
+p::first-letter {
+    font-size: 2.4em;
+    font-weight: 700;
+    color: #c62828;
+    float: left;
+    line-height: 1;
+    padding-right: 6px;
+}
+p::selection { background: #ffe082; color: #263238; }
+</script>
+<script type="text/html">
+<p>Limbajul CSS descrie aspectul, nu structura. Inițiala mare vine din ::first-letter, fără un span în HTML.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"mărime inițială","sel":"p::first-letter","prop":"font-size","options":["2.4em","1.6em","3.2em","4em"]},
+  {"label":"culoare inițială","sel":"p::first-letter","prop":"color","options":["#c62828","#1565c0","#6a1b9a","#e65100"]}
+]
+</script>
+</div>
+</section>

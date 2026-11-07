@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fundamentele CSS — documentație interactivă</title>
+    <meta name="description" content="Rolul CSS, includere, selectori, cascadă, specificitate, unități, culori și text — valorile se schimbă live din comutatoare.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <button class="icon-btn menu-btn" id="menu" type="button" aria-label="Deschide cuprinsul" aria-expanded="false" aria-controls="sidebar">☰</button>
+        <a class="brand" href="#top">
+            <span class="brand-mark">CSS<span>.</span>baza</span>
+            <span class="brand-sub">Selectori · Cascadă · Unități · Text</span>
+        </a>
+        <div class="topbar-actions">
+            <button class="icon-btn" id="theme" type="button">Temă: auto</button>
+        </div>
+        <span class="progress" aria-hidden="true"></span>
+    </header>
+
+    <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar" aria-label="Cuprins">
+            <div class="search">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="m11 11 3.5 3.5"/></svg>
+                <input id="search" type="search" placeholder="Caută (apasă /)" aria-label="Caută în lecție">
+            </div>
+            <ol class="toc" id="toc"></ol>
+            <p class="toc-empty" id="toc-empty" hidden>Niciun rezultat.</p>
+        </aside>
+
+        <main class="content" id="top">
+            <div class="hero">
+                <span class="kicker">Prelegerea 3 · documentație interactivă</span>
+                <h1>Fundamentele CSS</h1>
+                <p>CSS spune <em>cum arată</em> pagina. Mai jos, aproape fiecare exemplu are comutatoare: schimbă culoarea, mărimea, unitatea sau starea și vezi rezultatul imediat, fără să reîncarci pagina.</p>
+                <div class="hero-stats">
+                    <span class="chip"><b id="stat-sections">0</b> secțiuni</span>
+                    <span class="chip"><b id="stat-demos">0</b> exemple live</span>
+                    <span class="chip"><b id="stat-qa">0</b> întrebări cu răspuns</span>
+                    <span class="chip">Tasta <b>/</b> pentru căutare</span>
+                </div>
+            </div>
+
+<!-- PARTS -->
+
+            <footer class="page-foot">
+                <p>Prelegerea 3. Exemplele rulează izolat; modificările din editor nu se salvează. Comutatoarele de sub cod rescriu live declarația CSS corespunzătoare.</p>
+            </footer>
+        </main>
+    </div>
+
+    <button class="icon-btn to-top" type="button" aria-label="Înapoi sus">↑ Sus</button>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<section class="lesson" id="s0" data-num="0" data-title="Structura cursului">
+<script type="text/markdown">
+### 0.1. Nota generală
+
+Nota finală la disciplină se calculează astfel:
+
+**Nota generală** = `0,6 × Media semestrială` + `0,4 × Examen`
+
+### 0.2. Media semestrială
+
+Media semestrială este media aritmetică a **patru** componente:
+
+| Componentă | Ce reprezintă |
+|---|---|
+| **Testare 1** | Prima evaluare teoretică / practică pe parcurs |
+| **Testare 2** | A doua evaluare pe parcurs |
+| **Media curentă** | Media notelor la **lucrările de laborator** |
+| **Lucru individual (LI)** | Proiectul / tema individuală |
+
+```text
+Media semestrială = (Testare 1 + Testare 2 + Media curentă + LI) / 4
+```
+
+### 0.3. Laboratoare și lucru individual
+
+În acest semestru:
+
+| Activitate | Număr | Rol în notare |
+|---|---|---|
+| Lucrări de laborator | **2** | formează **Media curentă** (media celor două note) |
+| Lucru individual (LI) | **1** | notă separată în media semestrială |
+
+> [!INFO] Media curentă = media celor 2 lucrări de laborator. LI-ul nu intră în media curentă — este a patra componentă a mediei semestriale, alături de Testare 1, Testare 2 și Media curentă.
+</script>
+</section>
+
+<section class="lesson" id="s1" data-num="1" data-title="Cum funcționează web-ul">
+<script type="text/markdown">
+### 1.1. Client, server și resurse
+
+Web-ul este un sistem de **client–server**:
+
+| Rol | Ce este | Exemplu |
+|---|---|---|
+| **Client** | Programul care *cere* resurse | browserul tău (Chrome, Firefox, Edge, Safari) |
+| **Server** | Calculator (sau serviciu) care *răspunde* cu resurse | un calculator dintr-un centru de date care găzduiește `usm.md` |
+| **Resursă** | Fișier sau răspuns generat | pagină HTML, imagine, CSS, JSON, PDF |
+
+Tu nu „descarci internetul”: trimiți o **cerere** către o adresă, iar serverul îți trimite un **răspuns**.
+
+### 1.2. Browserul
+
+Browserul este clientul pe care îl vezi: citește HTML, aplică CSS, rulează JavaScript, gestionează cookie-uri, cache și securitate. În DevTools (F12) poți urmări exact ce cereri face.
+
+### 1.3. URL — adresa resursei
+
+Un **URL** (*Uniform Resource Locator*) spune *unde* și *cum* se ajunge la o resursă:
+
+```text
+https://www.exemplu.ro:443/cursuri/html/index.html?an=1#capitol-2
+└─┬──┘  └──────┬──────┘ └┬┘ └──────────┬──────────┘ └──┬──┘ └───┬───┘
+ schemă      gazdă     port         cale             query  fragment
+```
+
+| Parte | Rol |
+|---|---|
+| `https` | **schemă** (protocolul) |
+| `www.exemplu.ro` | **gazdă** (nume de domeniu → IP prin DNS) |
+| `:443` | **port** (implicit 443 pentru HTTPS, 80 pentru HTTP) |
+| `/cursuri/html/index.html` | **cale** pe server |
+| `?an=1` | **query** — parametri |
+| `#capitol-2` | **fragment** — ancora din pagină (nu se trimite la server) |
+
+### 1.4. HTTP — limba cererilor
+
+**HTTP** (*HyperText Transfer Protocol*) este protocolul prin care clientul și serverul schimbă mesaje. O cerere tipică:
+
+1. Browserul rezolvă domeniul prin **DNS** (nume → adresă IP).
+2. Deschide o conexiune (TCP; pentru HTTPS + TLS).
+3. Trimite o **cerere HTTP** (metodă + cale + antete).
+4. Serverul răspunde cu un **cod de stare** și un corp (HTML, imagine…).
+
+Metode frecvente: `GET` (citește), `POST` (trimite date), `PUT` / `PATCH` (actualizează), `DELETE` (șterge).
+
+Coduri de stare utile:
+
+| Cod | Semnificație |
+|---|---|
+| `200` | OK — resursa a fost trimisă |
+| `301` / `302` | redirecționare |
+| `404` | nu există |
+| `500` | eroare pe server |
+</script>
+
+<div class="demo" data-title="Dialogul client ↔ server" data-desc="Încearcă: apasă Replay ca să refaci animația cerere → răspuns. Schimbă codul de stare în CSS (conținutul cutiei .cod)." data-height="280" data-layout="stack">
+<script type="text/css" data-hidden>
+body { padding: 12px; }
+.scena { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 8px; align-items: center; min-height: 200px; }
+.cutie { border-radius: 10px; padding: 14px; text-align: center; font-weight: 600; }
+.client { background: #e3f2fd; border: 2px solid #1565c0; }
+.server { background: #e0f2f1; border: 2px solid #00897b; }
+.mijloc { position: relative; height: 120px; }
+.sageata { position: absolute; left: 0; right: 0; padding: 8px 10px; border-radius: 8px; font-size: 12px; font-family: ui-monospace, monospace; color: #fff; opacity: 0; }
+.req { top: 18px; background: #1565c0; animation: dus 2.8s ease-in-out infinite; }
+.res { bottom: 18px; background: #00897b; animation: intors 2.8s ease-in-out infinite; }
+@keyframes dus {
+  0% { opacity: 0; transform: translateX(-20%); }
+  15% { opacity: 1; }
+  45% { opacity: 1; transform: translateX(20%); }
+  55%, 100% { opacity: 0; transform: translateX(20%); }
+}
+@keyframes intors {
+  0%, 50% { opacity: 0; transform: translateX(20%); }
+  65% { opacity: 1; }
+  90% { opacity: 1; transform: translateX(-20%); }
+  100% { opacity: 0; transform: translateX(-20%); }
+}
+.det { margin-top: 10px; font-size: 13px; color: #607d8b; text-align: left; }
+.cod { display: inline-block; padding: 2px 8px; border-radius: 4px; background: #c8e6c9; color: #1b5e20; font-family: ui-monospace, monospace; }
+</script>
+<script type="text/css">
+.cod { background: #c8e6c9; } /* încearcă #ffcdd2 pentru 404 */
+</script>
+<script type="text/html">
+<div class="scena">
+  <div class="cutie client">🖥️ Client<br><small>browser</small></div>
+  <div class="mijloc">
+    <div class="sageata req">GET /index.html HTTP/1.1 →</div>
+    <div class="sageata res">← HTTP/1.1 <span class="cod">200 OK</span></div>
+  </div>
+  <div class="cutie server">🖧 Server<br><small>usm.md</small></div>
+</div>
+<p class="det">Cererea cere o resursă. Răspunsul aduce statusul <span class="cod">200</span> și corpul (HTML).</p>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s2" data-num="2" data-title="HTTP, HTTPS și rolul browserului">
+<script type="text/markdown">
+### 2.1. HTTP vs HTTPS
+
+| | HTTP | HTTPS |
+|---|---|---|
+| Port implicit | 80 | 443 |
+| Criptare | nu | da (TLS) |
+| Integritate | vulnerabil la modificare pe drum | protejat |
+| Autenticitate | oricine poate pretinde că e site-ul | certificat verificat |
+
+**HTTPS** = HTTP + **TLS** (criptare pe canal). Lacătul din bara de adrese nu garantează că site-ul e „de încredere” moral, ci că conexiunea e criptată către serverul care deține certificatul.
+
+> [!WARN] Nu introduce parole pe pagini servite pe `http://` — traficul poate fi citit pe rețele publice.
+
+### 2.2. Ce face browserul cu răspunsul
+
+1. Primește HTML-ul.
+2. Construiește **DOM**-ul (arborele de elemente).
+3. Încarcă CSS, imagini, scripturi (alte cereri HTTP).
+4. Calculează layout-ul și **pictează** pagina.
+5. Reactualizează la interacțiuni (clic, scroll, JS).
+</script>
+
+<div class="demo" data-title="De la HTML la ce vezi pe ecran" data-desc="Încearcă: șterge un tag de închidere </p> sau schimbă h1 în h3 — DOM-ul (și aspectul) se schimbă imediat." data-height="200" data-tab="html">
+<script type="text/css" data-hidden>
+h1 { margin: 0 0 8px; font-size: 1.4rem; color: #1565c0; }
+p { margin: 0; color: #263238; }
+.nota { margin-top: 12px; padding: 8px 10px; background: #eceff1; border-radius: 6px; font-size: 13px; color: #607d8b; }
+</script>
+<script type="text/css">
+h1 { color: #1565c0; }
+</script>
+<script type="text/html">
+<h1>Pagina mea</h1>
+<p>Browserul citește aceste etichete și construiește arborele DOM.</p>
+<p class="nota">Inspectează cu clic dreapta → Inspect (în pagina reală) sau modifică aici.</p>
+</script>
+</div>
+</section>

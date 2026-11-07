@@ -1,0 +1,536 @@
+<section class="lesson" id="s6" data-num="6" data-title="Elemente, atribute, imbricare, comentarii, entități">
+<script type="text/markdown">
+### 6.1. Element = tag + conținut (+ atribute)
+
+Un **element** are de obicei formă:
+
+```html
+<p class="intro" id="p1">Textul paragrafului</p>
+│ │                │              │
+│ nume tag         atribute       conținut
+│                                 tag de închidere
+```
+
+- **Tag de deschidere** / **de închidere**: `<p>` … `</p>`
+- **Elemente vide** (fără conținut): `<br>`, `<hr>`, `<img>`, `<meta>` — în HTML5 se scriu fără slash obligatoriu: `<br>` sau `<br />`
+- **Atribute**: `nume="valoare"` (sau `nume='valoare'`); unele sunt booleene: `reversed`, `disabled`
+
+### 6.2. Imbricarea (nesting)
+
+Elementele se **imbrică** ca cutii: copilul stă complet în părinte. Greșit: a închide părintele înaintea copilului.
+
+```html
+<!-- corect -->
+<p>Citește <strong>cu atenție</strong> acum.</p>
+
+<!-- greșit -->
+<p>Citește <strong>cu atenție</p></strong>
+```
+
+### 6.3. Comentarii
+
+Comentariile nu apar pe pagină; folosesc pentru note sau pentru a dezactiva temporar markup:
+
+```html
+<!-- TODO: adaugă secțiunea contact -->
+```
+
+Nu pune `--` în interiorul comentariului. Nu comenta fragmente care sparg imbricarea.
+
+> [!TIP] **Bonus — scurtături în editor (VS Code / Cursor, Windows)**  
+> Selectează una sau mai multe linii, apoi:  
+> - `Ctrl` + `/` — comută comentariul HTML (`<!-- … -->`) pe selecție  
+> - `Shift` + `Alt` + `A` — comentariu pe bloc (alternativă, în funcție de limbă)  
+> Apasă din nou aceeași combinație ca să **decomentezi**. Pe macOS: `Cmd` + `/` în loc de `Ctrl` + `/`.
+
+### 6.4. Entități
+
+Unele caractere trebuie scrise ca **entități**, altfel browserul le ia drept markup:
+
+| Entitate | Caracter | Când |
+|---|---|---|
+| `&lt;` | `<` | afișezi un „mai mic” ca text |
+| `&gt;` | `>` | similar |
+| `&amp;` | `&` | ampersand în text sau URL afișat |
+| `&quot;` | `"` | ghilimele în atribute rareori |
+| `&nbsp;` | spațiu neîntrerupt | spațiu care nu rupe rândul |
+| `&copy;` | © | simbol copyright |
+
+În textul „5 &lt; 10” folosești `&lt;`, nu `<`.
+</script>
+
+<div class="demo" data-title="Atribute pe un element" data-desc="Încearcă: schimbă class sau id pe paragraf; adaugă title=&quot;Tooltip&quot; și treci cu mouse-ul." data-height="140" data-tab="html">
+<script type="text/css" data-hidden>
+.intro { padding: 12px 14px; border-left: 4px solid #1565c0; background: #e3f2fd; border-radius: 0 8px 8px 0; }
+#p1 { font-size: 15px; }
+</script>
+<script type="text/css">
+.intro { border-left-color: #1565c0; }
+</script>
+<script type="text/html">
+<p class="intro" id="p1" title="Un atribut title apare ca tooltip">
+  Acest paragraf are <code>class</code>, <code>id</code> și <code>title</code>.
+</p>
+</script>
+</div>
+
+<div class="demo" data-title="Imbricare corectă vs greșită" data-desc="Încearcă: în varianta „greșit”, mută tag-urile ca să respecte cutia-în-cutie — previzualizarea se îndreaptă." data-height="200" data-tab="html">
+<script type="text/css" data-hidden>
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.box { padding: 12px; border-radius: 8px; font-size: 14px; }
+.ok { background: #e8f5e9; }
+.bad { background: #ffebee; }
+h3 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: #607d8b; }
+strong { background: #fff59d; padding: 0 2px; }
+</script>
+<script type="text/css">
+strong { background: #fff59d; }
+</script>
+<script type="text/html">
+<div class="grid">
+  <div class="box ok">
+    <h3>Corect</h3>
+    <p>Citește <strong>cu atenție</strong> acum.</p>
+  </div>
+  <div class="box bad">
+    <h3>Greșit (repară)</h3>
+    <p>Citește <strong>cu atenție</p></strong>
+  </div>
+</div>
+</script>
+</div>
+
+<div class="demo" data-title="Entități vizibile" data-desc="Încearcă: înlocuiește &amp;lt; cu &lt; în text — vezi cum „dispare” sau strică markup-ul." data-height="120" data-tab="html">
+<script type="text/css" data-hidden>
+code { background: #eceff1; padding: 2px 6px; border-radius: 4px; }
+p { margin: 0 0 8px; }
+</script>
+<script type="text/css">
+code { background: #eceff1; }
+</script>
+<script type="text/html">
+<p>Compară: <code>3 &lt; 5</code> se afișează corect.</p>
+<p>Simbol: &copy; 2026 USM · spațiu&nbsp;neîntrerupt între cuvinte lipite.</p>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s7" data-num="7" data-title="Text: titluri și paragrafe">
+<script type="text/markdown">
+### 7.1. Titluri `<h1>`–`<h6>`
+
+Șase niveluri de titlu. Folosește-le pe **structură**, nu pe mărimea vizuală (mărimea o controlezi cu CSS):
+
+| Tag | Rol tipic |
+|---|---|
+| `<h1>` | Titlul principal al paginii (de regulă unul) |
+| `<h2>` | Secțiuni majore |
+| `<h3>`–`<h6>` | Subsecțiuni, tot mai adânci |
+
+Ierarhia vizuală (de la general la particular):
+
+<style>
+.hx-graf { margin: 0.5rem 0 1.25rem; padding: 1.25rem 1rem 1rem; border-radius: 14px; background: linear-gradient(165deg, #e8f1fb 0%, #f4f7f5 55%, #fff8e7 100%); border: 1px solid #cfd8dc; overflow-x: auto; }
+.hx-graf .g { display: flex; flex-direction: column; align-items: center; min-width: 520px; font: 600 0.85rem/1.3 "IBM Plex Sans", system-ui, sans-serif; }
+.hx-graf .n { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.9rem; border-radius: 999px; color: #fff; box-shadow: 0 2px 6px rgba(15,40,80,.14); }
+.hx-graf .n b { font: 700 0.72rem/1 "JetBrains Mono", ui-monospace, monospace; letter-spacing: .02em; padding: 0.25rem 0.45rem; border-radius: 999px; background: rgba(255,255,255,.25); }
+.hx-graf .v { width: 2px; height: 14px; background: #90a4ae; }
+.hx-graf .fork { display: flex; gap: 1.5rem; justify-content: center; position: relative; padding-top: 14px; }
+.hx-graf .fork::before { content: ""; position: absolute; top: 0; left: 22%; right: 22%; height: 2px; background: #90a4ae; }
+.hx-graf .col { display: flex; flex-direction: column; align-items: center; position: relative; }
+.hx-graf .col::before { content: ""; position: absolute; top: 0; left: 50%; width: 2px; height: 14px; background: #90a4ae; transform: translateX(-50%); }
+.hx-graf .col > .n { margin-top: 14px; }
+.hx-graf .chain { display: flex; flex-direction: column; align-items: center; }
+.hx-graf .n1 { background: #0d47a1; }
+.hx-graf .n2 { background: #1565c0; }
+.hx-graf .n3 { background: #00897b; }
+.hx-graf .n4 { background: #43a047; }
+.hx-graf .n5 { background: #f9a825; color: #263238; }
+.hx-graf .n5 b { background: rgba(0,0,0,.12); color: #263238; }
+.hx-graf .n6 { background: #ef6c00; }
+.hx-graf .cap { margin: 1rem 0 0; font: 0.8rem/1.4 "IBM Plex Sans", system-ui, sans-serif; color: #607d8b; text-align: center; font-weight: 500; }
+</style>
+<div class="hx-graf" role="img" aria-label="Ierarhia titlurilor: h1 în vârf, apoi h2, h3, până la h6">
+<div class="g">
+  <div class="n n1"><b>h1</b> Titlul paginii</div>
+  <div class="v"></div>
+  <div class="fork">
+    <div class="col">
+      <div class="n n2"><b>h2</b> Secțiunea A</div>
+      <div class="v"></div>
+      <div class="fork">
+        <div class="col">
+          <div class="n n3"><b>h3</b> A.1</div>
+          <div class="chain">
+            <div class="v"></div>
+            <div class="n n4"><b>h4</b> A.1.1</div>
+            <div class="v"></div>
+            <div class="n n5"><b>h5</b> …</div>
+            <div class="v"></div>
+            <div class="n n6"><b>h6</b> cel mai adânc</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="n n3"><b>h3</b> A.2</div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="n n2"><b>h2</b> Secțiunea B</div>
+      <div class="v"></div>
+      <div class="n n3"><b>h3</b> B.1</div>
+    </div>
+  </div>
+  <p class="cap">Un singur h1 pe pagină · cobori treaptă cu treaptă: h2 → h3 → h4 → h5 → h6</p>
+</div>
+</div>
+
+Nu sări nivele (h1 → h3) fără motiv: cititoarele de ecran și SEO se bazează pe ierarhie.
+
+### 7.2. Paragrafe, rând nou, separator
+
+| Tag | Rol |
+|---|---|
+| `<p>` | Paragraf (bloc de text) |
+| `<br>` | Forțează un **rând nou** în același flux (folosește rar) |
+| `<hr>` | Separator tematic (linie orizontală) |
+| `<pre>` | Păstrează spațiile și rândurile (ex. fragmente de cod ASCII) |
+
+> [!TIP] Pentru spațiere verticală între idei, preferă paragrafe separate (`<p>`) sau CSS, nu lanțuri de `<br><br>`.
+</script>
+
+<div class="demo" data-title="Ierarhia titlurilor" data-desc="Încearcă: schimbă un h2 în h4 — textul rămâne, dar semantica (și stilul implicit) se schimbă." data-height="260" data-tab="html">
+<script type="text/css" data-hidden>
+h1, h2, h3, h4 { margin: 0.4em 0 0.2em; }
+h1 { color: #1565c0; font-size: 1.5rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.1rem; }
+p { margin: 0.3em 0 0.8em; color: #37474f; }
+</script>
+<script type="text/css">
+h1 { color: #1565c0; }
+</script>
+<script type="text/html">
+<h1>Magazinul de ceai</h1>
+<p>Pagina principală a magazinului.</p>
+<h2>Ceaiuri verzi</h2>
+<p>Sortimente delicate, cu cafeină moderată.</p>
+<h3>Sencha</h3>
+<p>Clasic japonez, gust vegetal.</p>
+<h3>Longjing</h3>
+<p>Din Hangzhou, note de nucă.</p>
+<h2>Ceaiuri negre</h2>
+<p>Mai intense, bune dimineața.</p>
+</script>
+</div>
+
+<div class="demo" data-title="Paragraf, br și hr" data-desc="Încearcă: înlocuiește &lt;br&gt; cu un al doilea &lt;p&gt; — spațierea devine mai clară semantic." data-height="180" data-tab="html">
+<script type="text/css" data-hidden>
+p { margin: 0 0 0.75em; }
+hr { border: 0; border-top: 2px solid #cfd8dc; margin: 1em 0; }
+address { font-style: normal; color: #607d8b; font-size: 14px; }
+</script>
+<script type="text/css">
+hr { border-top-color: #90a4ae; }
+</script>
+<script type="text/html">
+<p>Str. Universității 60<br>Chișinău, Republica Moldova</p>
+<hr>
+<p>Program: Luni–Vineri, 9:00–17:00</p>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s8" data-num="8" data-title="Accentuare, citate și liste">
+<script type="text/markdown">
+### 8.1. Accentuare și semantică inline
+
+| Tag | Semnificație (preferat) | Aspect tipic |
+|---|---|---|
+| `<strong>` | importanță / seriozitate | îngroșat |
+| `<em>` | accent / ton | italic |
+| `<b>`, `<i>` | îngroșat / italic **fără** semantică puternică | vizual |
+| `<mark>` | evidențiere (ex. rezultat căutare) | fundal galben |
+| `<code>` | fragment de cod | monospace |
+| `<sup>` / `<sub>` | exponent / indice | x², H₂O |
+| `<ins>` / `<del>` | inserat / șters | subliniat / tăiat |
+| `<abbr title="…">` | abreviere | puncte sub text |
+
+Preferă `<strong>` / `<em>` când vrei sens, nu doar aspect.
+</script>
+
+<div class="demo" data-title="Accentuare inline" data-desc="Încearcă: înlocuiește strong cu b și em cu i — aspect similar, semantică mai slabă." data-height="180" data-tab="html">
+<script type="text/css" data-hidden>
+p { margin: 0 0 0.7em; }
+mark { background: #fff59d; }
+code { background: #eceff1; padding: 1px 5px; border-radius: 3px; font-size: 0.95em; }
+abbr { text-decoration: underline dotted; cursor: help; }
+</script>
+<script type="text/css">
+mark { background: #fff59d; }
+</script>
+<script type="text/html">
+<p>Apa trebuie să fie <em>aproape</em> de fierbere, dar <strong>nu</strong> pentru ceaiul verde.</p>
+<p>Formula apei: H<sub>2</sub>O. Tag-ul <code>&lt;p&gt;</code> face un paragraf. Puterea: x<sup>2</sup>.</p>
+<p>Caută: <mark>HTML5</mark>. Preț vechi: <del>120 lei</del> <ins>99 lei</ins>.</p>
+<p><abbr title="HyperText Markup Language">HTML</abbr> descrie structura paginii.</p>
+</script>
+</div>
+
+<script type="text/markdown">
+### 8.2. Citate
+
+| Tag | Rol |
+|---|---|
+| `<blockquote>` | citat lung (bloc); opțional `cite="URL"` |
+| `<q>` | citat scurt, inline (browserul adaugă ghilimele) |
+| `<cite>` | titlul operei / sursa |
+| `<address>` | informații de contact ale autorului paginii/secțiunii |
+</script>
+
+<div class="demo" data-title="Citate: blockquote, q, cite" data-desc="Încearcă: schimbă textul din blockquote sau adaugă un al doilea &lt;q&gt;." data-height="200" data-tab="html">
+<script type="text/css" data-hidden>
+blockquote {
+  margin: 0 0 12px; padding: 10px 14px; border-left: 4px solid #1565c0;
+  background: #eceff1; color: #37474f;
+}
+cite { display: block; margin-top: 6px; font-size: 13px; color: #607d8b; }
+address { font-style: normal; font-size: 13px; color: #607d8b; margin-top: 10px; }
+p { margin: 0 0 0.7em; }
+</script>
+<script type="text/css">
+blockquote { border-left-color: #1565c0; }
+</script>
+<script type="text/html">
+<blockquote cite="https://www.w3.org/">
+  Web-ul e pentru toată lumea.
+  <cite>— spirit W3C</cite>
+</blockquote>
+<p>Berners-Lee a spus: <q>The power of the Web is in its universality.</q></p>
+<address>Contact laborator: secretariat@usm.md</address>
+</script>
+</div>
+
+<script type="text/markdown">
+### 8.3. Liste
+
+| Elemente | Tip | Când |
+|---|---|---|
+| `<ul>` + `<li>` | **neordonată** (buline) | ordine indiferentă: ingrediente, linkuri din meniu |
+| `<ol>` + `<li>` | **ordonată** (1, 2, 3…) | pași, ranking, reguli în ordine |
+| `<dl>` + `<dt>` + `<dd>` | **definiții** | termen → explicație (glosar) |
+
+Atribute pe `<ol>`:
+
+| Atribut | Efect | Exemple |
+|---|---|---|
+| `type` | stilul numerotării | `"1"` cifre, `"a"` / `"A"` litere, `"i"` / `"I"` romane |
+| `start` | de la ce număr începe | `start="3"` → 3, 4, 5… |
+| `reversed` | numerotare descrescătoare | 3, 2, 1 (fără valoare: doar prezența atributului) |
+
+Listele se pot **imbrica**: o `<ul>` sau `<ol>` în interiorul unui `<li>`.
+</script>
+
+<div class="demo" data-title="Listă neordonată (ul)" data-desc="Încearcă: schimbă tipul de bulină cu butoanele; adaugă sau șterge un element." data-height="280" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.panel { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; padding: 10px; background: #eceff1; border-radius: 8px; }
+.panel span { font-size: 12px; color: #607d8b; margin-right: 4px; }
+.panel button, .panel .act {
+  font: 600 13px/1.2 system-ui, sans-serif; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid #90a4ae; background: #fff; color: #263238; cursor: pointer;
+}
+.panel button[aria-pressed="true"] { background: #1565c0; color: #fff; border-color: #1565c0; }
+.panel .act { background: #e3f2fd; border-color: #1565c0; color: #0d47a1; }
+h3 { margin: 0 0 8px; font-size: 15px; color: #1565c0; }
+ul { margin: 0; padding-left: 1.4em; }
+li { margin: 4px 0; }
+.cod { margin-top: 12px; font: 12px/1.4 ui-monospace, monospace; color: #546e7a; background: #f5f5f5; padding: 8px 10px; border-radius: 6px; }
+</script>
+<script type="text/css">
+ul { list-style-type: disc; }
+</script>
+<script type="text/html">
+<div class="panel">
+  <span>list-style-type:</span>
+  <button type="button" data-style="disc" aria-pressed="true">disc</button>
+  <button type="button" data-style="circle" aria-pressed="false">circle</button>
+  <button type="button" data-style="square" aria-pressed="false">square</button>
+  <button type="button" data-style="none" aria-pressed="false">none</button>
+  <button type="button" class="act" id="add-ul">+ element</button>
+  <button type="button" class="act" id="del-ul">− ultim</button>
+</div>
+<h3>Ingrediente (ordine liberă)</h3>
+<ul id="lista-ul">
+  <li>Frunze de ceai verde</li>
+  <li>Apă la ~80 °C</li>
+  <li>Ceașcă</li>
+</ul>
+<p class="cod" id="ul-cod">&lt;ul style="list-style-type: disc"&gt; … &lt;/ul&gt;</p>
+</script>
+<script type="text/demo-js">
+const ul = document.getElementById("lista-ul");
+const cod = document.getElementById("ul-cod");
+const items = ["Linguriță", "Miere (opțional)", "Lămâie", "Ceainic"];
+let i = 0;
+document.querySelector(".panel").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-style]");
+  if (!btn) return;
+  document.querySelectorAll("button[data-style]").forEach((b) => b.setAttribute("aria-pressed", "false"));
+  btn.setAttribute("aria-pressed", "true");
+  const t = btn.dataset.style;
+  ul.style.listStyleType = t;
+  cod.textContent = '<ul style="list-style-type: ' + t + '"> … </ul>';
+});
+document.getElementById("add-ul").addEventListener("click", () => {
+  const li = document.createElement("li");
+  li.textContent = items[i % items.length];
+  i++;
+  ul.appendChild(li);
+});
+document.getElementById("del-ul").addEventListener("click", () => {
+  if (ul.children.length > 1) ul.lastElementChild.remove();
+});
+</script>
+</div>
+
+<div class="demo" data-title="Listă ordonată (ol) — interactiv" data-desc="Încearcă: schimbă type, start și reversed; adaugă pași. Urmărește atributul pe &lt;ol&gt; în linia de jos." data-height="360" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.panel { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; padding: 10px; background: #eceff1; border-radius: 8px; }
+.panel span.label { font-size: 12px; color: #607d8b; width: 100%; margin: 2px 0 0; }
+.panel button, .panel .act {
+  font: 600 13px/1.2 system-ui, sans-serif; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid #90a4ae; background: #fff; color: #263238; cursor: pointer;
+}
+.panel button[aria-pressed="true"] { background: #1565c0; color: #fff; border-color: #1565c0; }
+.panel .act { background: #e3f2fd; border-color: #1565c0; color: #0d47a1; }
+.panel label { font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.panel input[type="number"] { width: 4rem; padding: 4px 6px; font: inherit; border: 1px solid #90a4ae; border-radius: 4px; }
+h3 { margin: 0 0 8px; font-size: 15px; color: #00897b; }
+ol { margin: 0; padding-left: 1.6em; }
+li { margin: 4px 0; }
+.cod { margin-top: 12px; font: 12px/1.45 ui-monospace, monospace; color: #1b5e20; background: #e8f5e9; padding: 8px 10px; border-radius: 6px; word-break: break-all; }
+</script>
+<script type="text/css">
+ol { margin: 0; }
+</script>
+<script type="text/html">
+<div class="panel">
+  <span class="label">type (stil numerotare)</span>
+  <button type="button" data-type="1" aria-pressed="true">1</button>
+  <button type="button" data-type="a" aria-pressed="false">a</button>
+  <button type="button" data-type="A" aria-pressed="false">A</button>
+  <button type="button" data-type="i" aria-pressed="false">i</button>
+  <button type="button" data-type="I" aria-pressed="false">I</button>
+  <span class="label">start · reversed · elemente</span>
+  <label>start <input id="start" type="number" min="1" max="20" value="1"></label>
+  <button type="button" id="rev" aria-pressed="false">reversed</button>
+  <button type="button" class="act" id="add-ol">+ pas</button>
+  <button type="button" class="act" id="del-ol">− ultim</button>
+</div>
+<h3>Pași de preparare (ordine contează)</h3>
+<ol id="lista-ol" type="1" start="1">
+  <li>Alege frunzele de ceai</li>
+  <li>Încinge apa (nu la fierbere pentru verde)</li>
+  <li>Infuzează 2–3 minute</li>
+  <li>Servește imediat</li>
+</ol>
+<p class="cod" id="ol-cod">&lt;ol type="1" start="1"&gt; … &lt;/ol&gt;</p>
+</script>
+<script type="text/demo-js">
+const ol = document.getElementById("lista-ol");
+const cod = document.getElementById("ol-cod");
+const startInp = document.getElementById("start");
+const revBtn = document.getElementById("rev");
+const pasi = ["Adaugă miere după gust", "Clătește ceașca cu apă caldă", "Notează timpul de infuzare"];
+let pi = 0;
+function sync() {
+  const t = ol.getAttribute("type") || "1";
+  const s = ol.getAttribute("start") || "1";
+  const r = ol.hasAttribute("reversed");
+  cod.textContent = '<ol type="' + t + '" start="' + s + '"' + (r ? " reversed" : "") + "> … </ol>";
+}
+document.querySelector(".panel").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-type]");
+  if (!btn) return;
+  document.querySelectorAll("button[data-type]").forEach((b) => b.setAttribute("aria-pressed", "false"));
+  btn.setAttribute("aria-pressed", "true");
+  ol.setAttribute("type", btn.dataset.type);
+  sync();
+});
+startInp.addEventListener("input", () => {
+  const v = Math.max(1, parseInt(startInp.value, 10) || 1);
+  startInp.value = v;
+  ol.setAttribute("start", String(v));
+  sync();
+});
+revBtn.addEventListener("click", () => {
+  const on = revBtn.getAttribute("aria-pressed") !== "true";
+  revBtn.setAttribute("aria-pressed", on ? "true" : "false");
+  if (on) ol.setAttribute("reversed", "");
+  else ol.removeAttribute("reversed");
+  sync();
+});
+document.getElementById("add-ol").addEventListener("click", () => {
+  const li = document.createElement("li");
+  li.textContent = pasi[pi % pasi.length];
+  pi++;
+  ol.appendChild(li);
+});
+document.getElementById("del-ol").addEventListener("click", () => {
+  if (ol.children.length > 1) ol.lastElementChild.remove();
+});
+sync();
+</script>
+</div>
+
+<div class="demo" data-title="Liste imbricate" data-desc="Încearcă: mută o listă interioară sau adaugă un &lt;li&gt; nou în ul-ul exterior." data-height="220" data-tab="html">
+<script type="text/css" data-hidden>
+h3 { margin: 0 0 8px; font-size: 15px; color: #1565c0; }
+ul, ol { margin: 0 0 8px; }
+li { margin: 3px 0; }
+</script>
+<script type="text/css">
+ul ul { color: #00897b; }
+</script>
+<script type="text/html">
+<h3>Meniu categorii</h3>
+<ul>
+  <li>Ceaiuri verzi
+    <ul>
+      <li>Sencha</li>
+      <li>Gyokuro</li>
+      <li>Longjing</li>
+    </ul>
+  </li>
+  <li>Ceaiuri negre
+    <ol type="a">
+      <li>Assam</li>
+      <li>Darjeeling</li>
+    </ol>
+  </li>
+  <li>Infuzii (fără cafeină)</li>
+</ul>
+</script>
+</div>
+
+<div class="demo" data-title="Listă de definiții (dl)" data-desc="Încearcă: adaugă un cuplu dt/dd pentru HTTPS." data-height="180" data-tab="html">
+<script type="text/css" data-hidden>
+dl { margin: 0; }
+dt { font-weight: 700; color: #1565c0; margin-top: 8px; }
+dd { margin: 2px 0 8px 16px; color: #37474f; }
+</script>
+<script type="text/css">
+dt { color: #1565c0; }
+</script>
+<script type="text/html">
+<dl>
+  <dt>HTML</dt>
+  <dd>Limbaj de marcare pentru structura paginilor web.</dd>
+  <dt>HTTP</dt>
+  <dd>Protocolul cererilor și răspunsurilor pe web.</dd>
+  <dt>URL</dt>
+  <dd>Adresa unei resurse pe web (schemă, gazdă, cale…).</dd>
+</dl>
+</script>
+</div>
+</section>

@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fundamentele CSS — documentație interactivă</title>
+    <meta name="description" content="Rolul CSS, includere, selectori, cascadă, specificitate, unități, culori și text — valorile se schimbă live din comutatoare.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="assets/app.css">
+    <link rel="stylesheet" href="../../assets/course-nav.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <button class="icon-btn menu-btn" id="menu" type="button" aria-label="Deschide cuprinsul" aria-expanded="false" aria-controls="sidebar">☰</button>
+        <a class="brand" href="#top">
+            <span class="brand-mark">CSS<span>.</span>baza</span>
+            <span class="brand-sub">Selectori · Cascadă · Unități · Text</span>
+        </a>
+        <div class="topbar-actions">
+            <button class="icon-btn" id="theme" type="button">Temă: auto</button>
+        </div>
+        <span class="progress" aria-hidden="true"></span>
+    </header>
+
+    <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar" aria-label="Cuprins">
+            <div class="search">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="m11 11 3.5 3.5"/></svg>
+                <input id="search" type="search" placeholder="Caută (apasă /)" aria-label="Caută în lecție">
+            </div>
+            <ol class="toc" id="toc"></ol>
+            <p class="toc-empty" id="toc-empty" hidden>Niciun rezultat.</p>
+        </aside>
+
+        <main class="content" id="top">
+            <div class="hero">
+                <span class="kicker">Prelegerea 3 · documentație interactivă</span>
+                <h1>Fundamentele CSS</h1>
+                <p>CSS spune <em>cum arată</em> pagina. Mai jos, aproape fiecare exemplu are comutatoare: schimbă culoarea, mărimea, unitatea sau starea și vezi rezultatul imediat, fără să reîncarci pagina.</p>
+                <div class="hero-stats">
+                    <span class="chip"><b id="stat-sections">0</b> secțiuni</span>
+                    <span class="chip"><b id="stat-demos">0</b> exemple live</span>
+                    <span class="chip"><b id="stat-qa">0</b> întrebări cu răspuns</span>
+                    <span class="chip">Tasta <b>/</b> pentru căutare</span>
+                </div>
+            </div>
+
+<section class="lesson" id="s0" data-num="0" data-title="Rolul CSS">
+<script type="text/markdown">
+### 0.1. HTML spune ce este, CSS spune cum arată
+
+| Limbaj | Întrebarea | Exemplu |
+|---|---|---|
+| HTML | Ce este acest conținut? | `<h1>`, `<p>`, `<nav>` |
+| CSS | Cum se afișează? | culoare, font, spațiu, lățime |
+
+**CSS** (*Cascading Style Sheets*) este un limbaj de stil, separat de conținut. Același HTML poate arăta altfel dacă schimbi doar foaia de stil. De aceea nu mai folosim atribute vechi de aspect (`bgcolor`, `align`, `<font>`).
+
+### 0.2. O regulă, pe scurt
+
+```css
+p {
+    color: #1565c0;
+    font-size: 18px;
+}
+```
+
+- `p` este **selectorul** (cui i se aplică);
+- între `{ }` este **blocul de declarații**;
+- `color: #1565c0;` este o **declarație**: proprietate, două puncte, valoare, punct și virgulă;
+- comentariile se scriu `/* așa */`, nu `//` și nu `<!-- -->`.
+
+O greșeală de sintaxă (`colour`, `;` lipsă, acoladă uitată) este ignorată de browser: nu apare un mesaj pe pagină. O verifici în DevTools (F12) — proprietățile invalide apar tăiate.
+</script>
+
+<div class="demo" data-title="Prima regulă" data-desc="Mută glisoarele: culoarea și mărimea se schimbă pe loc, doar pentru paragraful vizat de selectorul p." data-height="160" data-tab="css">
+<script type="text/css">
+p {
+    color: #1565c0;
+    font-size: 18px;
+    margin: 0;
+}
+</script>
+<script type="text/html">
+<p>Acest paragraf este stilizat de regula <code>p { … }</code>.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color","sel":"p","prop":"color","options":["#1565c0","#c62828","#2e7d32","#6a1b9a","#263238"]},
+  {"label":"font-size","sel":"p","prop":"font-size","type":"range","min":14,"max":40,"step":1,"unit":"px"}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s1" data-num="1" data-title="Cum incluzi CSS: inline, intern, extern">
+<script type="text/markdown">
+### 1.1. Trei locuri
+
+| Mod | Unde se scrie | Se aplică la |
+|---|---|---|
+| **Inline** | atributul `style` pe un element | doar acel element |
+| **Intern** | `<style>` în `<head>` | pagina curentă |
+| **Extern** | fișier `.css` + `<link rel="stylesheet" href="CSS/style.css">` | toate paginile care leagă fișierul |
+
+Varianta recomandată în proiecte este **foaia externă**: un singur fișier schimbă aspectul întregului site. Inline se folosește rar, pentru o excepție.
+
+Fișierul `.css` conține **doar CSS** — fără `<style>`, fără taguri HTML.
+
+Calea din `href` este relativă la pagina HTML. Dacă pagina e în `HTML/pagina.html`, foaia din `CSS/style.css` se leagă cu `../CSS/style.css`.
+
+### 1.2. Cine câștigă când se bat
+
+La aceeași proprietate, pe scurt:
+
+1. `!important` (îl evităm; îl vedem mai jos);
+2. stilul **inline** (`style="…"`);
+3. apoi **specificitatea** selectorului;
+4. la egalitate, regula scrisă **mai jos**.
+
+Între o foaie externă și un `<style>` intern, câștigă cea care apare **mai târziu** în pagină, dacă specificitatea e egală.
+</script>
+
+<div class="demo" data-title="Inline bate regula din foaie" data-desc="Schimbă culoarea regulii p. Al doilea paragraf rămâne grena: style inline are prioritate." data-height="150" data-tab="css">
+<script type="text/css">
+p {
+    color: #1565c0;
+    margin: 0 0 8px;
+}
+</script>
+<script type="text/html">
+<p>Paragraf stilizat doar din CSS.</p>
+<p style="color: #c62828;">Paragraf cu style inline — rămâne grena.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color pe p","sel":"p","prop":"color","options":["#1565c0","#2e7d32","#6a1b9a","#e65100"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s2" data-num="2" data-title="Selectorul de element și gruparea">
+<script type="text/markdown">
+### 2.1. Selector de element
+
+Numele tagului, fără `<` și `>`: `p`, `h2`, `a`, `li`. Regula se aplică **tuturor** elementelor de acel tip din pagină.
+
+### 2.2. Grupare
+
+Dacă mai mulți selectori au aceleași declarații, îi scrii separați prin virgulă:
+
+```css
+h1, h2, h3 { color: #1565c0; }
+```
+
+Este același lucru cu trei reguli separate, doar mai scurt.
+</script>
+
+<div class="demo" data-title="Un selector, toate paragrafele" data-desc="Schimbă text-align și background. Ambele paragrafe se schimbă, pentru că selectorul e p, nu o clasă." data-height="160" data-tab="css">
+<script type="text/css">
+p {
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    background: #e3f2fd;
+    text-align: left;
+    border-radius: 8px;
+}
+</script>
+<script type="text/html">
+<p>Primul paragraf.</p>
+<p>Al doilea paragraf — aceeași regulă.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"text-align","sel":"p","prop":"text-align","options":["left","center","right","justify"]},
+  {"label":"background","sel":"p","prop":"background","options":["#e3f2fd","#fff3e0","#e8f5e9","#fce4ec","transparent"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Grupare h2, h3" data-desc="Culoarea e pe h2, h3 dintr-o singură regulă. Paragraful nu e în listă, deci nu se colorează." data-height="170" data-tab="css">
+<script type="text/css">
+h2, h3 {
+    color: #1565c0;
+    margin: 0 0 6px;
+}
+p { margin: 0; }
+</script>
+<script type="text/html">
+<h2>Titlu de secțiune</h2>
+<h3>Subtitlu</h3>
+<p>Paragraf obișnuit.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color","sel":"h2, h3","prop":"color","options":["#1565c0","#6a1b9a","#c62828","#00695c"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s3" data-num="3" data-title="Clasă și identificator">
+<script type="text/markdown">
+Selectorul de element nu poate stiliza **doar unele** paragrafe. Pentru asta marchezi elementul în HTML.
+
+| | Clasă | Identificator |
+|---|---|---|
+| În HTML | `class="evid"` | `id="intro"` |
+| În CSS | `.evid` | `#intro` |
+| Câte elemente | oricâte | **unul singur** pe pagină |
+| Pe un element | mai multe, separate prin spațiu: `class="card card-nou"` | un singur `id` |
+| Specificitate | medie | mare |
+
+Un nume bun spune **rolul** (`.pret`, `.eroare`), nu culoarea (`.rosu`). Litere, cifre, `-` și `_`; nu începe cu cifră.
+
+`id` servește și la ancore (`href="#intro"`) și la `label for`. Pentru stil, preferă clasa: un `#id` e greu de înlocuit.
+</script>
+
+<div class="demo" data-title="Doar elementele cu clasă" data-desc="Schimbă culoarea clasei .evid. Paragraful fără clasă rămâne neschimbat. În HTML poți adăuga class=&quot;evid&quot; și pe al doilea." data-height="150" data-tab="css">
+<script type="text/css">
+p { margin: 0 0 8px; }
+.evid {
+    color: #c62828;
+    font-weight: 700;
+}
+</script>
+<script type="text/html">
+<p class="evid">Acest paragraf are class="evid".</p>
+<p>Acesta nu are clasa.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color .evid","sel":".evid","prop":"color","options":["#c62828","#1565c0","#2e7d32","#6a1b9a"]},
+  {"label":"font-weight","sel":".evid","prop":"font-weight","options":["700","400","500","800"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Mai multe clase pe același element" data-desc="Cardul are class=&quot;card card-nou&quot;: .card dă forma, .card-nou doar culoarea benzii. Schimbă fundalul benzii." data-height="150" data-tab="css">
+<script type="text/css">
+.card {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #cfd8dc;
+    font-weight: 600;
+}
+.card-nou {
+    background: #e3f2fd;
+    border-color: #1565c0;
+}
+</script>
+<script type="text/html">
+<div class="card card-nou">Cană ceramică — noutate</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"background .card-nou","sel":".card-nou","prop":"background","options":["#e3f2fd","#fff3e0","#e8f5e9","#fce4ec"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="#id are prioritate peste clasă" data-desc="Elementul are și clasa, și id-ul. Câștigă #intro (specificitate mai mare), indiferent de ordinea din HTML." data-height="120" data-tab="css">
+<script type="text/css">
+.intro { color: #1565c0; font-size: 18px; margin: 0; }
+#intro { color: #c62828; }
+</script>
+<script type="text/html">
+<p class="intro" id="intro">Am și class="intro", și id="intro".</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color #intro","sel":"#intro","prop":"color","options":["#c62828","#6a1b9a","#00695c","#e65100"]}
+]
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s4" data-num="4" data-title="Selectorul de atribut">
+<script type="text/markdown">
+Alege elemente după **atribute**, fără o clasă în plus.
+
+| Selector | Alege elementele care… |
+|---|---|
+| `[required]` | au atributul, indiferent de valoare |
+| `[type="email"]` | au atributul **exact** cu valoarea dată |
+| `[href^="https"]` | valoarea **începe** cu textul |
+| `[href$=".pdf"]` | valoarea **se termină** cu textul |
+| `[href*="usm"]` | valoarea **conține** textul |
+
+Se combină cu un element: `input[type="email"]`, `a[href^="https"]`.
+</script>
+
+<div class="demo" data-title="input după type și required" data-desc="Schimbă culoarea bordurii la câmpurile obligatorii. Doar input[required] se schimbă, nu și câmpul opțional." data-height="160" data-tab="css">
+<script type="text/css">
+label { display: block; font-size: 13px; font-weight: 600; margin: 8px 0 4px; }
+input { padding: 8px 10px; border: 1px solid #90a4ae; border-radius: 6px; width: 100%; max-width: 280px; }
+input[required] { border-left: 4px solid #c62828; }
+input[type="email"] { background: #f3f8ff; }
+</script>
+<script type="text/html">
+<label>Nume (obligatoriu)</label>
+<input type="text" required placeholder="Nume">
+<label>E-mail</label>
+<input type="email" placeholder="tu@exemplu.md">
+<label>Oraș (opțional)</label>
+<input type="text" placeholder="Chișinău">
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"bara required","sel":"input[required]","prop":"border-left","options":["4px solid #c62828","4px solid #1565c0","4px solid #2e7d32","4px solid #e65100"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Linkuri după începutul adresei" data-desc="Doar linkul https primește culoarea. Cel relativ (href intern) nu se potrivește cu [href^=https]." data-height="100" data-tab="css">
+<script type="text/css">
+a { margin-right: 16px; }
+a[href^="https"] { color: #2e7d32; font-weight: 700; }
+</script>
+<script type="text/html">
+<a href="https://developer.mozilla.org/">MDN (https)</a>
+<a href="#contact">Contact (intern)</a>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color https","sel":"a[href^=\"https\"]","prop":"color","options":["#2e7d32","#1565c0","#c62828","#6a1b9a"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s5" data-num="5" data-title="Descendent, copil, frați">
+<script type="text/markdown">
+Un **combinator** leagă doi selectori și descrie relația din arborele HTML. Se alege elementul din **dreapta**.
+
+| Combinator | Scriere | Alege |
+|---|---|---|
+| descendent | `article p` | orice `p` din interiorul lui `article`, la orice adâncime |
+| copil direct | `article > p` | `p` care este copil **direct** al lui `article` |
+| frate adiacent | `h2 + p` | `p` care vine **imediat** după un `h2` |
+| frate general | `h2 ~ p` | orice `p` care vine **după** un `h2`, cu același părinte |
+
+`+` și `~` privesc doar înainte: nu poți selecta un element în funcție de frații de după el.
+</script>
+
+<div class="demo" data-title="Descendent: article p" data-desc="Schimbă fundalul. Se colorează ambele paragrafe: article p prinde și paragraful din blockquote. Exemplul următor limitează selecția la copilul direct." data-height="200" data-tab="css">
+<script type="text/css">
+article p {
+    background: #fff3e0;
+    margin: 0 0 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+blockquote { margin: 0 0 8px; padding: 8px 10px; border-left: 3px solid #90a4ae; }
+</script>
+<script type="text/html">
+<article>
+  <p>Copil direct al article.</p>
+  <blockquote>
+    <p>Nepot: stă în blockquote, nu direct în article.</p>
+  </blockquote>
+</article>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"background","sel":"article p","prop":"background","options":["#fff3e0","#e3f2fd","#e8f5e9"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Copil direct: article > p" data-desc="Aici regula e article > p. Doar primul paragraf are fundal. Schimbă culoarea ca să vezi limita selectorului." data-height="180" data-tab="css">
+<script type="text/css">
+article > p {
+    background: #e3f2fd;
+    margin: 0 0 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+blockquote { margin: 0; padding: 8px 10px; border-left: 3px solid #90a4ae; }
+p { margin: 0; }
+</script>
+<script type="text/html">
+<article>
+  <p>Copil direct — prins de article &gt; p.</p>
+  <blockquote><p>În blockquote — nu e copil direct.</p></blockquote>
+</article>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"background","sel":"article > p","prop":"background","options":["#e3f2fd","#e8f5e9","#fce4ec","transparent"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="h2 + p față de h2 ~ p" data-desc="Sus: doar paragraful imediat de după h2. Jos: toate paragrafele de după h2. Schimbă fundalul ca să vezi diferența." data-height="280" data-layout="stack" data-tab="css">
+<script type="text/css">
+.langa h2 + p { background: #fff3e0; }
+.lat h2 ~ p { background: #e8f5e9; }
+h2 { margin: 0 0 6px; font-size: 1rem; }
+p { margin: 0 0 6px; padding: 4px 8px; border-radius: 6px; }
+.col { margin-bottom: 12px; }
+.eticheta { font-size: 12px; font-weight: 700; color: #607d8b; letter-spacing: .04em; text-transform: uppercase; }
+</script>
+<script type="text/html">
+<div class="col langa">
+  <p class="eticheta">h2 + p — doar următorul</p>
+  <h2>Program</h2>
+  <p>Imediat după titlu.</p>
+  <p>Al doilea paragraf — nu e adiacent.</p>
+</div>
+<div class="col lat">
+  <p class="eticheta">h2 ~ p — toți de după</p>
+  <h2>Program</h2>
+  <p>Primul după titlu.</p>
+  <p>Și al doilea.</p>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"adiacent +","sel":".langa h2 + p","prop":"background","options":["#fff3e0","#ffe0b2","#ffccbc"]},
+  {"label":"general ~","sel":".lat h2 ~ p","prop":"background","options":["#e8f5e9","#c8e6c9","#b2dfdb"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s6" data-num="6" data-title="Pseudo-clase">
+<script type="text/markdown">
+O **pseudo-clasă** descrie o **stare** sau o **poziție**, fără o clasă scrisă în HTML. Se scrie cu **două puncte**: `a:hover`.
+
+| Pseudo-clasă | Când |
+|---|---|
+| `:hover` | mouse-ul e deasupra |
+| `:focus` / `:focus-visible` | elementul are focus (câmp, link cu Tab) |
+| `:active` | în momentul clicului |
+| `:first-child` / `:last-child` | primul / ultimul copil |
+| `:nth-child(even)` sau `(odd)` | rândurile pare / impare |
+| `:not(selector)` | elementele care **nu** se potrivesc |
+
+Pentru linkuri, ordinea utilă când le stilizezi pe toate este `:link`, `:visited`, `:hover`, `:active` (aceeași specificitate, câștigă cea scrisă mai jos).
+</script>
+
+<div class="demo" data-title=":hover și :focus-visible" data-desc="Treci cu mouse-ul peste buton și apasă Tab până ajunge pe el. Schimbă culoarea de la hover." data-height="120" data-tab="css">
+<script type="text/css">
+a.buton {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #1565c0;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+}
+a.buton:hover { background: #0d47a1; }
+a.buton:focus-visible { outline: 3px solid #f9a825; outline-offset: 3px; }
+</script>
+<script type="text/html">
+<a class="buton" href="#sus">Vezi produsele</a>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"hover","sel":"a.buton:hover","prop":"background","options":["#0d47a1","#c62828","#2e7d32","#6a1b9a"]},
+  {"label":"normal","sel":"a.buton","prop":"background","options":["#1565c0","#00897b","#e65100","#263238"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Rânduri alternate :nth-child" data-desc="Schimbă fundalul rândurilor pare. Nu e nevoie de clasă pe fiecare tr." data-height="220" data-tab="css">
+<script type="text/css">
+table { border-collapse: collapse; width: 100%; max-width: 360px; }
+th, td { border: 1px solid #cfd8dc; padding: 8px 10px; text-align: left; }
+th { background: #263238; color: #fff; }
+tbody tr:nth-child(even) { background: #e3f2fd; }
+tbody tr:hover { background: #fff3e0; }
+</script>
+<script type="text/html">
+<table>
+  <thead><tr><th>Produs</th><th>Preț</th></tr></thead>
+  <tbody>
+    <tr><td>Cană</td><td>79</td></tr>
+    <tr><td>Bol</td><td>55</td></tr>
+    <tr><td>Farfurie</td><td>65</td></tr>
+    <tr><td>Lumânare</td><td>49</td></tr>
+  </tbody>
+</table>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"rând par","sel":"tbody tr:nth-child(even)","prop":"background","options":["#e3f2fd","#e8f5e9","#fce4ec","#fff8e1"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s7" data-num="7" data-title="Pseudo-elemente">
+<script type="text/markdown">
+Un **pseudo-element** reprezintă o **parte** a elementului sau conținut **generat** de CSS. Se scrie cu **două puncte duble**: `p::first-letter`.
+
+| Pseudo-element | Ce reprezintă |
+|---|---|
+| `::before` / `::after` | conținut generat înainte / după (obligatoriu `content`) |
+| `::first-letter` | prima literă |
+| `::first-line` | prima linie afișată |
+| `::placeholder` | textul sugestie dintr-un câmp |
+| `::selection` | textul selectat cu mouse-ul |
+
+Fără `content`, `::before` și `::after` nu apar. Poți pune text (`"lei"`) sau un șir gol (`""`) pentru o linie decorativă.
+</script>
+
+<div class="demo" data-title="::before și ::after" data-desc="Schimbă textul din content și culoarea liniei de sub titlu. content este obligatoriu." data-height="160" data-tab="css">
+<script type="text/css">
+.pret::after {
+    content: " lei";
+    color: #607d8b;
+    font-weight: 400;
+}
+h2 { margin: 0 0 8px; font-size: 1.25rem; }
+h2::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 3px;
+    margin-top: 6px;
+    background: #c62828;
+}
+.pret { font-size: 1.4rem; font-weight: 800; }
+</script>
+<script type="text/html">
+<h2>Cană ceramică</h2>
+<p class="pret">79</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"după preț","sel":".pret::after","prop":"content","options":["\" lei\"","\" MDL\"","\" €\""]},
+  {"label":"linia","sel":"h2::after","prop":"background","options":["#c62828","#1565c0","#2e7d32","#e65100"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="::first-letter și ::selection" data-desc="Selectează textul cu mouse-ul ca să vezi ::selection. Schimbă mărimea inițialei." data-height="160" data-tab="css">
+<script type="text/css">
+p { margin: 0; max-width: 460px; line-height: 1.5; }
+p::first-letter {
+    font-size: 2.4em;
+    font-weight: 700;
+    color: #c62828;
+    float: left;
+    line-height: 1;
+    padding-right: 6px;
+}
+p::selection { background: #ffe082; color: #263238; }
+</script>
+<script type="text/html">
+<p>Limbajul CSS descrie aspectul, nu structura. Inițiala mare vine din ::first-letter, fără un span în HTML.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"mărime inițială","sel":"p::first-letter","prop":"font-size","options":["2.4em","1.6em","3.2em","4em"]},
+  {"label":"culoare inițială","sel":"p::first-letter","prop":"color","options":["#c62828","#1565c0","#6a1b9a","#e65100"]}
+]
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s8" data-num="8" data-title="Cascada: ordinea regulilor">
+<script type="text/markdown">
+Când două reguli cu **aceeași specificitate** stabilesc aceeași proprietate, câștigă cea scrisă **mai jos** în CSS.
+
+De aici vine „cascadă”: stilurile se suprapun, iar ultimul strat vizibil rămâne.
+
+Ordinea completă, pe scurt:
+
+1. `!important`;
+2. originea (stilurile tale bat stilurile implicite ale browserului);
+3. specificitatea;
+4. ordinea în cod.
+</script>
+
+<div class="demo" data-title="La egalitate câștigă regula de jos" data-desc="Ambele reguli sunt pe p. Câștigă a doua. Mută declarația de culoare în sus în editor și vezi că se schimbă câștigătorul." data-height="120" data-tab="css">
+<script type="text/css">
+p { color: #2e7d32; margin: 0; font-size: 18px; }
+p { color: #1565c0; }
+</script>
+<script type="text/html">
+<p>Două reguli p. Câștigă cea de-a doua: albastru.</p>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s9" data-num="9" data-title="Specificitatea">
+<script type="text/markdown">
+Dacă regulile diferă ca „tărie”, ordinea nu mai ajunge. Browserul numără specificitatea pe trei niveluri:
+
+| Nivel | Ce contează | Exemplu |
+|---|---|---|
+| a | identificatori | `#intro` → 1,0,0 |
+| b | clase, atribute, pseudo-clase | `.evid`, `[type="email"]`, `:hover` → 0,1,0 |
+| c | elemente și pseudo-elemente | `p`, `::before` → 0,0,1 |
+
+Se compară întâi **a**, apoi **b**, apoi **c**. O clasă (0,1,0) bate oricâte elemente (0,0,5). Un id (1,0,0) bate orice clasă.
+
+Inline (`style="…"`) bate toți selectorii de mai sus. `!important` bate și inline-ul normal.
+
+Selectorul `*` și combinatorii (` `, `>`, `+`) **nu** adaugă specificitate; elementele din ei, da (`article p` este 0,0,2).
+</script>
+
+<div class="demo" data-title="Element, clasă, id pe același text" data-desc="Câștigă #special. Șterge regula #special din editor: rămâne clasa. Șterge și clasa: rămâne p." data-height="140" data-tab="css">
+<script type="text/css">
+p { color: #546e7a; margin: 0; font-size: 18px; }
+.evid { color: #1565c0; }
+#special { color: #c62828; }
+</script>
+<script type="text/html">
+<p class="evid" id="special">p (0,0,1) · .evid (0,1,0) · #special (1,0,0)</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color #special","sel":"#special","prop":"color","options":["#c62828","#6a1b9a","#e65100","#00695c"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="O clasă bate două elemente" data-desc="article p are specificitate 0,0,2. .nota are 0,1,0 și câștigă, deși e scrisă prima." data-height="100" data-tab="css">
+<script type="text/css">
+.nota { color: #c62828; }
+article p { color: #1565c0; margin: 0; }
+</script>
+<script type="text/html">
+<article><p class="nota">Clasa câștigă, chiar dacă e scrisă deasupra.</p></article>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":".nota","sel":".nota","prop":"color","options":["#c62828","#6a1b9a","#e65100"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s10" data-num="10" data-title="Moștenirea">
+<script type="text/markdown">
+Unele proprietăți se transmit de la părinte la copii. Altele nu.
+
+| Se moștenesc | Nu se moștenesc |
+|---|---|
+| `color`, `font-family`, `font-size`, `font-weight` | `background`, `border`, `margin`, `padding` |
+| `text-align`, `line-height`, `letter-spacing` | `width`, `height` |
+
+De aceea `body { font-family: …; color: …; }` schimbă textul din toată pagina: paragrafele, listele și celulele moștenesc. Fundalul și bordura rămân ale părintelui.
+
+O regulă proprie a copilului înlocuiește valoarea moștenită. Poți forța moștenirea cu `color: inherit`.
+</script>
+
+<div class="demo" data-title="Ce trece la copii" data-desc="Schimbă culoarea părintelui: textul din copil se schimbă. Bordura rămâne doar pe cutia mare." data-height="160" data-tab="css">
+<script type="text/css">
+.parinte {
+    color: #1565c0;
+    font-family: Georgia, serif;
+    border: 3px solid #1565c0;
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+.parinte p { margin: 0 0 6px; }
+.copil { font-weight: 700; }
+</script>
+<script type="text/html">
+<div class="parinte">
+  <p>Text moștenit: culoare și font.</p>
+  <p class="copil">Și acest rând moștenește culoarea.</p>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color părinte","sel":".parinte","prop":"color","options":["#1565c0","#6a1b9a","#c62828","#00695c"]},
+  {"label":"border","sel":".parinte","prop":"border","options":["3px solid #1565c0","3px dashed #c62828","3px solid #2e7d32","0"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s11" data-num="11" data-title="!important">
+<script type="text/markdown">
+`!important` la sfârșitul valorii face ca declarația să bată regulile normale, inclusiv unele cu specificitate mai mare și chiar stilul inline (dacă inline-ul nu are și el `!important`).
+
+```css
+.buton { background: #1565c0 !important; }
+```
+
+Îl eviți în codul de zi cu zi: strică cascada și devine greu de corectat. Are sens în două situații rare: o utilitate de accesibilitate (`prefers-reduced-motion`) sau o suprascriere pe care nu o controlezi altfel. În rest, repară selectorul.
+</script>
+
+<div class="demo" data-title="!important blochează clasa mai specifică" data-desc="Comută valoarea. Cu !important rămâne verdele de pe p. Fără el câștigă .special, deși e o singură clasă." data-height="110" data-tab="css">
+<script type="text/css">
+p { color: #2e7d32 !important; margin: 0; font-size: 18px; }
+.special { color: #c62828; }
+</script>
+<script type="text/html">
+<p class="special">Clasa .special pierde, cât timp p are !important.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color pe p","sel":"p","prop":"color","options":["#2e7d32 !important","#2e7d32"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s12" data-num="12" data-title="Unități: px, em, rem, %, vw și vh">
+<script type="text/markdown">
+| Unitate | Față de ce | La ce e bună |
+|---|---|---|
+| `px` | pixel | borduri, umbre, valori fine |
+| `%` | dimensiunea **părintelui** | lățimi relative |
+| `em` | fontul **elementului** (la `font-size`, fontul părintelui) | spații legate de text; se înmulțește la imbricare |
+| `rem` | fontul lui `html` (rădăcina) | mărimi de text care nu se înmulțesc |
+| `vw` / `vh` | 1% din lățimea / înălțimea **ferestrei** | secțiuni mari, titluri fluide |
+
+`0` se scrie fără unitate. Nu pui spațiu între număr și unitate: `16px`, nu `16 px`.
+
+`em` se compune: un copil cu `font-size: 1.2em` înăuntrul altui `1.2em` ajunge la 1,44×. `rem` rămâne raportat la `html`, deci e mai previzibil pentru text.
+</script>
+
+<div class="demo" data-title="rem urmărește fontul din html" data-desc="Crește font-size de pe html. Textul în rem crește. Textul în px rămâne pe loc." data-height="150" data-tab="css">
+<script type="text/css">
+html { font-size: 16px; }
+.px { font-size: 16px; margin: 0 0 6px; }
+.rem { font-size: 1rem; margin: 0; font-weight: 700; color: #1565c0; }
+</script>
+<script type="text/html">
+<p class="px">16px — nu depinde de html</p>
+<p class="rem">1rem — egal cu fontul din html</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"html font-size","sel":"html","prop":"font-size","type":"range","min":12,"max":28,"step":1,"unit":"px"}
+]
+</script>
+</div>
+
+<div class="demo" data-title="em se înmulțește, rem nu" data-desc="Ambele cutii au font-size 1.25em față de părinte, dar părintele .em-cutie e deja mărit. Compară cu .rem-cutie." data-height="180" data-tab="css">
+<script type="text/css">
+.rand { display: flex; gap: 12px; }
+.cutie { flex: 1; padding: 10px; border-radius: 8px; background: #f5f7fa; }
+.em-cutie { font-size: 1.25em; }
+.em-cutie .inner { font-size: 1.25em; color: #c62828; font-weight: 700; }
+.rem-cutie { font-size: 1.25rem; }
+.rem-cutie .inner { font-size: 1.25rem; color: #1565c0; font-weight: 700; }
+p { margin: 0; }
+</script>
+<script type="text/html">
+<div class="rand">
+  <div class="cutie em-cutie">
+    <p>Părinte 1.25em</p>
+    <p class="inner">Copil 1.25em</p>
+  </div>
+  <div class="cutie rem-cutie">
+    <p>Părinte 1.25rem</p>
+    <p class="inner">Copil 1.25rem</p>
+  </div>
+</div>
+</script>
+</div>
+
+<div class="demo" data-title="Procente din părinte" data-desc="Lățimea barei e un procent din cutia punctată. Trage glisorul." data-height="120" data-tab="css">
+<script type="text/css" data-hidden>
+.rama { border: 2px dashed #90a4ae; border-radius: 8px; padding: 8px; }
+</script>
+<script type="text/css">
+.bara {
+    width: 60%;
+    height: 28px;
+    border-radius: 6px;
+    background: #1565c0;
+}
+</script>
+<script type="text/html">
+<div class="rama"><div class="bara"></div></div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"width","sel":".bara","prop":"width","type":"range","min":10,"max":100,"step":5,"unit":"%"}
+]
+</script>
+</div>
+
+<div class="demo" data-title="vw urmărește lățimea previzualizării" data-desc="Trage de marginea din dreapta a previzualizării. 40vw înseamnă 40% din lățimea acestui cadru, nu a ecranului întreg." data-height="140" data-layout="stack" data-resizable data-tab="css">
+<script type="text/css">
+.lat {
+    width: 40vw;
+    max-width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background: #e3f2fd;
+    font-weight: 700;
+}
+</script>
+<script type="text/html">
+<div class="lat">40vw</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"width","sel":".lat","prop":"width","options":["20vw","40vw","70vw","100vw"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s13" data-num="13" data-title="Culori: nume, hex, rgb, hsl">
+<script type="text/markdown">
+| Format | Exemplu | Observație |
+|---|---|---|
+| nume | `crimson`, `navy` | ~140 de nume; utile la schiță |
+| hex | `#1565c0`, `#fff` | `#RRGGBB`; forma scurtă `#RGB` dublează fiecare cifră |
+| `rgb()` | `rgb(21, 101, 192)` | roșu, verde, albastru, fiecare 0–255 |
+| `rgba()` / `rgb(… / 50%)` | transparență | ultimul canal: 0 transparent, 1 opac |
+| `hsl()` | `hsl(210, 80%, 42%)` | nuanță 0–360°, saturație, luminozitate |
+
+Același albastru poate fi scris în toate formele: `#1565c0`, `rgb(21, 101, 192)`, `hsl(210, 80%, 42%)`.
+
+`hsl` e comod când vrei variante: păstrezi nuanța și schimbi doar luminozitatea (`42%` mai închis, `90%` pastelat).
+
+Verifică **contrastul**: textul obișnuit ar trebui să aibă cel puțin 4,5:1 față de fundal. Text galben pe alb e greu de citit.
+</script>
+
+<div class="demo" data-title="Același albastru, trei scrieri" data-desc="Comută fundalul între hex, rgb și hsl. Ar trebui să vezi aceeași culoare." data-height="120" data-tab="css">
+<script type="text/css">
+.swatch {
+    margin: 0;
+    padding: 16px;
+    border-radius: 10px;
+    background: #1565c0;
+    color: #ffffff;
+    font-weight: 700;
+}
+</script>
+<script type="text/html">
+<p class="swatch">Text alb pe albastru</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"background","sel":".swatch","prop":"background","options":["#1565c0","rgb(21, 101, 192)","hsl(210, 80%, 42%)","hsl(210, 80%, 75%)","hsl(210, 40%, 30%)"]},
+  {"label":"color text","sel":".swatch","prop":"color","options":["#ffffff","#263238","#fff59d"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Transparență: opacitatea fundalului, nu a textului" data-desc="rgba schimbă doar fundalul. opacity ar estompa și textul — de aceea pentru un strat colorat folosești rgba sau hsl cu alfa." data-height="140" data-tab="css">
+<script type="text/css" data-hidden>
+.fundal { background: repeating-linear-gradient(45deg, #cfd8dc 0 8px, #fff 8px 16px); padding: 10px; border-radius: 10px; }
+</script>
+<script type="text/css">
+.placa {
+    margin: 0;
+    padding: 14px;
+    border-radius: 8px;
+    background: rgb(21, 101, 192);
+    color: #fff;
+    font-weight: 700;
+}
+</script>
+<script type="text/html">
+<div class="fundal"><p class="placa">Fundal albastru</p></div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"background","sel":".placa","prop":"background","options":["rgb(21, 101, 192)","rgba(21, 101, 192, 0.45)","rgba(21, 101, 192, 0.15)","hsl(210 80% 42% / 70%)"]}
+]
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s14" data-num="14" data-title="Text și fonturi">
+<script type="text/markdown">
+### 14.1. Fontul
+
+| Proprietate | Valori uzuale | Efect |
+|---|---|---|
+| `font-family` | `Georgia, serif` | familia, cu listă de rezervă |
+| `font-size` | `1.125rem`, `18px` | mărimea |
+| `font-weight` | `400`, `700` | grosimea |
+| `font-style` | `italic` | cursiv |
+| `font` | prescurtare | `italic 700 1.2rem/1.5 Georgia, serif` — obligatorii sunt mărimea și familia |
+
+`font-family` este o **listă**: browserul o folosește pe prima pe care o are instalată. La final pui o familie generică: `serif`, `sans-serif`, `monospace`, `cursive`, `fantasy`. Numele cu spații se scriu între ghilimele: `"Times New Roman", serif`.
+
+### 14.2. Textul
+
+| Proprietate | Efect |
+|---|---|
+| `color` | culoarea textului |
+| `text-align` | `left`, `right`, `center`, `justify` — alinierea **în interiorul** cutiei |
+| `text-decoration` | `underline`, `line-through`, `none` |
+| `text-transform` | `uppercase`, `lowercase`, `capitalize` |
+| `letter-spacing` / `word-spacing` | spațiul dintre litere / cuvinte |
+| `line-height` | înălțimea rândului; `1.5` fără unitate înseamnă 1,5 × fontul |
+| `text-indent` | indentarea primei linii |
+
+`text-align` nu mută cutia în pagină. Pentru asta folosești `margin` (de exemplu `margin-inline: auto` pe un bloc cu lățime).
+</script>
+
+<div class="demo" data-title="Laborator de text" data-desc="Toate glisoarele și listele rescriu CSS-ul live. Urmărește lizibilitatea: line-height mic înghesuie rândurile, letter-spacing mare le rarefiază." data-height="280" data-layout="stack" data-tab="css">
+<script type="text/css">
+.text {
+    margin: 0;
+    max-width: 36rem;
+    color: #263238;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: 400;
+    font-style: normal;
+    text-align: left;
+    text-transform: none;
+    text-decoration: none;
+    letter-spacing: 0px;
+    line-height: 1.5;
+    background: #f7f5f0;
+    padding: 14px 16px;
+    border-radius: 10px;
+}
+</script>
+<script type="text/html">
+<p class="text">Apa trebuie să fie aproape de fierbere pentru ceaiul negru, dar nu pentru cel verde. Un rând mai aerisit se citește mai ușor decât unul lipit.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"font-family","sel":".text","prop":"font-family","options":["Georgia, serif","system-ui, sans-serif","ui-monospace, monospace","\"Palatino Linotype\", Palatino, serif"]},
+  {"label":"font-size","sel":".text","prop":"font-size","type":"range","min":14,"max":36,"step":1,"unit":"px"},
+  {"label":"font-weight","sel":".text","prop":"font-weight","type":"range","min":300,"max":800,"step":100,"unit":""},
+  {"label":"font-style","sel":".text","prop":"font-style","options":["normal","italic"]},
+  {"label":"text-align","sel":".text","prop":"text-align","options":["left","center","right","justify"]},
+  {"label":"text-transform","sel":".text","prop":"text-transform","options":["none","uppercase","lowercase","capitalize"]},
+  {"label":"text-decoration","sel":".text","prop":"text-decoration","options":["none","underline","line-through"]},
+  {"label":"letter-spacing","sel":".text","prop":"letter-spacing","type":"range","min":-1,"max":8,"step":1,"unit":"px"},
+  {"label":"line-height","sel":".text","prop":"line-height","type":"range","min":1,"max":2.2,"step":0.1,"unit":""}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s15" data-num="15" data-title="Google Fonts">
+<script type="text/markdown">
+Fonturile de sistem (`Georgia`, `system-ui`) există pe calculator. Pentru un font care **nu** e instalat, îl aduci de pe un serviciu sau dintr-un fișier.
+
+**Google Fonts**, varianta cu `<link>` în `<head>` (recomandată):
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Source+Sans+3:wght@400;600&display=swap">
+```
+
+Apoi în CSS:
+
+```css
+h1 { font-family: Fraunces, Georgia, serif; }
+body { font-family: "Source Sans 3", system-ui, sans-serif; }
+```
+
+Într-un fișier `.css` poți folosi și `@import`, dar `<link>` în HTML pornește descărcarea mai devreme.
+
+Verifică că fontul are **diacriticele românești** (ă, â, î, ș, ț). `display=swap` arată textul imediat cu un font de rezervă, până se încarcă fișierul.
+
+În demo-ul de mai jos fontul e încărcat cu `@import`, ca să-l poți vedea direct în previzualizare.
+</script>
+
+<div class="demo" data-title="Fraunces de pe Google Fonts" data-desc="Comută familia: Fraunces (descărcat) față de Georgia (sistem). Dacă rețeaua e blocată, rămâne rezerva serif." data-height="180" data-tab="css">
+<script type="text/css">
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap");
+
+h2 {
+    margin: 0 0 8px;
+    font-family: Fraunces, Georgia, serif;
+    font-weight: 600;
+    font-size: 2rem;
+    color: #1d2430;
+}
+p {
+    margin: 0;
+    font-family: "Source Sans 3", system-ui, sans-serif;
+    font-size: 1.05rem;
+}
+</script>
+<script type="text/html">
+<h2>Atelier Mic</h2>
+<p>Ceramică și lumânări — ș, ț, ă, â, î trebuie să arate corect.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"titlu","sel":"h2","prop":"font-family","options":["Fraunces, Georgia, serif","Georgia, serif","system-ui, sans-serif"]},
+  {"label":"font-size","sel":"h2","prop":"font-size","type":"range","min":24,"max":56,"step":2,"unit":"px"}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s16" data-num="16" data-title="Rezumat">
+<script type="text/markdown">
+| Temă | Reții |
+|---|---|
+| Rol | HTML = structură, CSS = aspect |
+| Includere | inline / `<style>` / fișier `.css`; extern e varianta de proiect |
+| Sintaxă | `selector { proprietate: valoare; }` |
+| Selectori | element, `.clasă`, `#id`, `[atribut]`, descendent, `>`, `+`, `~` |
+| Pseudo | `:hover`, `:focus`, `:nth-child` · `::before` (cu `content`), `::first-letter` |
+| Cascadă | la specificitate egală câștigă regula de mai jos; inline bate foaia |
+| Specificitate | id > clasă/atribut/pseudo-clasă > element |
+| Moștenire | `color` și fontul da; `border`, `margin`, `background` nu |
+| `!important` | bate cascada normală; se evită |
+| Unități | `rem` pentru text, `%` pentru lățimi, `px` pentru detalii, `vw` față de fereastră |
+| Culori | hex, `rgb`, `hsl` — aceeași culoare, scrieri diferite |
+| Text | `font-family` cu rezervă, `line-height` fără unitate, Google Fonts prin `<link>` |
+</script>
+</section>
+
+<section class="lesson" id="s17" data-num="17" data-title="Greșeli frecvente">
+<script type="text/markdown">
+| Problemă | Cauză | Remediu |
+|---|---|---|
+| Regula nu se aplică | selector greșit, clasă scrisă diferit, fișier nelegat | verifică `.clasă` vs `class`, calea din `href` |
+| O proprietate e ignorată | literă greșită sau `;` lipsă înainte | DevTools, proprietatea apare tăiată |
+| Culoarea „nu e a clasei” | un `#id` sau `!important` câștigă | compară specificitatea |
+| `width: 50` nu face nimic | lipsește unitatea | `50%` sau `50px` |
+| `em` prea mare în adâncime | valorile se înmulțesc | `rem` pentru text |
+| `::before` invizibil | lipsește `content` | `content: ""` sau un text |
+| Fontul Google nu apare | link greșit sau fără diacritice | verifică URL-ul și lista de rezervă |
+</script>
+
+<div class="demo" data-title="Trei reguli, un singur câștigător" data-desc="Paragraful are class și id. Spune cu voce tare cine câștigă înainte să schimbi ceva, apoi scoate pe rând regulile din editor." data-height="120" data-tab="css">
+<script type="text/css">
+p { color: #546e7a; }
+.nota { color: #1565c0 !important; }
+#titlu { color: #c62828; }
+</script>
+<script type="text/html">
+<p class="nota" id="titlu" style="color: #2e7d32;">Ce culoare vezi și de ce?</p>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s18" data-num="18" data-title="Întrebări de autoverificare">
+<script type="text/markdown">
+Deschide răspunsul după ce ai formulat unul propriu.
+</script>
+
+<details class="qa"><summary>1. Ce face CSS și ce rămâne în seama HTML-ului?</summary><div class="qa-a">HTML descrie structura și sensul (titlu, paragraf, navigare). CSS descrie aspectul: culoare, font, spații, lățime. Conținutul poate rămâne neschimbat când schimbi doar stilul.</div></details>
+
+<details class="qa"><summary>2. Care sunt cele trei moduri de a adăuga CSS și care e potrivit pentru un site cu mai multe pagini?</summary><div class="qa-a">Inline (<code>style</code>), intern (<code>&lt;style&gt;</code> în <code>&lt;head&gt;</code>) și extern (fișier <code>.css</code> legat cu <code>&lt;link rel="stylesheet"&gt;</code>). Pentru mai multe pagini folosești foaia externă: o modifici o dată și se aplică peste tot unde e legată.</div></details>
+
+<details class="qa"><summary>3. La două reguli <code>p { color: … }</code>, care câștigă?</summary><div class="qa-a">Au aceeași specificitate, deci câștigă cea scrisă mai jos. Un <code>style</code> inline pe un paragraf anume bate ambele, dacă nu intervine <code>!important</code>.</div></details>
+
+<details class="qa"><summary>4. Ce specificitate au <code>p</code>, <code>.nota</code> și <code>#titlu</code>?</summary><div class="qa-a"><code>p</code> este 0,0,1 (un element). <code>.nota</code> este 0,1,0 (o clasă). <code>#titlu</code> este 1,0,0 (un id). Id-ul bate clasa, clasa bate elementul.</div></details>
+
+<details class="qa"><summary>5. Ce alege <code>article p</code> și ce alege <code>article &gt; p</code>?</summary><div class="qa-a"><code>article p</code> alege orice paragraf din interiorul articolului, inclusiv pe cei din alte elemente. <code>article &gt; p</code> alege doar paragrafele care sunt copii direcți ai articolului.</div></details>
+
+<details class="qa"><summary>6. De ce <code>li::before { color: red; }</code> nu afișează nimic?</summary><div class="qa-a">Pseudo-elementele <code>::before</code> și <code>::after</code> au nevoie de proprietatea <code>content</code>. Fără ea, nu se generează nimic.</div></details>
+
+<details class="qa"><summary>7. Ce diferență este între <code>em</code> și <code>rem</code>?</summary><div class="qa-a">La <code>font-size</code>, <code>em</code> se raportează la fontul părintelui și se înmulțește dacă imbrichezi elemente. <code>rem</code> se raportează mereu la fontul elementului <code>html</code>.</div></details>
+
+<details class="qa"><summary>8. De ce un fundal <code>rgba(…, 0.4)</code> e diferit de <code>opacity: 0.4</code>?</summary><div class="qa-a"><code>rgba</code> face transparent doar acea culoare (de obicei fundalul). <code>opacity</code> estompează tot elementul: text, bordură și copii.</div></details>
+
+<details class="qa"><summary>9. Ce pui la sfârșitul unei liste <code>font-family</code> și de ce?</summary><div class="qa-a">O familie generică (<code>serif</code>, <code>sans-serif</code>, <code>monospace</code>). Dacă fontul dorit nu e instalat sau nu s-a descărcat, browserul are totuși o rezervă din aceeași categorie.</div></details>
+
+<details class="qa"><summary>10. Când e justificat <code>!important</code>?</summary><div class="qa-a">Rar: de exemplu ca să oprești animațiile pentru cine a cerut <code>prefers-reduced-motion</code>. În rest îngreunează cascada; mai bine crești specificitatea sau schimbi ordinea regulilor.</div></details>
+</section>
+
+
+            <footer class="page-foot">
+                <p>Prelegerea 3. Exemplele rulează izolat; modificările din editor nu se salvează. Comutatoarele de sub cod rescriu live declarația CSS corespunzătoare.</p>
+            </footer>
+        </main>
+    </div>
+
+    <button class="icon-btn to-top" type="button" aria-label="Înapoi sus">↑ Sus</button>
+
+    <script src="assets/app.js"></script>
+    <script src="../../assets/course-nav.js"></script>
+</body>
+</html>

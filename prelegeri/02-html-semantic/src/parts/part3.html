@@ -1,0 +1,424 @@
+<section class="lesson" id="s9" data-num="9" data-title="Formulare: ideea de bază">
+<script type="text/markdown">
+### 9.1. Ce este un formular
+
+Un formular colectează date de la utilizator și le trimite (sau le procesează). Containerul este `<form>`.
+
+| Atribut | Rol |
+|---|---|
+| `action` | URL-ul unde se trimit datele (ex. `proceseaza.php` sau `#` la exerciții) |
+| `method` | `get` (datele apar în URL) sau `post` (în corpul cererii — preferat pentru date sensibile / lungi) |
+| `novalidate` | dezactivează validarea nativă la submit (rar necesar) |
+
+### 9.2. Piesele de bază: `label`, `input` și atributele lor
+
+Înainte de detalii, trei idei esențiale:
+
+| Element | Ce este |
+|---|---|
+| `<label>` | **eticheta** vizibilă (și anunțată de cititoare) a unui câmp — textul pe care îl citește utilizatorul („E-mail”, „Nume”) |
+| `<input>` | **câmpul** în care se tastează sau se alege o valoare |
+| legătura dintre ele | atributul `for` al etichetei trebuie să coincidă cu `id`-ul câmpului |
+
+Atributele pe care le vei folosi aproape mereu pe un câmp:
+
+| Atribut | Unde | Sens |
+|---|---|---|
+| `id` | pe `input` (și în `for` pe `label`) | identificator **unic în pagină**; leagă eticheta de câmp; util și în CSS/JS |
+| `name` | pe `input` | numele sub care se **trimite** valoarea la server (ex. `email=tu@exemplu.md`). Fără `name`, câmpul **nu apare** în datele trimise |
+| `placeholder` | pe `input` | text gri de **sugestie**, care dispare când începi să scrii. **Nu** înlocuiește `label` |
+| `type` | pe `input` | tipul câmpului (`text`, `email`, `number`…) — vezi secțiunea următoare |
+| `for` | pe `label` | trebuie să fie egal cu `id`-ul câmpului asociat |
+
+```html
+<form action="#" method="post">
+  <label for="email">E-mail</label>
+  <input type="email" id="email" name="email" placeholder="tu@exemplu.md">
+  <button type="submit">Trimite</button>
+</form>
+```
+
+- `for="email"` + `id="email"` → clic pe „E-mail” focusează câmpul;
+- `name="email"` → la trimitere există parametrul `email`;
+- `placeholder` → doar un indiciu vizual, nu eticheta.
+</script>
+
+<div class="demo" data-title="Formular minimal" data-desc="Încearcă: șterge name de pe input, apoi apasă Trimite — în URL (method get) vei vedea că lipsește parametrul." data-height="200" data-tab="html">
+<script type="text/css" data-hidden>
+form { display: grid; gap: 8px; max-width: 320px; }
+label { font-weight: 600; font-size: 14px; }
+input { padding: 8px 10px; border: 1px solid #90a4ae; border-radius: 6px; }
+button { padding: 8px 14px; border: 0; border-radius: 6px; background: #1565c0; color: #fff; font-weight: 600; cursor: pointer; width: fit-content; }
+</script>
+<script type="text/css">
+button { background: #1565c0; }
+</script>
+<script type="text/html">
+<form action="#" method="get">
+  <label for="email">E-mail</label>
+  <input type="email" id="email" name="email" placeholder="tu@exemplu.md">
+  <button type="submit">Trimite</button>
+</form>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s10" data-num="10" data-title="label și asocierea cu câmpul">
+<script type="text/markdown">
+### 10.1. De ce `label` e obligatoriu în practică
+
+- clic pe text → focus pe câmp (mai ales util la checkbox / radio);
+- cititoarele de ecran anunță eticheta când ajungi pe input;
+- zona de apăsare e mai mare pe mobil.
+
+### 10.2. Două moduri corecte
+
+1. **`for` + `id`** (recomandat când eticheta e lângă câmp):
+   `<label for="nume">Nume</label>` + `<input id="nume" …>`
+2. **Înfășurare**: `<label><input type="checkbox"> Accept</label>` — potrivit pentru opțiuni scurte.
+
+> [!WARN] Un `placeholder` **nu** înlocuiește `label`. Placeholderul dispare la scriere și nu e o etichetă accesibilă de încredere.
+</script>
+
+<div class="demo" data-title="label corect vs. text liber" data-desc="Încearcă: dă clic pe textul „Nume” din stânga (nu pe câmp) — focusul sare. În dreapta, clic pe text nu face nimic." data-height="240" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.box { border: 1px solid #cfd8dc; border-radius: 10px; padding: 12px; }
+.box h3 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; color: #607d8b; letter-spacing: .04em; }
+.rand { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+input { padding: 8px; border: 1px solid #90a4ae; border-radius: 6px; }
+.ok { border-color: #81c784; background: #f1f8e9; }
+.bad { border-color: #e57373; background: #fff5f5; }
+</script>
+<script type="text/css">
+input:focus { outline: 2px solid #1565c0; outline-offset: 1px; }
+</script>
+<script type="text/html">
+<div class="grid">
+  <div class="box ok">
+    <h3>Corect — for / id</h3>
+    <div class="rand">
+      <label for="nume">Nume</label>
+      <input type="text" id="nume" name="nume">
+    </div>
+    <label><input type="checkbox" name="ok"> Sunt de acord</label>
+  </div>
+  <div class="box bad">
+    <h3>Greșit — fără label</h3>
+    <div class="rand">
+      <span>Nume</span>
+      <input type="text" name="nume2">
+    </div>
+    <div><input type="checkbox" name="ok2"> Sunt de acord</div>
+  </div>
+</div>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s11" data-num="11" data-title="Tipuri de input">
+<script type="text/markdown">
+### 11.1. Alege tipul după sens
+
+Browserul oferă tastatură potrivită (mobil), validare și UI nativ.
+
+| `type` | Rol |
+|---|---|
+| `text` | text pe o linie |
+| `email` | format e-mail |
+| `tel` | telefon (fără validare strictă implicită) |
+| `url` | adresă web |
+| `number` | număr; opțional `min` / `max` / `step` |
+| `date` / `time` / `datetime-local` | selectoare de dată/oră |
+| `password` | text mascat |
+| `radio` | o singură alegere din grup (`name` identic) |
+| `checkbox` | zero sau mai multe alegeri |
+| `color` | selector de culoare |
+| `file` | încărcare fișier |
+| `hidden` | valoare invizibilă, totuși trimisă |
+| `submit` / `reset` / `button` | butoane (preferă `<button>` când ai nevoie de conținut bogat) |
+
+### 11.2. Atribute utile pe orice câmp
+
+| Atribut | Efect |
+|---|---|
+| `required` | obligatoriu |
+| `placeholder` | sugestie (nu etichetă!) |
+| `maxlength` / `minlength` | lungime text |
+| `pattern` | regex pentru validare |
+| `autocomplete` | indiciu pentru completare automată (`name`, `email`…) |
+| `disabled` / `readonly` | nu se editează (`disabled` nici nu se trimite) |
+</script>
+
+<div class="demo" data-title="Galerie de tipuri de input" data-desc="Încearcă: pe mobil (sau DevTools device mode) apasă în email/tel/number — tastatura se schimbă. Schimbă type=&quot;email&quot; în text." data-height="420" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+form { display: grid; gap: 10px; max-width: 420px; }
+.rand { display: grid; grid-template-columns: 130px 1fr; gap: 8px; align-items: center; }
+label { font-size: 14px; font-weight: 600; }
+input, select { padding: 7px 9px; border: 1px solid #90a4ae; border-radius: 6px; }
+.optiuni { display: flex; gap: 12px; flex-wrap: wrap; font-weight: 400; }
+input[type="color"] { padding: 0; height: 34px; }
+</script>
+<script type="text/css">
+input:focus { border-color: #1565c0; }
+</script>
+<script type="text/html">
+<form action="#" method="post">
+  <div class="rand">
+    <label for="nume">Nume</label>
+    <input type="text" id="nume" name="nume" autocomplete="name">
+  </div>
+  <div class="rand">
+    <label for="mail">E-mail</label>
+    <input type="email" id="mail" name="mail" autocomplete="email">
+  </div>
+  <div class="rand">
+    <label for="tel">Telefon</label>
+    <input type="tel" id="tel" name="tel" placeholder="0XXXXXXXX">
+  </div>
+  <div class="rand">
+    <label for="nr">Cantitate</label>
+    <input type="number" id="nr" name="nr" min="1" max="20" value="1">
+  </div>
+  <div class="rand">
+    <label for="zi">Data</label>
+    <input type="date" id="zi" name="zi">
+  </div>
+  <div class="rand">
+    <label for="culoare">Culoare</label>
+    <input type="color" id="culoare" name="culoare" value="#1565c0">
+  </div>
+  <div class="rand">
+    <span>Livrare</span>
+    <div class="optiuni">
+      <label><input type="radio" name="livrare" value="curier" checked> Curier</label>
+      <label><input type="radio" name="livrare" value="ridicare"> Ridicare</label>
+    </div>
+  </div>
+  <div class="rand">
+    <span>Extra</span>
+    <div class="optiuni">
+      <label><input type="checkbox" name="extra" value="card"> Felicitare</label>
+      <label><input type="checkbox" name="extra" value="urgent"> Urgent</label>
+    </div>
+  </div>
+</form>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s12" data-num="12" data-title="select, textarea, datalist, fieldset">
+<script type="text/markdown">
+### 12.1. Liste și text lung
+
+| Element | Când |
+|---|---|
+| `<select>` + `<option>` | alegere dintr-o listă **fixă** (utilizatorul nu poate scrie altceva) |
+| `<datalist>` + `<input list="…">` | sugestii; utilizatorul **poate** scrie altă valoare |
+| `<textarea>` | text pe mai multe linii (`rows`, `maxlength`) |
+
+### 12.2. `fieldset` și `legend`
+
+Grupează vizual și semantic câmpurile înrudite („Date personale”, „Livrare”). `legend` e titlul grupului — cititoarele îl anunță pentru fiecare câmp din grup.
+</script>
+
+<div class="demo" data-title="select, datalist, textarea, fieldset" data-desc="Încearcă: la Oraș scrie o valoare care nu e în listă (merge). La Produs, din select, nu poți inventa altceva." data-height="420" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+form { max-width: 480px; display: grid; gap: 12px; }
+fieldset { margin: 0; border: 2px groove #5c6bc0; border-radius: 8px; padding: 10px 12px; }
+legend { padding: 0 6px; font-weight: 700; color: #283593; }
+.rand { display: grid; grid-template-columns: 120px 1fr; gap: 8px; align-items: start; margin: 8px 0; }
+label, .eticheta { font-size: 14px; font-weight: 600; padding-top: 8px; }
+input, select, textarea { padding: 8px; border: 1px solid #90a4ae; border-radius: 6px; font: inherit; width: 100%; box-sizing: border-box; }
+</script>
+<script type="text/css">
+legend { color: #283593; }
+</script>
+<script type="text/html">
+<form action="#" method="post">
+  <fieldset>
+    <legend>Date comandă</legend>
+    <div class="rand">
+      <label for="produs">Produs</label>
+      <select id="produs" name="produs">
+        <option>Cană ceramică</option>
+        <option selected>Lumânare</option>
+        <option>Set de ceai</option>
+      </select>
+    </div>
+    <div class="rand">
+      <label for="oras">Oraș</label>
+      <div>
+        <input list="orase" id="oras" name="oras" placeholder="Începe să scrii…">
+        <datalist id="orase">
+          <option value="Chișinău">
+          <option value="Bălți">
+          <option value="Orhei">
+          <option value="Cahul">
+        </datalist>
+      </div>
+    </div>
+    <div class="rand">
+      <label for="msg">Comentariu</label>
+      <textarea id="msg" name="msg" rows="3" maxlength="200" placeholder="Instrucțiuni livrare"></textarea>
+    </div>
+  </fieldset>
+</form>
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s13" data-num="13" data-title="Validare nativă">
+<script type="text/markdown">
+### 13.1. Browserul validează înainte de trimitere
+
+Dacă un câmp e invalid, formularul **nu se trimite**, iar browserul arată un mesaj. Nu e nevoie de JavaScript pentru cazurile de bază.
+
+| Mecanism | Exemplu |
+|---|---|
+| tipul câmpului | `type="email"` |
+| `required` | câmp gol → invalid |
+| `min` / `max` / `step` | pe `number` și `date` |
+| `minlength` / `maxlength` | lungime |
+| `pattern` | expresie regulată pe întregul câmp |
+
+### 13.2. `pattern` — regex pe scurt
+
+Browserul aplică pattern-ul pe **tot** conținutul (ca și cum ar avea `^…$`).
+
+| Pattern | Sens |
+|---|---|
+| `[A-Za-zĂÂÎȘȚăâîșț\s-]+` | litere (inclusiv diacritice), spații, cratimă |
+| `0[0-9]{8}` | 0 urmat de exact 8 cifre (telefon MD, simplificat) |
+
+Atributul `title` pe input e folosit adesea ca **explicație** în mesajul de eroare.
+
+### 13.3. Butoane
+
+```html
+<button type="submit">Trimite</button>
+<button type="reset">Anulează</button>
+```
+
+`type="button"` = fără acțiune implicită (pentru JS). Pe un `<button>` din form, tipul implicit e `submit`.
+
+### 13.4. De ce apar câmpurile „roșii” din start în CSS
+
+Un câmp cu `required` **gol** este deja `:invalid` la încărcarea paginii. Dacă stilizezi `input:invalid { border-color: red; }`, tot formularul pare greșit înainte ca utilizatorul să fi scris ceva.
+
+Soluții: stilizează doar după interacțiune (`:user-invalid`) sau folosește `input:not(:placeholder-shown):invalid` împreună cu un `placeholder` (chiar și `placeholder=" "`).
+</script>
+
+<div class="demo" data-title="required, email, pattern" data-desc="Încearcă: apasă Trimite cu câmpurile goale; apoi completează greșit telefonul; apoi corect. Observă mesajele native." data-height="320" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+form { display: grid; gap: 10px; max-width: 400px; }
+.rand { display: flex; flex-direction: column; gap: 4px; }
+label { font-weight: 600; font-size: 14px; }
+input { padding: 8px 10px; border: 1px solid #90a4ae; border-radius: 6px; }
+input:invalid:not(:placeholder-shown) { border-color: #c62828; }
+input:valid:not(:placeholder-shown) { border-color: #2e7d32; }
+.actiuni { display: flex; gap: 8px; }
+button { padding: 8px 14px; border-radius: 6px; border: 1px solid #546e7a; cursor: pointer; font-weight: 600; }
+button[type="submit"] { background: #1565c0; color: #fff; border-color: #0d47a1; }
+.nota { font-size: 13px; color: #c62828; margin: 0; }
+</script>
+<script type="text/css">
+button[type="submit"] { background: #1565c0; }
+</script>
+<script type="text/html">
+<form action="#" method="post">
+  <div class="rand">
+    <label for="n">Nume *</label>
+    <input type="text" id="n" name="n" required
+           pattern="[A-Za-zăâîșțĂÂÎȘȚ\s-]+"
+           title="Doar litere, spații și cratimă"
+           placeholder=" ">
+  </div>
+  <div class="rand">
+    <label for="e">E-mail *</label>
+    <input type="email" id="e" name="e" required placeholder=" ">
+  </div>
+  <div class="rand">
+    <label for="t">Telefon</label>
+    <input type="tel" id="t" name="t" pattern="0[0-9]{8}"
+           title="Format: 0 urmat de 8 cifre" placeholder="0XXXXXXXX">
+  </div>
+  <p class="nota">* obligatoriu</p>
+  <div class="actiuni">
+    <button type="reset">Anulează</button>
+    <button type="submit">Trimite</button>
+  </div>
+</form>
+</script>
+</div>
+
+<details class="qa"><summary>De ce formularul meu e „roșu” din start dacă stilizez <code>:invalid</code> în CSS?</summary><div class="qa-a">Un câmp <code>required</code> gol este invalid încă de la încărcare. Stilizează doar după interacțiune: <code>:user-invalid</code> sau <code>input:not(:placeholder-shown):invalid</code> (cu <code>placeholder</code> prezent).</div></details>
+</section>
+
+<section class="lesson" id="s14" data-num="14" data-title="Formular complet — exemplu ghidat">
+<script type="text/markdown">
+### 14.1. Pune piesele împreună
+
+Mai jos: un formular scurt de comandă cu `fieldset`, tipuri mixte, `required` și butoane.
+</script>
+
+<div class="demo" data-title="Comandă rapidă" data-desc="Încearcă: completează formularul și apasă Trimite; apoi lasă e-mailul invalid. Adaugă un câmp nou (ex. type=date) cu label." data-height="480" data-tab="html" data-layout="stack">
+<script type="text/css" data-hidden>
+form { max-width: 440px; display: grid; gap: 12px; padding: 14px; border: 1px solid #cfd8dc; border-radius: 10px; background: #fafafa; }
+fieldset { border: 1px solid #90a4ae; border-radius: 8px; margin: 0; }
+legend { font-weight: 700; color: #1565c0; padding: 0 6px; }
+.rand { display: grid; grid-template-columns: 110px 1fr; gap: 8px; align-items: center; margin: 8px 0; }
+label { font-size: 14px; font-weight: 600; }
+input, select, textarea { padding: 7px 9px; border: 1px solid #90a4ae; border-radius: 6px; font: inherit; width: 100%; box-sizing: border-box; }
+.opt { display: flex; gap: 12px; font-weight: 400; }
+.actiuni { display: flex; gap: 8px; justify-content: flex-end; }
+button { padding: 8px 14px; border-radius: 6px; border: 1px solid #546e7a; font-weight: 600; cursor: pointer; }
+button[type="submit"] { background: #1565c0; color: #fff; border-color: #0d47a1; }
+</script>
+<script type="text/css">
+legend { color: #1565c0; }
+</script>
+<script type="text/html">
+<form action="#" method="post">
+  <fieldset>
+    <legend>Date personale</legend>
+    <div class="rand">
+      <label for="nume">Nume *</label>
+      <input id="nume" name="nume" type="text" required autocomplete="name">
+    </div>
+    <div class="rand">
+      <label for="email">E-mail *</label>
+      <input id="email" name="email" type="email" required autocomplete="email">
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Comanda</legend>
+    <div class="rand">
+      <label for="prod">Produs</label>
+      <select id="prod" name="prod">
+        <option>Cană</option>
+        <option>Lumânare</option>
+        <option>Set ceai</option>
+      </select>
+    </div>
+    <div class="rand">
+      <span>Livrare</span>
+      <div class="opt">
+        <label><input type="radio" name="liv" value="curier" checked> Curier</label>
+        <label><input type="radio" name="liv" value="ridicare"> Ridicare</label>
+      </div>
+    </div>
+    <div class="rand">
+      <label for="note">Note</label>
+      <textarea id="note" name="note" rows="2" maxlength="150"></textarea>
+    </div>
+  </fieldset>
+  <label><input type="checkbox" name="acord" required> Accept termenii *</label>
+  <div class="actiuni">
+    <button type="reset">Anulează</button>
+    <button type="submit">Trimite comanda</button>
+  </div>
+</form>
+</script>
+</div>
+</section>

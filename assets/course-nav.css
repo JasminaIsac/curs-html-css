@@ -1,0 +1,62 @@
+/* Bandă de curs deasupra barei prelegerii. */
+.course-strip {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    min-height: 40px;
+    padding: 6px 16px;
+    background: #14201c;
+    color: #e8efeb;
+    font: 500 13px/1.3 "IBM Plex Sans", system-ui, sans-serif;
+}
+
+.course-strip a {
+    color: #9fdfc6;
+    text-decoration: none;
+}
+
+.course-strip a:hover { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+
+.course-strip .cs-brand {
+    font: 600 12px/1 "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: .02em;
+    color: #fff;
+    margin-right: 4px;
+}
+
+.course-strip .cs-brand span { color: #5fd4a8; }
+
+.course-strip .cs-here {
+    color: #c5d0cb;
+    max-width: min(42ch, 100%);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.course-strip .cs-nav {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.course-strip .cs-muted {
+    color: #7a8a84;
+    cursor: default;
+}
+
+body:has(.course-strip) .topbar { top: 40px; }
+body:has(.course-strip) .sidebar { top: calc(60px + 40px); height: calc(100vh - 60px - 40px); }
+body:has(.course-strip) .nav-backdrop { inset: calc(60px + 40px) 0 0 0; }
+body:has(.course-strip) html { scroll-padding-top: 116px; }
+
+@media (max-width: 720px) {
+    .course-strip .cs-here { display: none; }
+    .course-strip { gap: 8px; }
+}

@@ -1,0 +1,230 @@
+<section class="lesson" id="s0" data-num="0" data-title="Rolul CSS">
+<script type="text/markdown">
+### 0.1. HTML spune ce este, CSS spune cum arată
+
+| Limbaj | Întrebarea | Exemplu |
+|---|---|---|
+| HTML | Ce este acest conținut? | `<h1>`, `<p>`, `<nav>` |
+| CSS | Cum se afișează? | culoare, font, spațiu, lățime |
+
+**CSS** (*Cascading Style Sheets*) este un limbaj de stil, separat de conținut. Același HTML poate arăta altfel dacă schimbi doar foaia de stil. De aceea nu mai folosim atribute vechi de aspect (`bgcolor`, `align`, `<font>`).
+
+### 0.2. O regulă, pe scurt
+
+```css
+p {
+    color: #1565c0;
+    font-size: 18px;
+}
+```
+
+- `p` este **selectorul** (cui i se aplică);
+- între `{ }` este **blocul de declarații**;
+- `color: #1565c0;` este o **declarație**: proprietate, două puncte, valoare, punct și virgulă;
+- comentariile se scriu `/* așa */`, nu `//` și nu `<!-- -->`.
+
+O greșeală de sintaxă (`colour`, `;` lipsă, acoladă uitată) este ignorată de browser: nu apare un mesaj pe pagină. O verifici în DevTools (F12) — proprietățile invalide apar tăiate.
+</script>
+
+<div class="demo" data-title="Prima regulă" data-desc="Mută glisoarele: culoarea și mărimea se schimbă pe loc, doar pentru paragraful vizat de selectorul p." data-height="160" data-tab="css">
+<script type="text/css">
+p {
+    color: #1565c0;
+    font-size: 18px;
+    margin: 0;
+}
+</script>
+<script type="text/html">
+<p>Acest paragraf este stilizat de regula <code>p { … }</code>.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color","sel":"p","prop":"color","options":["#1565c0","#c62828","#2e7d32","#6a1b9a","#263238"]},
+  {"label":"font-size","sel":"p","prop":"font-size","type":"range","min":14,"max":40,"step":1,"unit":"px"}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s1" data-num="1" data-title="Cum incluzi CSS: inline, intern, extern">
+<script type="text/markdown">
+### 1.1. Trei locuri
+
+| Mod | Unde se scrie | Se aplică la |
+|---|---|---|
+| **Inline** | atributul `style` pe un element | doar acel element |
+| **Intern** | `<style>` în `<head>` | pagina curentă |
+| **Extern** | fișier `.css` + `<link rel="stylesheet" href="CSS/style.css">` | toate paginile care leagă fișierul |
+
+Varianta recomandată în proiecte este **foaia externă**: un singur fișier schimbă aspectul întregului site. Inline se folosește rar, pentru o excepție.
+
+Fișierul `.css` conține **doar CSS** — fără `<style>`, fără taguri HTML.
+
+Calea din `href` este relativă la pagina HTML. Dacă pagina e în `HTML/pagina.html`, foaia din `CSS/style.css` se leagă cu `../CSS/style.css`.
+
+### 1.2. Cine câștigă când se bat
+
+La aceeași proprietate, pe scurt:
+
+1. `!important` (îl evităm; îl vedem mai jos);
+2. stilul **inline** (`style="…"`);
+3. apoi **specificitatea** selectorului;
+4. la egalitate, regula scrisă **mai jos**.
+
+Între o foaie externă și un `<style>` intern, câștigă cea care apare **mai târziu** în pagină, dacă specificitatea e egală.
+</script>
+
+<div class="demo" data-title="Inline bate regula din foaie" data-desc="Schimbă culoarea regulii p. Al doilea paragraf rămâne grena: style inline are prioritate." data-height="150" data-tab="css">
+<script type="text/css">
+p {
+    color: #1565c0;
+    margin: 0 0 8px;
+}
+</script>
+<script type="text/html">
+<p>Paragraf stilizat doar din CSS.</p>
+<p style="color: #c62828;">Paragraf cu style inline — rămâne grena.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color pe p","sel":"p","prop":"color","options":["#1565c0","#2e7d32","#6a1b9a","#e65100"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s2" data-num="2" data-title="Selectorul de element și gruparea">
+<script type="text/markdown">
+### 2.1. Selector de element
+
+Numele tagului, fără `<` și `>`: `p`, `h2`, `a`, `li`. Regula se aplică **tuturor** elementelor de acel tip din pagină.
+
+### 2.2. Grupare
+
+Dacă mai mulți selectori au aceleași declarații, îi scrii separați prin virgulă:
+
+```css
+h1, h2, h3 { color: #1565c0; }
+```
+
+Este același lucru cu trei reguli separate, doar mai scurt.
+</script>
+
+<div class="demo" data-title="Un selector, toate paragrafele" data-desc="Schimbă text-align și background. Ambele paragrafe se schimbă, pentru că selectorul e p, nu o clasă." data-height="160" data-tab="css">
+<script type="text/css">
+p {
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    background: #e3f2fd;
+    text-align: left;
+    border-radius: 8px;
+}
+</script>
+<script type="text/html">
+<p>Primul paragraf.</p>
+<p>Al doilea paragraf — aceeași regulă.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"text-align","sel":"p","prop":"text-align","options":["left","center","right","justify"]},
+  {"label":"background","sel":"p","prop":"background","options":["#e3f2fd","#fff3e0","#e8f5e9","#fce4ec","transparent"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Grupare h2, h3" data-desc="Culoarea e pe h2, h3 dintr-o singură regulă. Paragraful nu e în listă, deci nu se colorează." data-height="170" data-tab="css">
+<script type="text/css">
+h2, h3 {
+    color: #1565c0;
+    margin: 0 0 6px;
+}
+p { margin: 0; }
+</script>
+<script type="text/html">
+<h2>Titlu de secțiune</h2>
+<h3>Subtitlu</h3>
+<p>Paragraf obișnuit.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color","sel":"h2, h3","prop":"color","options":["#1565c0","#6a1b9a","#c62828","#00695c"]}
+]
+</script>
+</div>
+</section>
+
+<section class="lesson" id="s3" data-num="3" data-title="Clasă și identificator">
+<script type="text/markdown">
+Selectorul de element nu poate stiliza **doar unele** paragrafe. Pentru asta marchezi elementul în HTML.
+
+| | Clasă | Identificator |
+|---|---|---|
+| În HTML | `class="evid"` | `id="intro"` |
+| În CSS | `.evid` | `#intro` |
+| Câte elemente | oricâte | **unul singur** pe pagină |
+| Pe un element | mai multe, separate prin spațiu: `class="card card-nou"` | un singur `id` |
+| Specificitate | medie | mare |
+
+Un nume bun spune **rolul** (`.pret`, `.eroare`), nu culoarea (`.rosu`). Litere, cifre, `-` și `_`; nu începe cu cifră.
+
+`id` servește și la ancore (`href="#intro"`) și la `label for`. Pentru stil, preferă clasa: un `#id` e greu de înlocuit.
+</script>
+
+<div class="demo" data-title="Doar elementele cu clasă" data-desc="Schimbă culoarea clasei .evid. Paragraful fără clasă rămâne neschimbat. În HTML poți adăuga class=&quot;evid&quot; și pe al doilea." data-height="150" data-tab="css">
+<script type="text/css">
+p { margin: 0 0 8px; }
+.evid {
+    color: #c62828;
+    font-weight: 700;
+}
+</script>
+<script type="text/html">
+<p class="evid">Acest paragraf are class="evid".</p>
+<p>Acesta nu are clasa.</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color .evid","sel":".evid","prop":"color","options":["#c62828","#1565c0","#2e7d32","#6a1b9a"]},
+  {"label":"font-weight","sel":".evid","prop":"font-weight","options":["700","400","500","800"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Mai multe clase pe același element" data-desc="Cardul are class=&quot;card card-nou&quot;: .card dă forma, .card-nou doar culoarea benzii. Schimbă fundalul benzii." data-height="150" data-tab="css">
+<script type="text/css">
+.card {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #cfd8dc;
+    font-weight: 600;
+}
+.card-nou {
+    background: #e3f2fd;
+    border-color: #1565c0;
+}
+</script>
+<script type="text/html">
+<div class="card card-nou">Cană ceramică — noutate</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"background .card-nou","sel":".card-nou","prop":"background","options":["#e3f2fd","#fff3e0","#e8f5e9","#fce4ec"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="#id are prioritate peste clasă" data-desc="Elementul are și clasa, și id-ul. Câștigă #intro (specificitate mai mare), indiferent de ordinea din HTML." data-height="120" data-tab="css">
+<script type="text/css">
+.intro { color: #1565c0; font-size: 18px; margin: 0; }
+#intro { color: #c62828; }
+</script>
+<script type="text/html">
+<p class="intro" id="intro">Am și class="intro", și id="intro".</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"color #intro","sel":"#intro","prop":"color","options":["#c62828","#6a1b9a","#00695c","#e65100"]}
+]
+</script>
+</div>
+</section>
