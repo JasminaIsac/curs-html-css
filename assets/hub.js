@@ -2,9 +2,6 @@
     "use strict";
 
     const list = document.getElementById("theme-list");
-    const readyEl = document.getElementById("stat-ready");
-    const soonEl = document.getElementById("stat-soon");
-    const totalEl = document.getElementById("stat-total");
 
     function escapeHtml(s) {
         return String(s)
@@ -16,12 +13,6 @@
 
     function render(data) {
         const themes = data.themes || [];
-        const ready = themes.filter((t) => t.status === "ready").length;
-        const soon = themes.filter((t) => t.status !== "ready").length;
-        if (readyEl) readyEl.textContent = String(ready);
-        if (soonEl) soonEl.textContent = String(soon);
-        if (totalEl) totalEl.textContent = String(themes.length);
-
         list.innerHTML = themes.map((t) => {
             const open = t.status === "ready";
             const href = `prelegeri/${t.slug}/index.html`;

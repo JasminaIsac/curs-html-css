@@ -1,7 +1,9 @@
 /* Sursa afișată pe hub și în banda prelegerilor.
    Ține sincron cu course.json când schimbi statusul unei teme. */
 window.ATELIER_COURSE = {
-  brand: "atelier.web",
+  brand: "HTML&CSS.curs",
+  author: "Isac Jasmina, asistent universitar",
+  institution: "Universitatea de Stat din Moldova · Departamentul Informatică",
   title: "HTML & CSS",
   subtitle: "Curs interactiv — de la documentul HTML la layout și adaptație",
   themes: [

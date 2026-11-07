@@ -1,4 +1,4 @@
-# atelier.web — curs HTML & CSS
+# HTML&CSS.curs
 
 Platformă de curs: o pagină hub + câte o pagină pentru fiecare prelegere.
 
