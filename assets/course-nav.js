@@ -42,8 +42,7 @@
             : "";
 
         strip.innerHTML = `
-<a class="cs-brand" href="${escAttr(home)}">HTML&amp;CSS<span>.</span>curs</a>
-<a href="${escAttr(home)}">Toate temele</a>
+<a href="${escAttr(home)}">← Toate temele</a>
 <span class="cs-here">${esc(cur.id)}. ${esc(cur.title)}</span>
 <span class="cs-nav">${prevHtml}${nextHtml}</span>`;
 
