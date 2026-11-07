@@ -1,18 +1,34 @@
 # HTML&CSS.curs
 
-Platformă de curs: o pagină hub + câte o pagină pentru fiecare prelegere.
+Curs interactiv de **HTML** și **CSS** — Universitatea de Stat din Moldova, Departamentul Informatică.
 
-## Deschidere locală
+**Autor:** Isac Jasmina, asistent universitar
 
-Deschide `index.html` în browser sau pornește un server din acest folder:
+Înveți să construiești pagini web de la structură până la aspect: document HTML, conținut semantic, formulare și media, apoi stiluri CSS, selectori, tipografie, layout și adaptare pe ecrane diferite. Exemplele se editează live, direct în pagină.
+
+## Cum deschizi cursul
+
+1. Clonează sau descarcă acest repository.
+2. Deschide fișierul `index.html` în browser (Chrome, Edge sau Firefox).
+
+Dacă unele exemple nu se încarcă bine din dublu-click, pornește un server local din folderul proiectului:
 
 ```bash
 python -m http.server 8080
 ```
 
-Apoi: [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
+Apoi deschide în browser: [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
 
-## Structura
+## Cum folosești platforma
+
+1. Pe pagina principală alegi o temă disponibilă (**Deschide prelegerea**).
+2. În prelegere ai cuprins, căutare (tasta `/`) și exemple live: schimbi valorile sau codul și vezi rezultatul imediat.
+3. Banda de sus te întoarce la toate temele și te duce la tema anterioară / următoare (dacă e publicată).
+4. La finalul fiecărei teme găsești **întrebări de control** pentru autoverificare.
+
+Modificările din editor **nu se salvează** — sunt doar pentru exersat. Pentru temele de laborator lucrezi în propriile fișiere.
+
+## Temele cursului
 
 | # | Temă | Stare |
 |---|---|---|
@@ -23,30 +39,8 @@ Apoi: [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
 | 05 | Poziționare, transformări, tranziții și animații | în curând |
 | 06 | Adaptivitate, responsivitate și bune practici | în curând |
 
-Programul e definit în `assets/course-data.js` (și oglindit în `course.json`). Hub-ul și banda din prelegeri citesc aceste date.
+Temele marcate „în curând” apar în listă, dar pagina interactivă încă nu e publicată.
 
-```
-curs-html-css/
-  index.html              ← hub-ul cursului
-  assets/
-    course.json           ← lista temelor (ready / soon)
-    hub.css / hub.js
-    course-nav.css / js   ← bandă „înapoi la curs” în prelegeri
-    soon.css
-  prelegeri/
-    01-…/index.html
-    02-…/index.html
-    03-…/index.html
-    04-…/index.html       ← pagină „în curând”
-    05-…/
-    06-…/
-```
+## Contact
 
-## Cum adaugi o temă nouă
-
-1. Creezi folderul `prelegeri/0N-slug/` cu `index.html` (și `assets/` dacă e interactivă).
-2. În `index.html` legi `../../assets/course-nav.css` și `../../assets/course-nav.js`.
-3. În `assets/course-data.js` (și în `course.json`) pui `status: "ready"` la tema respectivă (sau o adaugi dacă e nouă).
-4. Nu e nevoie de rebuild: hub-ul citește lista la încărcare.
-
-Folderele originale din laborator (`1-introducere-web-html` etc.) rămân pe disc; acest proiect e copia de curs, pregătită pentru GitHub.
+Pentru întrebări legate de curs, scrie cadrului didactic pe platforma instituțională sau la orele de consultații.
