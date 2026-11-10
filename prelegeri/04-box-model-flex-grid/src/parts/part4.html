@@ -1,0 +1,73 @@
+<section class="lesson" id="s5" data-num="5" data-title="Când Flexbox, când Grid">
+<script type="text/markdown">
+### O regulă practică
+
+| Ai nevoie de… | Alege |
+|---|---|
+| un **rând** sau o **coloană** de elemente (meniu, butoane, carduri pe o axă) | **Flexbox** |
+| o **grilă** pe două axe (galerie, dashboard, layout de pagină) | **Grid** |
+| aliniere pe o singură axă în interiorul unei celule | Flexbox **înăuntrul** unei celule Grid |
+
+Flexbox e „unidimensionally first”: o axă principală, apoi înfășurare. Grid e „bidimensional”: controlezi rânduri și coloane împreună.
+
+Exemplele din secțiunile 3 și 4 acoperă deja:
+
+- **bară de navigare** — Flexbox cu `margin-left: auto` sau `justify-content: space-between`;
+- **galerie** — Grid cu `repeat(auto-fit, minmax(…))`;
+- **layout de pagină** — `grid-template-areas` (header / sidebar / content / footer).
+
+Revino la acele demos și schimbă valorile din comutatoare până „simți” diferența.
+</script>
+</section>
+
+
+<section class="lesson" id="s6" data-num="6" data-title="Rezumat">
+<script type="text/markdown">
+| Temă | Reții |
+|---|---|
+| Caseta | content → padding → border → margin; `box-sizing: border-box` |
+| Margini | pe verticală se pot topi; în flex/grid, nu |
+| Aspect | `border`, `border-radius`, `box-shadow`; fundal cu clip / gradient |
+| `display` | `block` / `inline` / `inline-block` / `none`; `overflow` taie sau derulează |
+| Flexbox | axa principală + `justify-content` / `align-items` / `gap` / `flex` |
+| Grid | `grid-template-columns`, `fr`, `repeat()`, `minmax()`, `grid-area` |
+| Alegere | o axă → flex; două axe → grid |
+</script>
+</section>
+
+
+<section class="lesson" id="s7" data-num="7" data-title="Greșeli frecvente">
+<script type="text/markdown">
+| Problemă | Cauză tipică | Remediu |
+|---|---|---|
+| Lățimea „explodează” | `content-box` + padding | `box-sizing: border-box` |
+| Distanța e mai mică decât suma marginilor | colapsare verticală | `gap` sau o singură margine |
+| Butonul-link se lipește de text | `a` e `inline` | `inline-block` sau `flex` |
+| Flex item nu se strânge | `min-width: auto` | `min-width: 0` pe copil |
+| Galeria nu se rupe pe mobil | coloane fixe în px | `repeat(auto-fit, minmax(…, 1fr))` |
+| Zonele Grid nu apar | nume greșit în `grid-area` | aceleași identificatoare ca în `template-areas` |
+</script>
+</section>
+
+
+<section class="lesson" id="s8" data-num="8" data-title="Întrebări de autoverificare">
+<script type="text/markdown">
+Deschide răspunsul după ce ai formulat unul propriu.
+</script>
+
+<details class="qa"><summary>1. Ce include width la border-box față de content-box?</summary><div class="qa-a">La <code>content-box</code>, <code>width</code> e doar conținutul; padding-ul și bordura se adaugă. La <code>border-box</code>, <code>width</code> include conținut + padding + border.</div></details>
+
+<details class="qa"><summary>2. De ce 20px + 30px pe verticală pot da 30px, nu 50px?</summary><div class="qa-a">Marginile verticale adiacente se colapsează: rămâne maximul. În flex sau grid nu se întâmplă.</div></details>
+
+<details class="qa"><summary>3. Ce diferență e între inline și inline-block pentru un link-buton?</summary><div class="qa-a"><code>inline</code> ignoră width/height și marginile verticale; padding-ul se desenează fără să împingă rândurile. <code>inline-block</code> respectă dimensiunile și împinge vecinii.</div></details>
+
+<details class="qa"><summary>4. Ce axe controlează justify-content și align-items în Flexbox?</summary><div class="qa-a"><code>justify-content</code> pe axa principală (direcția lui <code>flex-direction</code>), <code>align-items</code> pe axa transversală. Dacă schimbi direction la column, axele se inversează.</div></details>
+
+<details class="qa"><summary>5. Ce face flex: 1 pe un copil?</summary><div class="qa-a">E o scurtătură uzuală pentru a lăsa elementul să crească și să ocupe spațiul liber (grow 1, shrink 1, basis 0%).</div></details>
+
+<details class="qa"><summary>6. Ce avantaj are repeat(auto-fit, minmax(180px, 1fr))?</summary><div class="qa-a">Grila își calculează singură numărul de coloane după lățimea containerului, fără media queries: pe ecran îngust mai puține coloane, pe lat mai multe.</div></details>
+
+<details class="qa"><summary>7. Când alegi Grid în loc de Flexbox pentru o pagină?</summary><div class="qa-a">Când așezi conținutul pe <strong>două axe</strong> deodată (rânduri și coloane), de exemplu header + sidebar + conținut + footer. Pentru un singur rând de navigare, Flexbox e suficient.</div></details>
+
+<details class="qa"><summary>8. box-shadow modifică dimensiunea din layout?</summary><div class="qa-a">Nu. Umbra se desenează în afara casetei (sau inset) și nu împinge elementele vecine, spre deosebire de margin.</div></details>
+</section>

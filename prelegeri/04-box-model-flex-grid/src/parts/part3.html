@@ -1,0 +1,234 @@
+<section class="lesson" id="s4" data-num="4" data-title="CSS Grid">
+  <script type="text/markdown">
+Flexbox aranjează pe **o singură axă** (rând sau coloană). Grid aranjează pe **două axe**, în rânduri și coloane, simultan.
+
+### 4.1. Primul grid
+  </script>
+
+  <div class="demo" data-title="Galerie cu trei coloane egale" data-desc="Încearcă: schimbă coloanele în 1fr 2fr 1fr sau 200px 1fr." data-height="250" data-layout="stack">
+    <script type="text/css" data-hidden>
+.galerie .b { height: 60px; display: grid; place-items: center; }
+    </script>
+    <script type="text/css">
+.galerie {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);   /* trei coloane egale */
+    gap: 16px;
+}
+    </script>
+    <script type="text/html">
+<div class="galerie">
+    <div class="b b1">1</div><div class="b b2">2</div><div class="b b3">3</div>
+    <div class="b b4">4</div><div class="b b5">5</div><div class="b b1">6</div>
+    <div class="b b2">7</div>
+</div>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"grid-template-columns","sel":".galerie","prop":"grid-template-columns","options":["repeat(3, 1fr)","1fr 2fr","1fr 2fr 1fr","200px 1fr","repeat(4, 1fr)"]},
+ {"label":"gap","sel":".galerie","prop":"gap","type":"range","min":0,"max":40,"step":2,"unit":"px"}]
+    </script>
+  </div>
+
+  <script type="text/markdown">
+- `fr` (fracțiune) împarte spațiul liber: `1fr 2fr` = a doua coloană e de două ori mai lată;
+- `repeat(3, 1fr)` este scrierea scurtă pentru `1fr 1fr 1fr`;
+- rândurile se creează automat, pe măsură ce adaugi elemente;
+- `grid-template-rows` stabilește înălțimile rândurilor (dacă nu e nevoie, rândurile iau înălțimea conținutului).
+
+### 4.2. Coloane care se adaptează singure
+  </script>
+
+  <div class="demo" data-title="auto-fit + minmax: grilă adaptabilă fără media queries" data-desc="Încearcă: trage de marginea previzualizării și numără coloanele; apoi pune auto-fill în loc de auto-fit cu doar 2 produse." data-height="330" data-layout="stack" data-resizable>
+    <script type="text/css" data-hidden>
+.produs { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.15); overflow: hidden; }
+.produs .poza { height: 70px; }
+.produs p { margin: 0; padding: 8px 12px; font-weight: 600; }
+.p1 .poza { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+.p2 .poza { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+.p3 .poza { background: linear-gradient(135deg, #84fab0, #8fd3f4); }
+.p4 .poza { background: linear-gradient(135deg, #fbc2eb, #a6c1ee); }
+.p5 .poza { background: linear-gradient(135deg, #fddb92, #d1fdff); }
+    </script>
+    <script type="text/css">
+.produse {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+    </script>
+    <script type="text/html">
+<div class="produse">
+    <div class="produs p1"><div class="poza"></div><p>Cană ceramică</p></div>
+    <div class="produs p2"><div class="poza"></div><p>Lumânare</p></div>
+    <div class="produs p3"><div class="poza"></div><p>Set de ceai</p></div>
+    <div class="produs p4"><div class="poza"></div><p>Farfurie</p></div>
+    <div class="produs p5"><div class="poza"></div><p>Bol pictat</p></div>
+</div>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"grid-template-columns","sel":".produse","prop":"grid-template-columns","options":["repeat(auto-fit, minmax(220px, 1fr))","repeat(auto-fill, minmax(220px, 1fr))","repeat(auto-fit, minmax(140px, 1fr))"]}]
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Fiecare coloană are cel puțin 220px; câte încap pe lățimea containerului, atâtea apar. Pe telefon devin una singură, pe monitor patru sau cinci, **fără nicio regulă media**.
+
+> [!INFO] `auto-fit` vs `auto-fill`: cu puține elemente, `auto-fit` le lățește să umple rândul, iar `auto-fill` păstrează coloane goale. Diferența se vede doar când nu sunt destule elemente pentru un rând întreg.
+
+### 4.3. Extinderea peste mai multe celule
+  </script>
+
+  <div class="demo" data-title="span și numerotarea liniilor" data-desc="Încearcă: dă lui .pozitionat grid-column: 1 / -1 (de la prima la ultima linie)." data-height="290" data-layout="stack">
+    <script type="text/css" data-hidden>
+.grila { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 60px; gap: 10px; }
+.grila .b { display: grid; place-items: center; font-size: 13px; }
+    </script>
+    <script type="text/css">
+.mare   { grid-column: span 2; }           /* ocupă două coloane */
+.inalt  { grid-row: span 2; }              /* ocupă două rânduri */
+.pozitionat { grid-column: 2 / 4; }        /* de la linia 2 la linia 4 */
+    </script>
+    <script type="text/html">
+<div class="grila">
+    <div class="b b1 mare">.mare (span 2)</div>
+    <div class="b b3 inalt">.inalt (span 2)</div>
+    <div class="b b2">3</div>
+    <div class="b b2">4</div>
+    <div class="b b2">5</div>
+    <div class="b b4 pozitionat">.pozitionat (2 / 4)</div>
+    <div class="b b2">7</div>
+</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 4.4. Zone cu nume
+  </script>
+
+  <div class="demo" data-title="Pagină cu grid-template-areas (și rearanjare sub 700px)" data-desc="Încearcă: trage previzualizarea sub 700px; apoi mută „meniu” în dreapta scriind &quot;continut meniu&quot;." data-height="360" data-layout="stack" data-resizable data-tab="css">
+    <script type="text/css" data-hidden>
+body { padding: 0; }
+.pagina > * { padding: 12px; color: #fff; font-weight: 600; }
+.antet { background: #1565c0; }
+.meniu { background: #00897b; }
+.continut { background: #eceff1; color: #263238 !important; font-weight: 400 !important; }
+.subsol { background: #263238; }
+    </script>
+    <script type="text/css">
+.pagina {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "antet  antet"
+        "meniu  continut"
+        "subsol subsol";
+    min-height: 100vh;
+}
+
+.antet    { grid-area: antet; }
+.meniu    { grid-area: meniu; }
+.continut { grid-area: continut; }
+.subsol   { grid-area: subsol; }
+
+@media (max-width: 700px) {
+    .pagina {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "antet"
+            "meniu"
+            "continut"
+            "subsol";
+    }
+}
+    </script>
+    <script type="text/html">
+<div class="pagina">
+    <header class="antet">antet</header>
+    <nav class="meniu">meniu</nav>
+    <main class="continut">conținut — structura paginii se citește direct din grid-template-areas.</main>
+    <footer class="subsol">subsol</footer>
+</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Structura paginii se vede direct în cod, iar pe telefon o rearanjezi schimbând doar `grid-template-areas`.
+
+### 4.5. Aliniere
+
+| Proprietate | Rol |
+|---|---|
+| `justify-items`, `align-items` | alinierea conținutului în fiecare celulă |
+| `justify-content`, `align-content` | alinierea întregului grid în container |
+| `place-items: center` | prescurtare pentru ambele axe |
+  </script>
+
+  <div class="demo" data-title="Alinierea în celule vs alinierea grilei" data-desc="Încearcă: pune justify-items: stretch, apoi schimbă justify-content ca să muți toată grila." data-height="260">
+    <script type="text/css" data-hidden>
+.grila { height: 220px; background: #eceff1; border-radius: 8px; }
+.grila > div { outline: 1px dashed #90a4ae; }
+.grila .b { outline: none; }
+    </script>
+    <script type="text/css">
+.grila {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    grid-auto-rows: 70px;
+    gap: 8px;
+    justify-items: center;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+    </script>
+    <script type="text/html">
+<div class="grila">
+    <div class="b b1">1</div><div class="b b2">2</div><div class="b b3">3</div>
+    <div class="b b4">4</div><div class="b b5">5</div><div class="b b1">6</div>
+</div>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"justify-items","sel":".grila","prop":"justify-items","options":["center","stretch","start","end"]},
+ {"label":"align-items","sel":".grila","prop":"align-items","options":["center","stretch","start","end"]},
+ {"label":"justify-content","sel":".grila","prop":"justify-content","options":["center","start","end","space-between","space-evenly"]},
+ {"label":"align-content","sel":".grila","prop":"align-content","options":["center","start","end","space-between"]}]
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 4.6. Flexbox sau grid?
+
+| Situație | Alegere |
+|---|---|
+| bară de meniu, un rând de butoane, o linie de elemente | flexbox |
+| centrare simplă | oricare (grid: `place-items: center`) |
+| aranjarea unei întregi pagini sau a unei galerii | grid |
+| conținutul decide dimensiunile | flexbox |
+| structura (rânduri și coloane) decide dimensiunile | grid |
+
+Cele două se combină: grid pentru pagină, flexbox în interiorul celulelor.
+  </script>
+
+  <div class="demo" data-title="Același conținut: flex-wrap vs grid" data-desc="Încearcă: îngustează previzualizarea — la flex, ultimul rând se lățește; la grid, coloanele rămân aliniate." data-height="300" data-layout="stack" data-resizable>
+    <script type="text/css" data-hidden>
+.titlu-mic { font: 12px monospace; color: #607d8b; margin: 0 0 4px; }
+.flex, .grid { margin-bottom: 14px; }
+.flex .b, .grid .b { text-align: center; }
+    </script>
+    <script type="text/css">
+/* conținutul decide: fiecare rând își împarte spațiul */
+.flex { display: flex; flex-wrap: wrap; gap: 8px; }
+.flex .b { flex: 1 1 140px; }
+
+/* structura decide: coloanele sunt aliniate pe toate rândurile */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+    </script>
+    <script type="text/html">
+<p class="titlu-mic">flex-wrap</p>
+<div class="flex"><div class="b b1">1</div><div class="b b1">2</div><div class="b b1">3</div><div class="b b1">4</div><div class="b b1">5</div></div>
+<p class="titlu-mic">grid</p>
+<div class="grid"><div class="b b2">1</div><div class="b b2">2</div><div class="b b2">3</div><div class="b b2">4</div><div class="b b2">5</div></div>
+    </script>
+  </div>
+</section>

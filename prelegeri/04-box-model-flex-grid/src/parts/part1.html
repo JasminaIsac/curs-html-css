@@ -1,0 +1,617 @@
+<section class="lesson" id="s0" data-num="0" data-title="Modelul casetei">
+<script type="text/markdown">
+### 0.1. Cele patru straturi
+
+Fiecare element are o **casetă** cu patru straturi, din interior spre exterior:
+
+| Strat | Ce este |
+|---|---|
+| **content** | textul sau copiii elementului; `width` / `height` se referă aici (implicit) |
+| **padding** | spațiul interior, între conținut și bordură |
+| **border** | conturul vizibil |
+| **margin** | spațiul exterior, față de frați / părinte |
+
+Ordinea pe care o vezi în DevTools (Computed → box model) este aceeași. Fundalul (`background`) acoperă content + padding (și, cu `background-clip`, poate și bordura).
+</script>
+
+<div class="demo" data-title="Anatomia casetei" data-desc="Mută glisoarele: padding, border și margin se văd pe loc. Fundalul albastru umple content + padding." data-height="280" data-layout="stack" data-tab="css">
+<script type="text/css" data-hidden>
+.rama {
+    display: inline-block;
+    padding: 24px;
+    background: repeating-linear-gradient(-45deg, #eceff1 0 6px, #fff 6px 12px);
+    border-radius: 8px;
+}
+.eticheta { font-size: 12px; color: #607d8b; margin: 0 0 8px; }
+</script>
+<script type="text/css">
+.caseta {
+    width: 160px;
+    padding: 20px;
+    border: 8px solid #1565c0;
+    margin: 16px;
+    background: #90caf9;
+    color: #0d47a1;
+    font-weight: 700;
+    text-align: center;
+}
+</script>
+<script type="text/html">
+<p class="eticheta">dungile = spațiul din afara marginului</p>
+<div class="rama"><div class="caseta">conținut</div></div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"padding","sel":".caseta","prop":"padding","type":"range","min":0,"max":40,"step":2,"unit":"px"},
+  {"label":"border","sel":".caseta","prop":"border","options":["8px solid #1565c0","2px solid #1565c0","12px dashed #c62828","0"]},
+  {"label":"margin","sel":".caseta","prop":"margin","type":"range","min":0,"max":40,"step":2,"unit":"px"},
+  {"label":"width","sel":".caseta","prop":"width","type":"range","min":80,"max":240,"step":10,"unit":"px"}
+]
+</script>
+</div>
+
+<script type="text/markdown">
+### 0.2. `box-sizing`
+
+Implicit, `width` se aplică **doar conținutului** (`content-box`): padding-ul și bordura se **adaugă** la lățime. Cu `border-box`, `width` include și padding-ul, și bordura — caseta rămâne la dimensiunea declarată.
+
+În proiecte se pune aproape mereu:
+
+```css
+*, *::before, *::after { box-sizing: border-box; }
+```
+</script>
+
+
+<div class="demo" data-title="Reset minimal și box-sizing" data-desc="Încearcă: comută box-sizing la content-box — caseta cu padding devine mai lată de 240px." data-height="260">
+<script type="text/css" data-hidden>
+.caseta { width: 240px; padding: 20px; border: 4px solid #1565c0; background: #e3f2fd; margin-bottom: 10px; border-radius: 6px; }
+.rigla { width: 240px; height: 6px; background: repeating-linear-gradient(90deg, #263238 0 1px, transparent 1px 20px); border-bottom: 2px solid #263238; margin-bottom: 4px; }
+.mic { font-size: 12px; }
+</script>
+<script type="text/css">
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    line-height: 1.5;
+}
+
+img, video {
+    max-width: 100%;
+    height: auto;
+}
+</script>
+<script type="text/html">
+<div style="padding:16px">
+    <div class="rigla"></div>
+    <div class="mic muted">240px</div>
+    <div class="caseta">width: 240px + padding 20px + border 4px</div>
+    <img alt="peisaj" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 120' width='900' height='120'%3E%3Crect width='900' height='120' fill='%2390caf9'/%3E%3Cpath d='M0 120 L200 30 L380 120Z' fill='%231565c0'/%3E%3Cpath d='M300 120 L560 20 L900 120Z' fill='%230d47a1'/%3E%3C/svg%3E">
+    <div class="mic muted">Imaginea are 900px lățime, dar max-width: 100% o încape în pagină.</div>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"box-sizing","sel":"*, *::before, *::after","prop":"box-sizing","options":["border-box","content-box"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### Colapsarea marginilor verticale
+
+Când două blocuri se învecinează pe verticală, marginile **nu se adună**, ci se topesc: rămâne cea mai mare. Nu se aplică în flex/grid. `padding` și `border` nu se colapsează.
+</script>
+<div class="demo" data-title="20px + 30px = 30px" data-desc="Încearcă: comută containerul la flex — marginile nu se mai topesc și distanța devine 50px." data-height="230">
+<script type="text/css" data-hidden>
+.container { background: repeating-linear-gradient(0deg, #fff 0 9px, #eceff1 9px 10px); padding: 0 12px; border: 1px solid #cfd8dc; border-radius: 8px; }
+.a, .b { padding: 12px; border-radius: 6px; color: #fff; font-weight: 600; }
+.a { background: #1565c0; } .b { background: #00897b; }
+.nota { font-size: 13px; }
+</script>
+<script type="text/css">
+.container {
+    display: flow-root;
+    flex-direction: column;   /* contează doar la flex */
+}
+
+.a { margin-bottom: 20px; }
+.b { margin-top: 30px; }
+/* distanța dintre .a și .b este 30px, nu 50px */
+</script>
+<script type="text/html">
+<div class="container">
+    <div class="a">.a — margin-bottom: 20px</div>
+    <div class="b">.b — margin-top: 30px</div>
+</div>
+<p class="nota muted">Fundalul are linii la fiecare 10px: numără-le între cele două blocuri.</p>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"display (.container)","sel":".container","prop":"display","options":["flow-root","flex","grid"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 2.4. Depășirea conținutului: `overflow`
+
+Când conținutul nu încape în caseta cu dimensiuni fixe, se aplică `overflow`:
+
+| Valoare | Efect |
+|---|---|
+| `visible` (implicit) | conținutul iese în afara casetei |
+| `hidden` | partea care iese se taie |
+| `scroll` | apar mereu bare de derulare |
+| `auto` | bare de derulare doar când e nevoie |
+
+Se poate controla separat pe axe: `overflow-x`, `overflow-y`.
+</script>
+</section>
+
+
+<section class="lesson" id="s1" data-num="1" data-title="Borduri, umbre și fundaluri">
+<script type="text/markdown">
+### 1.1. Borduri, colțuri și umbre
+
+| Proprietate | Rol |
+|---|---|
+| `border` | grosime, stil (`solid`, `dashed`, `dotted`), culoare |
+| `border-radius` | rotunjirea colțurilor; `999px` sau `50%` pe un pătrat → cerc |
+| `box-shadow` | umbră: `offset-x offset-y blur spread culoare`; `inset` pentru umbră interioară |
+| `outline` | contur **în afara** casetei, nu ocupă spațiu (util la `:focus-visible`) |
+
+`box-shadow` nu modifică layout-ul: elementul rămâne pe același loc. Poți pune mai multe umbre, separate prin virgulă.
+</script>
+
+<div class="demo" data-title="border, radius și box-shadow" data-desc="Schimbă stilul bordurii, raza colțurilor și umbra. Observă că umbra nu împinge vecinii." data-height="220" data-tab="css">
+<script type="text/css">
+.card {
+    width: 200px;
+    padding: 18px 16px;
+    background: #fff;
+    border: 2px solid #90a4ae;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(29, 36, 48, 0.18);
+    font-weight: 600;
+}
+</script>
+<script type="text/html">
+<div class="card">Card cu umbră</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"border","sel":".card","prop":"border","options":["2px solid #90a4ae","4px solid #1565c0","2px dashed #c62828","0"]},
+  {"label":"border-radius","sel":".card","prop":"border-radius","options":["0","8px","12px","24px","999px"]},
+  {"label":"box-shadow","sel":".card","prop":"box-shadow","options":["none","0 8px 20px rgba(29, 36, 48, 0.18)","0 2px 6px rgba(29, 36, 48, 0.2)","4px 4px 0 #1565c0","inset 0 0 0 3px #1565c0"]}
+]
+</script>
+</div>
+
+
+<script type="text/markdown">
+### Fundaluri în profunzime
+
+Pe lângă `background-color`, `-image`, `-repeat`, `-position`, `-size`, există câteva proprietăți utile.
+
+### 1.2. Zona fundalului: `background-clip` și `background-origin`
+
+- `background-clip` stabilește până unde se **desenează** fundalul: `border-box` (implicit, până sub bordură), `padding-box`, `content-box`;
+- `background-origin` stabilește de unde se **măsoară** poziția imaginii: `padding-box` (implicit), `border-box`, `content-box`.
+</script>
+
+<div class="demo" data-title="background-clip și background-origin" data-desc="Încearcă: comută background-clip; apoi background-origin și urmărește bulina din colț." data-height="230">
+<script type="text/css">
+.caseta {
+    width: 260px;
+    padding: 20px;
+    border: 10px dashed rgba(0, 0, 0, 0.3);
+    background-color: gold;
+    background-image: radial-gradient(circle, #c62828 8px, transparent 9px);
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-clip: content-box;   /* culoarea apare doar în interior, nu și sub padding */
+    background-origin: padding-box;
+}
+</script>
+<script type="text/html">
+<div class="caseta">
+    Conținutul casetei. Bulina roșie este o imagine de fundal poziționată în colțul de sus-stânga.
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"background-clip","sel":".caseta","prop":"background-clip","options":["content-box","padding-box","border-box"]},{"label":"background-origin","sel":".caseta","prop":"background-origin","options":["padding-box","border-box","content-box"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.3. Gradienți
+
+Gradientul este o „imagine" generată de CSS; se pune la `background-image` (sau în prescurtarea `background`).
+
+- unghiul `0deg` este „în sus", `90deg` spre dreapta;
+- se pot pune puncte de oprire: `linear-gradient(#f00 0%, #ff0 40%, #0f0 100%)`;
+- gradientul cu două culori la aceeași poziție dă o **margine netă**: `linear-gradient(90deg, red 50%, blue 50%)`.
+</script>
+
+<div class="demo" data-title="Patru tipuri de gradient" data-desc="Încearcă: schimbă 135deg în 0deg sau 90deg; mută 40% de la .opriri la 80%." data-height="300" data-layout="stack">
+<script type="text/css" data-hidden>
+.grila { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.grila div { height: 100px; border-radius: 10px; display: flex; align-items: flex-end; padding: 6px 8px; font: 600 12px/1 monospace; color: #263238; }
+.grila div span { background: rgba(255,255,255,.85); padding: 3px 6px; border-radius: 4px; }
+</script>
+<script type="text/css">
+.liniar  { background: linear-gradient(to right, #ff9a9e, #fad0c4); }
+.oblic   { background: linear-gradient(135deg, #36d1dc, #5b86e5); }
+.radial  { background: radial-gradient(circle at center, #fff, #1565c0); }
+.conic   { background: conic-gradient(red, yellow, green, cyan, blue, magenta, red); }
+.opriri  { background: linear-gradient(#f00 0%, #ff0 40%, #0f0 100%); }
+.net     { background: linear-gradient(90deg, red 50%, blue 50%); }
+</script>
+<script type="text/html">
+<div class="grila">
+    <div class="liniar"><span>.liniar</span></div>
+    <div class="oblic"><span>.oblic</span></div>
+    <div class="radial"><span>.radial</span></div>
+    <div class="conic"><span>.conic</span></div>
+    <div class="opriri"><span>.opriri</span></div>
+    <div class="net"><span>.net</span></div>
+</div>
+</script>
+</div>
+
+<script type="text/markdown">
+Dungi repetate se obțin cu `repeating-linear-gradient`: fiecare culoare primește o poziție de început și una de sfârșit.
+</script>
+
+<div class="demo" data-title="Dungi repetate" data-desc="Încearcă: schimbă 10px/20px în 4px/8px, sau unghiul în 90deg." data-height="200">
+<script type="text/css" data-hidden>
+.dungi { height: 70px; border-radius: 10px; margin-bottom: 10px; }
+.bara-progres { height: 18px; border-radius: 999px; background: #eceff1; overflow: hidden; }
+.bara-progres div { width: 65%; height: 100%; }
+</script>
+<script type="text/css">
+.dungi {
+    background: repeating-linear-gradient(45deg, #1565c0 0 10px, #1976d2 10px 20px);
+}
+
+/* aceeași tehnică, pe o bară de progres */
+.bara-progres div {
+    background: repeating-linear-gradient(-45deg, #43a047 0 8px, #66bb6a 8px 16px);
+}
+</script>
+<script type="text/html">
+<div class="dungi"></div>
+<div class="bara-progres"><div></div></div>
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.4. Imagine cu strat întunecat deasupra
+
+Pentru ca textul alb de pe o poză să fie lizibil, se pune un gradient semitransparent peste imagine (primul strat din listă este cel de sus).
+</script>
+
+<div class="demo" data-title="Text lizibil peste imagine" data-desc="Încearcă: schimbă 0.45 în 0 (fără strat) sau 0.7 și compară lizibilitatea." data-height="260" data-layout="stack">
+<script type="text/css" data-hidden>
+.erou { padding: 50px 24px; border-radius: 12px; text-align: center; }
+.erou h2 { margin: 0 0 6px; font-size: 28px; }
+.erou p { margin: 0; }
+</script>
+<script type="text/css">
+.erou {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+        /* în lecție: url("../Imagini/fundal.jpg"); aici, un peisaj SVG */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200' preserveAspectRatio='xMidYMid slice'%3E%3Crect width='400' height='200' fill='%23ffe082'/%3E%3Ccircle cx='300' cy='70' r='40' fill='%23fff8e1'/%3E%3Cpath d='M0 200 L110 70 L230 200Z' fill='%2381d4fa'/%3E%3Cpath d='M150 200 L270 90 L400 200Z' fill='%23b3e5fc'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+}
+</script>
+<script type="text/html">
+<section class="erou">
+    <h2>Obiecte făcute cu grijă</h2>
+    <p>Ceramică, lumânări și ceai, direct de la atelier.</p>
+</section>
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.5. Fundal fix la derulare
+
+Reține: `background-attachment: fixed` leagă imaginea de fereastra browserului (nu de element), iar conținutul „trece" peste ea. Pe unele telefoane nu funcționează bine.
+</script>
+
+<div class="demo" data-title="background-attachment: fixed" data-desc="Încearcă: derulează în previzualizare, apoi comută la scroll și compară." data-height="260">
+<script type="text/css" data-hidden>
+body { padding: 0; }
+.text { padding: 30px 20px; background: #fff; }
+.panou { height: 220px; display: grid; place-items: center; color: #fff; font-size: 22px; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,.4); }
+</script>
+<script type="text/css">
+.panou {
+    /* în lecție: url("../Imagini/fundal.jpg") */
+    background-image: linear-gradient(160deg, #0d47a1, #42a5f5 50%, #ffca28);
+    background-attachment: fixed;   /* imaginea rămâne pe loc, conținutul „trece" peste ea */
+    background-size: cover;
+}
+</script>
+<script type="text/html">
+<div class="text"><p>Derulează în jos ↓</p><p>Fundalul secțiunilor colorate stă pe loc, ca o fereastră spre un decor fix.</p></div>
+<div class="panou">Secțiunea 1</div>
+<div class="text"><p>Un paragraf între cele două panouri.</p><p>Încă un rând de text, ca să ai ce derula.</p></div>
+<div class="panou">Secțiunea 2</div>
+<div class="text"><p>Sfârșit.</p></div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"background-attachment","sel":".panou","prop":"background-attachment","options":["fixed","scroll"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.6. Text cu fundal gradient
+
+Fundalul se desenează doar în forma literelor: `background-clip: text` + text transparent. Prefixul `-webkit-` mai e necesar în unele browsere.
+</script>
+
+<div class="demo" data-title="Titlu cu gradient" data-desc="Încearcă: șterge color: transparent ca să vezi ce se ascunde în spatele literelor." data-height="160">
+<script type="text/css">
+.titlu-gradient {
+    margin: 0;
+    font-size: 44px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+</script>
+<script type="text/html">
+<h1 class="titlu-gradient">Reduceri de toamnă</h1>
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.7. `opacity` versus culori cu transparență
+
+| | `opacity: 0.5` | `background-color: rgba(0,0,0,0.5)` |
+|---|---|---|
+| Ce devine transparent | **tot elementul**, inclusiv textul și copiii | doar fundalul |
+
+Dacă vrei un fundal estompat și text clar, folosește `rgba()` sau `hsla()`, nu `opacity`.
+</script>
+
+<div class="demo" data-title="opacity vs. rgba()" data-desc="Încearcă: schimbă 0.5 în 0.2 în ambele reguli." data-height="220">
+<script type="text/css" data-hidden>
+.fundal { display: flex; gap: 14px; padding: 20px; border-radius: 12px; background: linear-gradient(135deg, #f4511e, #f9a825); }
+.fundal div { flex: 1; padding: 14px; border-radius: 8px; color: #fff; }
+.fundal strong { display: block; font-size: 18px; }
+.fundal button { margin-top: 8px; }
+</script>
+<script type="text/css">
+.cu-opacity {
+    background-color: #000;
+    opacity: 0.5;                          /* și textul se estompează */
+}
+
+.cu-rgba {
+    background-color: rgba(0, 0, 0, 0.5);  /* doar fundalul */
+}
+</script>
+<script type="text/html">
+<div class="fundal">
+    <div class="cu-opacity"><strong>opacity: 0.5</strong>Text și buton estompate.<br><button>Comandă</button></div>
+    <div class="cu-rgba"><strong>rgba(0,0,0,0.5)</strong>Text și buton clare.<br><button>Comandă</button></div>
+</div>
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s2" data-num="2" data-title="display și overflow">
+<script type="text/markdown">
+### `display`: block, inline, inline-block, none
+
+| Valoare | Comportament |
+|---|---|
+| `block` | rând nou, acceptă `width` / `height` / margini |
+| `inline` | în rândul textului; ignoră `width`, `height`, margini verticale |
+| `inline-block` | în rând, dar cu dimensiuni ca la bloc |
+| `none` | dispare din pagină (nu ocupă spațiu) |
+| `flex` / `grid` | containere de layout (le vedem mai jos) |
+</script>
+<div class="demo" data-title="Aceleași elemente, alt display" data-desc="Încearcă toate valorile: la inline, width, height și marginile verticale sunt ignorate." data-height="230">
+<script type="text/css">
+.cutie {
+    display: inline;
+    width: 110px;
+    height: 50px;
+    margin: 10px 4px;
+    padding: 4px 8px;
+    background: #1565c0;
+    color: #fff;
+    border-radius: 6px;
+}
+</script>
+<script type="text/html">
+<p>
+    Textul curge în jurul elementelor
+    <span class="cutie">unu</span>
+    <span class="cutie">doi</span>
+    <span class="cutie">trei</span>
+    care au toate aceeași lățime, înălțime și margini declarate.
+    Observă cum se comportă rândul de text.
+</p>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"display (.cutie)","sel":".cutie","prop":"display","options":["inline","inline-block","block","none","flex"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+Cazul clasic: un `<a>` este inline, iar `margin-top`/`margin-bottom` și `height` nu au efect asupra lui. Padding-ul vertical se desenează, dar **nu împinge** rândurile vecine, așa că butonul se suprapune peste text. Soluția: `display: inline-block` sau `display: block`.
+</script>
+
+<div class="demo" data-title="Un link care arată ca un buton" data-desc="Încearcă: comută la inline și observă cum butonul se suprapune peste rândurile vecine." data-height="210">
+<script type="text/css">
+a.buton {
+    display: inline-block;     /* altfel padding-ul vertical nu împinge rândurile vecine */
+    padding: 8px 18px;
+    margin: 4px 0;
+    border-radius: 6px;
+    background: #1565c0;
+    color: #fff;
+    text-decoration: none;
+}
+</script>
+<script type="text/html">
+<p style="max-width: 360px">
+    Am pregătit o ofertă specială pentru clienții noi: livrare gratuită
+    <a class="buton" href="#">Vezi oferta</a>
+    pentru orice comandă de peste 150 de lei, până la sfârșitul lunii.
+</p>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"display (a.buton)","sel":"a.buton","prop":"display","options":["inline-block","inline","block"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 2.2. Cum ascunzi un element
+
+| Metodă | Ocupă spațiu? | Se poate da clic? | Cititoarele de ecran |
+|---|---|---|---|
+| `display: none` | nu | nu | îl ignoră |
+| `visibility: hidden` | da (locul rămâne gol) | nu | îl ignoră |
+| `opacity: 0` | da | **da** | îl citesc |
+| atributul HTML `hidden` | nu (echivalent cu `display: none`) | nu | îl ignoră |
+
+`opacity: 0` este singura variantă care se poate **anima** (ex. dispariție treptată), de aceea se folosește la tranziții și la indicii care apar la `:hover`.
+</script>
+
+<script type="text/markdown">
+### Cum ascunzi un element
+
+`display: none` scoate elementul din layout. `visibility: hidden` lasă locul gol. `opacity: 0` lasă elementul clicabil și se poate anima. Atributul HTML `hidden` e echivalent cu `display: none`.
+</script>
+<div class="demo" data-title="Patru moduri de a ascunde, unul lângă altul" data-desc="Încearcă: dă clic pe locul gol din rândul opacity: 0 — butonul invizibil încă răspunde." data-height="280" data-layout="stack">
+<script type="text/css" data-hidden>
+.rand { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.rand code { width: 170px; font-size: 13px; color: #607d8b; }
+.rand button { width: 70px; padding: 8px 0; border: 0; border-radius: 6px; color: #fff; font-weight: 600; background: #1565c0; cursor: pointer; }
+.rand button:active { background: #f4511e; }
+.rand .x { background: #f4511e; }
+</script>
+<script type="text/css">
+.m1 { display: none; }
+.m2 { visibility: hidden; }
+.m3 { opacity: 0; }
+/* m4 folosește atributul HTML hidden */
+</script>
+<script type="text/html">
+<div class="rand"><code>display: none</code>     <button>A</button><button class="x m1" onclick="this.parentNode.lastElementChild.textContent='clic!'">B</button><button>C</button><span></span></div>
+<div class="rand"><code>visibility: hidden</code><button>A</button><button class="x m2" onclick="this.parentNode.lastElementChild.textContent='clic!'">B</button><button>C</button><span></span></div>
+<div class="rand"><code>opacity: 0</code>        <button>A</button><button class="x m3" onclick="this.parentNode.lastElementChild.textContent='clic pe butonul invizibil!'">B</button><button>C</button><span></span></div>
+<div class="rand"><code>hidden (HTML)</code>     <button>A</button><button class="x" hidden onclick="this.parentNode.lastElementChild.textContent='clic!'">B</button><button>C</button><span></span></div>
+</script>
+</div>
+
+<div class="demo" data-title="Doar opacity se poate anima" data-desc="Încearcă: înlocuiește opacity cu display: none / block și observă că apariția devine bruscă." data-height="170">
+<script type="text/css">
+.produs {
+    display: inline-block;
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: #e3f2fd;
+}
+
+.indiciu {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #1565c0;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.produs:hover .indiciu {
+    opacity: 1;
+}
+</script>
+<script type="text/html">
+<div class="produs">
+    <strong>Cană ceramică — 79 lei</strong>
+    <div class="indiciu">Ține mouse-ul aici: livrare în 24 de ore</div>
+</div>
+</script>
+</div>
+
+<script type="text/markdown">
+### 2.3. Colapsarea marginilor verticale
+
+Când două blocuri se învecinează pe verticală, marginile lor **nu se adună**, ci se „topesc": rămâne cea mai mare.
+
+Reguli:
+
+- se aplică doar marginilor **verticale** ale elementelor bloc din fluxul normal;
+- **nu** se aplică la elementele flex sau grid, nici între elemente cu `padding`/`border` între ele;
+- `padding` nu se colapsează niciodată;
+- dacă vrei distanțe previzibile, folosește `gap` (la flex/grid) sau pune marginea doar pe o latură.
+</script>
+
+<script type="text/markdown">
+### `overflow`
+
+Când conținutul nu încape: `visible` (iese), `hidden` (taie), `scroll` (bare mereu), `auto` (bare la nevoie).
+</script>
+<div class="demo" data-title="overflow pe o casetă cu înălțime fixă" data-desc="Încearcă fiecare valoare; apoi mărește height la 300px și compară scroll cu auto." data-height="250">
+<script type="text/css">
+.caseta {
+    width: 260px;
+    height: 110px;
+    padding: 10px 12px;
+    overflow: visible;
+    border: 2px solid #1565c0;
+    border-radius: 8px;
+    background: #e3f2fd;
+}
+</script>
+<script type="text/html">
+<div class="caseta">
+    <strong>Condiții de livrare.</strong>
+    Comenzile plasate până la ora 14 pleacă în aceeași zi.
+    Livrarea durează 1–3 zile lucrătoare. Pentru comenzile de peste 150 de lei
+    transportul este gratuit. Produsele pot fi returnate în 14 zile.
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"overflow","sel":".caseta","prop":"overflow","options":["visible","hidden","scroll","auto"]},{"label":"height","sel":".caseta","prop":"height","options":["110px","60px","300px"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+Un text lung tăiat cu puncte de suspensie (pe o singură linie) cere **toate trei** proprietățile; `text-overflow` singură nu face nimic.
+</script>
+
+<div class="demo" data-title="Text tăiat cu „…”" data-desc="Încearcă: trage de marginea previzualizării ca să vezi cum se taie textul; comută text-overflow la clip." data-height="150" data-resizable>
+<script type="text/css">
+.titlu-scurt {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</script>
+<script type="text/html">
+<h3 class="titlu-scurt">Set cadou de ceai din plante montane, cu cană ceramică lucrată manual și lingură din lemn</h3>
+<h3>Fără clasă: Set cadou de ceai din plante montane, cu cană ceramică lucrată manual</h3>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"text-overflow","sel":".titlu-scurt","prop":"text-overflow","options":["ellipsis","clip"]},{"label":"white-space","sel":".titlu-scurt","prop":"white-space","options":["nowrap","normal"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 2.5. Dimensiuni: limite și proporții
+
+`max-width` lasă caseta să se micșoreze pe ecrane înguste, `min-height` îi dă o înălțime minimă care poate crește, iar `aspect-ratio` păstrează proporția lățime/înălțime.
+</script>
+</section>

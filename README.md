@@ -35,7 +35,7 @@ Modificările din editor **nu se salvează** — sunt doar pentru exersat. Pentr
 | 01 | Introducere în web și structura documentului HTML | disponibilă |
 | 02 | HTML semantic, tabele, formulare și media | disponibilă |
 | 03 | Fundamentele CSS | disponibilă |
-| 04 | Modelul casetei și layout cu Flexbox și Grid | în curând |
+| 04 | Modelul casetei și layout cu Flexbox și Grid | disponibilă |
 | 05 | Poziționare, transformări, tranziții și animații | în curând |
 | 06 | Adaptivitate, responsivitate și bune practici | în curând |
 

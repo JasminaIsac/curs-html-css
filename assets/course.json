@@ -31,7 +31,7 @@
       "slug": "04-box-model-flex-grid",
       "title": "Modelul casetei și layout cu Flexbox și Grid",
       "blurb": "Box model, display, Flexbox și CSS Grid pentru așezarea paginii.",
-      "status": "soon"
+      "status": "ready"
     },
     {
       "id": "05",

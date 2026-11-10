@@ -1,0 +1,332 @@
+<section class="lesson" id="s3" data-num="3" data-title="Flexbox">
+  <script type="text/markdown">
+### 3.1. Cele două axe
+
+Un container flex are o **axă principală** (în direcția `flex-direction`) și o **axă secundară** (perpendiculară). Alinierea pe axa principală se face cu `justify-content`, pe cea secundară cu `align-items`. Dacă pui `flex-direction: column`, rolurile se inversează.
+
+```text
+flex-direction: row            flex-direction: column
+ axa principală →               axa principală ↓
+ axa secundară ↓                axa secundară →
+```
+
+### 3.2. Proprietăți pentru container
+
+| Proprietate | Valori | Rol |
+|---|---|---|
+| `flex-direction` | `row`, `row-reverse`, `column`, `column-reverse` | direcția axei principale |
+| `flex-wrap` | `nowrap`, `wrap`, `wrap-reverse` | permite trecerea pe rândul următor |
+| `flex-flow` | `row wrap` | prescurtare pentru cele două de mai sus |
+| `justify-content` | `flex-start`, `center`, `flex-end`, `space-between`, `space-around`, `space-evenly` | aliniere pe axa principală |
+| `align-items` | `stretch` (implicit), `center`, `flex-start`, `flex-end`, `baseline` | aliniere pe axa secundară, pentru fiecare rând |
+| `align-content` | ca la `justify-content` | aliniere a **rândurilor** între ele (doar cu `wrap`) |
+| `gap`, `row-gap`, `column-gap` | `16px` | spațiul dintre elemente |
+
+Joacă-te cu toate proprietățile containerului în același loc. Observă cum, la `flex-direction: column`, `justify-content` lucrează pe verticală, iar `align-items` pe orizontală.
+  </script>
+
+  <div class="demo" data-title="Terenul de joacă flexbox" data-desc="Încearcă: pune flex-direction: column și vezi cum justify-content și align-items își schimbă axa." data-height="300" data-layout="stack">
+    <script type="text/css" data-hidden>
+.container { min-height: 260px; background: #eceff1; border-radius: 10px; padding: 10px; }
+.container .b:nth-child(2) { padding-top: 22px; padding-bottom: 22px; }
+.container .b:nth-child(4) { font-size: 20px; }
+    </script>
+    <script type="text/css">
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: normal;
+    gap: 10px;
+}
+    </script>
+    <script type="text/html">
+<div class="container">
+    <div class="b b1">1</div>
+    <div class="b b2">2 (mai înalt)</div>
+    <div class="b b3">3</div>
+    <div class="b b4">4 (text mare)</div>
+    <div class="b b5">5</div>
+</div>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"flex-direction","sel":".container","prop":"flex-direction","options":["row","row-reverse","column","column-reverse"]},
+ {"label":"flex-wrap","sel":".container","prop":"flex-wrap","options":["nowrap","wrap","wrap-reverse"]},
+ {"label":"justify-content","sel":".container","prop":"justify-content","options":["flex-start","center","flex-end","space-between","space-around","space-evenly"]},
+ {"label":"align-items","sel":".container","prop":"align-items","options":["stretch","center","flex-start","flex-end","baseline"]},
+ {"label":"align-content","sel":".container","prop":"align-content","options":["normal","flex-start","center","flex-end","space-between","space-around"]},
+ {"label":"gap","sel":".container","prop":"gap","type":"range","min":0,"max":40,"step":1,"unit":"px"}]
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Diferența dintre `space-between`, `space-around` și `space-evenly`:
+
+```text
+space-between : |A      B      C|     (spațiu doar între elemente)
+space-around  : | A    B    C |      (jumătate de spațiu la capete)
+space-evenly  : |  A   B   C  |      (spații egale peste tot)
+```
+  </script>
+
+  <div class="demo" data-title="space-between / around / evenly, una sub alta" data-desc="Încearcă: mărește lățimea .b sau adaugă un al patrulea element și compară spațiile de la capete." data-height="250" data-layout="stack">
+    <script type="text/css" data-hidden>
+.rand { background: #eceff1; border-radius: 8px; padding: 6px; margin-bottom: 8px; position: relative; }
+.rand::before { content: attr(data-v); position: absolute; left: 50%; top: -2px; transform: translateX(-50%); font: 11px monospace; color: #607d8b; }
+.rand .b { width: 60px; text-align: center; }
+    </script>
+    <script type="text/css">
+.rand { display: flex; }
+.r1 { justify-content: space-between; }
+.r2 { justify-content: space-around; }
+.r3 { justify-content: space-evenly; }
+    </script>
+    <script type="text/html">
+<div class="rand r1" data-v="space-between"><div class="b b1">A</div><div class="b b1">B</div><div class="b b1">C</div></div>
+<div class="rand r2" data-v="space-around"><div class="b b2">A</div><div class="b b2">B</div><div class="b b2">C</div></div>
+<div class="rand r3" data-v="space-evenly"><div class="b b3">A</div><div class="b b3">B</div><div class="b b3">C</div></div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 3.3. Proprietăți pentru elementele flex
+
+| Proprietate | Rol |
+|---|---|
+| `flex-grow` | cât din spațiul liber primește elementul (număr; implicit 0) |
+| `flex-shrink` | cât se micșorează când nu încape (implicit 1) |
+| `flex-basis` | dimensiunea de pornire (`auto`, `200px`, `30%`) |
+| `flex` | prescurtare: `flex: grow shrink basis` |
+| `align-self` | aliniere proprie pe axa secundară (înlocuiește `align-items`) |
+| `order` | ordinea vizuală (implicit 0; numere mai mici = mai devreme) |
+
+Forme uzuale ale prescurtării:
+
+| Scriere | Înseamnă | Efect |
+|---|---|---|
+| `flex: 1` | `1 1 0%` | împarte egal spațiul rămas |
+| `flex: auto` | `1 1 auto` | pornește de la dimensiunea conținutului și apoi crește |
+| `flex: none` | `0 0 auto` | dimensiune rigidă, după conținut |
+| `flex: 0 0 125px` | | lățime fixă de 125px |
+
+Diferența dintre `flex: 1` și `flex: auto` se vede când elementele au conținut de lungimi diferite: cu `flex: 1` toate ajung la aceeași lățime (baza e `0%`), cu `flex: auto` cel cu text mai lung rămâne mai lat.
+  </script>
+
+  <div class="demo" data-title="flex: 1 vs auto vs none vs 0 0 125px" data-desc="Încearcă: schimbă din knob valoarea flex pentru rândul de sus și compară cu rândurile fixe de dedesubt." data-height="300" data-layout="stack">
+    <script type="text/css" data-hidden>
+.rand { display: flex; gap: 6px; background: #eceff1; border-radius: 8px; padding: 6px; margin-bottom: 10px; }
+.eticheta-rand { font: 12px monospace; color: #607d8b; margin: 0 0 2px; }
+    </script>
+    <script type="text/css">
+.joaca .b { flex: 1; }
+
+.unu .b   { flex: 1; }            /* 1 1 0%   → lățimi egale */
+.auto .b  { flex: auto; }         /* 1 1 auto → pornește de la conținut */
+.none .b  { flex: none; }         /* 0 0 auto → rigid */
+.fix .b   { flex: 0 0 125px; }    /* exact 125px */
+
+.creste .b:nth-child(2) { flex-grow: 3; }   /* primește de 3× mai mult spațiu liber */
+    </script>
+    <script type="text/html">
+<p class="eticheta-rand">rândul cu knob</p>
+<div class="rand joaca"><div class="b b4">Ceai</div><div class="b b4">Cană ceramică mare</div><div class="b b4">Set</div></div>
+<p class="eticheta-rand">flex: 1</p>
+<div class="rand unu"><div class="b b1">Ceai</div><div class="b b1">Cană ceramică mare</div><div class="b b1">Set</div></div>
+<p class="eticheta-rand">flex: auto</p>
+<div class="rand auto"><div class="b b2">Ceai</div><div class="b b2">Cană ceramică mare</div><div class="b b2">Set</div></div>
+<p class="eticheta-rand">flex: none</p>
+<div class="rand none"><div class="b b3">Ceai</div><div class="b b3">Cană ceramică mare</div><div class="b b3">Set</div></div>
+<p class="eticheta-rand">flex-grow: 3 pe al doilea (ceilalți 1)</p>
+<div class="rand unu creste"><div class="b b5">1</div><div class="b b5">3</div><div class="b b5">1</div></div>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"flex (rândul de sus)","sel":".joaca .b","prop":"flex","options":["1","auto","none","0 0 125px","1 1 200px","0 1 auto"]}]
+    </script>
+  </div>
+
+  <div class="demo" data-title="align-self și order" data-desc="Încearcă: dă lui .special order: -1 ca să treacă primul, fără să modifici HTML-ul." data-height="200">
+    <script type="text/css" data-hidden>
+.lista { background: #eceff1; border-radius: 8px; padding: 8px; height: 160px; }
+    </script>
+    <script type="text/css">
+.lista {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.special {
+    align-self: flex-end;   /* doar el, jos */
+    order: 2;               /* vizual, după ceilalți */
+}
+    </script>
+    <script type="text/html">
+<div class="lista">
+    <div class="b b1">A</div>
+    <div class="b b3 special">special</div>
+    <div class="b b1">B</div>
+    <div class="b b1">C</div>
+</div>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"align-self","sel":".special","prop":"align-self","options":["flex-end","center","stretch","flex-start","auto"]},
+ {"label":"order","sel":".special","prop":"order","options":["2","-1","0","1"]}]
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 3.3.1. Marginile `auto` în flexbox
+
+Un `margin-left: auto` pe un element flex absoarbe tot spațiul liber din stânga și îl împinge la capăt:
+  </script>
+
+  <div class="demo" data-title="margin-left: auto împinge „Ieșire” la dreapta" data-desc="Încearcă: mută clasa iesire pe „Comenzi” — tot ce urmează după el ajunge în dreapta." data-height="120">
+    <script type="text/css" data-hidden>
+.bara { background: #263238; color: #fff; padding: 10px 16px; border-radius: 8px; }
+.bara a { color: #cfd8dc; text-decoration: none; }
+.bara strong { color: #90caf9; }
+.bara .iesire { background: #c62828; color: #fff; padding: 4px 12px; border-radius: 6px; }
+    </script>
+    <script type="text/css">
+.bara { display: flex; align-items: center; gap: 16px; }
+.bara .iesire { margin-left: auto; }     /* ultimul element, în dreapta */
+    </script>
+    <script type="text/html">
+<nav class="bara">
+    <strong>MagazinMic</strong>
+    <a href="#">Produse</a>
+    <a href="#">Comenzi</a>
+    <a class="iesire" href="#">Ieșire</a>
+</nav>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Un `margin-top: auto` pe ultimul element dintr-o coloană flex îl lipește de fund (util pentru subsolul unui card) — vezi rețetele din 6.5.
+
+### 3.4. Problema `min-width: 0`
+
+Un element flex nu se micșorează sub dimensiunea conținutului său minim (de exemplu un cuvânt foarte lung sau un `input`). Dacă un câmp „iese" din container, scrie `min-width: 0` pe elementul flex. Aceeași problemă apare la `fieldset`, care are implicit o lățime minimă egală cu conținutul: `fieldset { min-width: 0; }`.
+  </script>
+
+  <div class="demo" data-title="min-width: 0 — înainte și după" data-desc="Încearcă: șterge min-width: 0 din .dupa .text și vezi cum și al doilea card iese din cadru." data-height="250" data-resizable>
+    <script type="text/css" data-hidden>
+.cutie { width: 260px; border: 2px dashed #b0bec5; border-radius: 10px; padding: 8px; margin-bottom: 14px; }
+.cutie .icon { width: 36px; height: 36px; border-radius: 50%; background: #1565c0; flex: none; }
+.titlu-mic { font: 12px monospace; color: #607d8b; margin: 0 0 4px; }
+    </script>
+    <script type="text/css">
+.cutie { display: flex; gap: 10px; align-items: center; }
+
+.text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dupa .text { min-width: 0; }   /* permite micșorarea sub conținut */
+    </script>
+    <script type="text/html">
+<p class="titlu-mic">fără min-width: 0 (iese din cadru)</p>
+<div class="cutie inainte">
+    <div class="icon"></div>
+    <div class="text">fisier-cu-un-nume-foarte-foarte-lung-raport-final.pdf</div>
+</div>
+<p class="titlu-mic">cu min-width: 0 (se taie cu …)</p>
+<div class="cutie dupa">
+    <div class="icon"></div>
+    <div class="text">fisier-cu-un-nume-foarte-foarte-lung-raport-final.pdf</div>
+</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 3.5. Rețete
+
+Bară de navigare cu logo la stânga și linkuri la dreapta:
+  </script>
+
+  <div class="demo" data-title="Antet: logo stânga, linkuri dreapta" data-desc="Încearcă: schimbă justify-content în center sau space-around." data-height="110">
+    <script type="text/css" data-hidden>
+.antet { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.12); padding: 10px 16px; border-radius: 8px; }
+.logo { font-weight: 700; color: #1565c0; }
+.antet nav { display: flex; gap: 14px; }
+.antet nav a { color: #263238; text-decoration: none; }
+    </script>
+    <script type="text/css">
+.antet { display: flex; justify-content: space-between; align-items: center; }
+    </script>
+    <script type="text/html">
+<header class="antet">
+    <span class="logo">MagazinMic</span>
+    <nav><a href="#">Produse</a><a href="#">Despre</a><a href="#">Contact</a></nav>
+</header>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"justify-content","sel":".antet","prop":"justify-content","options":["space-between","center","space-around","flex-start"]}]
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Subsol de card lipit de fund, indiferent de lungimea textului:
+  </script>
+
+  <div class="demo" data-title="Carduri cu subsolul aliniat jos" data-desc="Încearcă: șterge margin-top: auto și vezi cum butoanele „sar” la înălțimi diferite." data-height="290" data-layout="stack">
+    <script type="text/css" data-hidden>
+.carduri { display: flex; gap: 12px; align-items: stretch; }
+.card { flex: 1; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.15); padding: 14px; }
+.card h3 { margin: 0 0 6px; font-size: 16px; }
+.card p { margin: 0 0 10px; color: #607d8b; font-size: 14px; }
+.card-subsol { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eceff1; padding-top: 8px; }
+.card-subsol button { background: #1565c0; color: #fff; border: 0; border-radius: 6px; padding: 6px 12px; font: inherit; }
+    </script>
+    <script type="text/css">
+.card        { display: flex; flex-direction: column; }
+.card-corp   { flex: 1; display: flex; flex-direction: column; }
+.card-subsol { margin-top: auto; }
+    </script>
+    <script type="text/html">
+<div class="carduri">
+    <article class="card"><div class="card-corp">
+        <h3>Cană ceramică</h3>
+        <p>Lucrată manual.</p>
+        <div class="card-subsol"><b>79 lei</b><button>Comandă</button></div>
+    </div></article>
+    <article class="card"><div class="card-corp">
+        <h3>Lumânare parfumată</h3>
+        <p>Ceară de soia, fitil din bumbac, aproximativ 40 de ore de ardere, parfum de lavandă și vanilie.</p>
+        <div class="card-subsol"><b>49 lei</b><button>Comandă</button></div>
+    </div></article>
+    <article class="card"><div class="card-corp">
+        <h3>Set de ceai</h3>
+        <p>Trei sortimente din plante.</p>
+        <div class="card-subsol"><b>65 lei</b><button>Comandă</button></div>
+    </div></article>
+</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Pagină cu subsol la fund chiar și când conținutul e scurt:
+  </script>
+
+  <div class="demo" data-title="Subsolul paginii, mereu jos" data-desc="Încearcă: șterge flex: 1 de pe main — subsolul urcă imediat sub conținut." data-height="260" data-tab="css">
+    <script type="text/css" data-hidden>
+body { padding: 0; }
+header, footer { background: #263238; color: #fff; padding: 10px 16px; }
+main { padding: 16px; background: #f5f7fa; }
+footer { font-size: 13px; color: #b0bec5; }
+    </script>
+    <script type="text/css">
+body { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; }
+    </script>
+    <script type="text/html">
+<header>Antet</header>
+<main>Conținut scurt.</main>
+<footer>© 2026 MagazinMic — subsol lipit de fund</footer>
+    </script>
+  </div>
+</section>
