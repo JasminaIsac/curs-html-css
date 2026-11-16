@@ -1,27 +1,1115 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>06. Adaptivitate, responsivitate și bune practici — în curând</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@600&display=swap">
-  <link rel="stylesheet" href="../../assets/soon.css">
-  <link rel="stylesheet" href="../../assets/course-nav.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Adaptivitate, responsivitate și bune practici — documentație interactivă</title>
+    <meta name="description" content="Viewport, media queries, imagini responsive, variabile CSS, BEM, @supports, validare și accesibilitate — exemple live.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="assets/app.css">
+    <link rel="stylesheet" href="../../assets/course-nav.css">
 </head>
 <body>
-  <div class="wrap">
-    <p class="num">Prelegerea 06</p>
-    <span class="badge">În curând</span>
-    <h1>Adaptivitate, responsivitate și bune practici</h1>
-    <p>Viewport, media queries, imagini fluide și obiceiuri de proiect.</p>
-    <p>Tema e în programul cursului, dar pagina interactivă încă nu e publicată. Între timp poți lucra la prelegerile 01–03.</p>
-    <div class="actions">
-      <a class="btn" href="../../index.html">Înapoi la toate temele</a>
-      <a class="btn ghost" href="../03-fundamente-css/index.html">Deschide prelegerea 03</a>
+
+    <header class="topbar">
+        <button class="icon-btn menu-btn" id="menu" type="button" aria-label="Deschide cuprinsul" aria-expanded="false" aria-controls="sidebar">☰</button>
+        <a class="brand" href="#top">
+            <span class="brand-mark">CSS<span>.</span>adapt</span>
+            <span class="brand-sub">Responsive · Calitate · Practică</span>
+        </a>
+        <div class="topbar-actions">
+            <button class="icon-btn" id="theme" type="button">Temă: auto</button>
+        </div>
+        <span class="progress" aria-hidden="true"></span>
+    </header>
+
+    <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar" aria-label="Cuprins">
+            <div class="search">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="m11 11 3.5 3.5"/></svg>
+                <input id="search" type="search" placeholder="Caută (apasă /)" aria-label="Caută în lecție">
+            </div>
+            <ol class="toc" id="toc"></ol>
+            <p class="toc-empty" id="toc-empty" hidden>Niciun rezultat.</p>
+        </aside>
+
+        <main class="content" id="top">
+            <div class="hero">
+                <span class="kicker">Prelegerea 6 · documentație interactivă</span>
+                <h1>Adaptivitate, responsivitate și bune practici</h1>
+                <p>De la <code>viewport</code> și media queries până la variabile, BEM, <code>@supports</code>, validare și accesibilitate. Comutatoarele de sub cod schimbă valorile live — trage de marginea demourilor pentru ecrane înguste.</p>
+                <div class="hero-stats">
+                    <span class="chip"><b id="stat-sections">0</b> secțiuni</span>
+                    <span class="chip"><b id="stat-demos">0</b> exemple live</span>
+                    <span class="chip"><b id="stat-qa">0</b> întrebări cu răspuns</span>
+                    <span class="chip">Tasta <b>/</b> pentru căutare</span>
+                </div>
+            </div>
+
+<section class="lesson" id="s0" data-num="0" data-title="Obiective">
+<script type="text/markdown">
+### 0.1. Ce învățăm
+
+Ultima prelegere din cursul HTML & CSS leagă **layout-ul** de **ecrane diferite** și de **obiceiuri de proiect**:
+
+| Temă | Ideea |
+|---|---|
+| Responsive / adaptive | ce înseamnă fiecare, diferența, cum le realizezi |
+| Media queries | viewport, mobile-first, breakpoint-uri |
+| Unități & limite | `rem`/`%`/`vw`, `min`/`max-width`, `auto`, `clamp()` |
+| Imagini | `max-width`, `srcset`, `<picture>` |
+| Variabile | `--culoare`, `var()`, `calc()` |
+| Organizare | structură CSS, BEM, reset / normalize |
+| Compatibilitate | caniuse.com, `@supports`, fallback-uri |
+| Calitate | validare W3C, performanță, accesibilitate |
+| Urmează | JavaScript și Bootstrap |
+</script>
+</section>
+
+
+<section class="lesson" id="s1" data-num="1" data-title="Responsive vs adaptive și media queries">
+<script type="text/markdown">
+### 1.1. Responsive și adaptive — ce înseamnă
+
+Ambele urmăresc același scop: pagina să fie **folosibilă pe ecrane diferite**. Diferă **cum** se potrivește layout-ul.
+
+| | **Responsive** (receptiv / fluid) | **Adaptive** (adaptiv pe trepte) |
+|---|---|---|
+| Ideea | layout-ul **curge** continuu cu lățimea ferestrei | layout-ul **sare** între câteva variante discrete |
+| Metaforă | apă într-un vas — se întinde / se strânge lin | trepte pe o scară — stai pe o treaptă, apoi pe alta |
+| Cum se face | lățimi fluide (`%`, `fr`, `minmax`), imagini cu `max-width`, tipografie cu `clamp()`, uneori și media queries fine | **media queries** (sau detectare de dispozitiv) care schimbă numărul de coloane, meniul, ordinea blocurilor la praguri |
+| Exemplu | o grilă `1fr 1fr 1fr` care se îngustează; cardurile se micșorează | sub 700px: 1 coloană; peste 700px: 2; peste 1000px: 3 |
+
+În practică, site-urile bune sunt **amestec**: fluid (responsive) **între** praguri și salturi de layout (adaptive) **la** praguri. De aceea în vorbirea de zi cu zi „responsive design” acoperă adesea ambele.
+
+> [!INFO]
+> Nu confunda „adaptive” cu „pagină separată pentru mobil” (`m.site.com`). Acolo ai **versiuni diferite** de site. Aici vorbim de **un singur HTML/CSS** care se potrivește ecranului.
+
+### 1.2. Cum le realizezi concret
+
+**Responsive (fluid)** — fără să „știi” modelul de telefon:
+
+1. `meta viewport` (obligatoriu pe mobil);
+2. containere cu lățime relativă (`width: 100%`, `max-width: 1100px`), nu `width: 960px` fix;
+3. Flexbox / Grid cu `fr`, `gap`, `minmax`;
+4. `img { max-width: 100%; height: auto; }`;
+5. tipografie fluidă: `clamp()` sau `vw` cu limite.
+
+**Adaptive (pe trepte)** — când layout-ul trebuie să se **rearanjeze**:
+
+1. media queries: `@media (min-width: 700px) { … }`;
+2. schimbări de structură: 1 → 2 → 3 coloane, meniu hamburger → bară orizontală, sidebar care coboară sub conținut;
+3. uneori `<picture>` cu `media` (altă încadrare pe mobil);
+4. preferințe: `prefers-color-scheme`, `prefers-reduced-motion`.
+
+Abordarea **mobile-first**: scrii stilul de bază pentru ecran îngust (fluid + simplu), apoi adaugi trepte adaptive cu `min-width` pe măsură ce ecranul crește.
+
+### 1.3. Metaeticheta `viewport`
+
+Fără această linie în `<head>`, telefoanele randează pagina ca pe un ecran larg (~980px), apoi o micșorează până textul e greu de citit:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+
+`width=device-width` aliniază lățimea CSS la lățimea ecranului; `initial-scale=1` pornește fără zoom artificial.
+</script>
+
+<div class="demo" data-title="Mobile-first: 1 → 2 → 3 coloane" data-desc="Trage de marginea previzualizării. Între praguri e fluid (responsive); la 700px și 1000px layout-ul sare pe trepte (adaptive)." data-height="300" data-layout="stack" data-resizable>
+    <script type="text/css">
+/* bază = telefon (mobile-first); treptele = adaptive */
+.coloane { display: grid; gap: 16px; }
+
+@media (min-width: 700px) {
+    .coloane { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1000px) {
+    .coloane { grid-template-columns: repeat(3, 1fr); }
+}
+
+.prag::after               { content: "telefon (< 700px) — 1 coloană"; }
+@media (min-width: 700px)  { .prag::after { content: "tabletă (≥ 700px) — 2 coloane"; } }
+@media (min-width: 1000px) { .prag::after { content: "monitor (≥ 1000px) — 3 coloane"; } }
+    </script>
+    <script type="text/css" data-hidden>
+.prag { margin: 0 0 12px; font-weight: 600; color: #1565c0; }
+.coloane > div { padding: 18px; border-radius: 10px; background: #e3f2fd; text-align: center; }
+    </script>
+    <script type="text/html">
+<p class="prag">Prag activ: </p>
+<div class="coloane">
+    <div>Cană</div>
+    <div>Lumânare</div>
+    <div>Ceai</div>
+</div>
+    </script>
+</div>
+
+<script type="text/markdown">
+### 1.4. Media queries și breakpoint-uri
+
+| Condiție | Exemplu |
+|---|---|
+| lățimea ferestrei | `(min-width: 700px)`, `(max-width: 600px)` |
+| orientarea | `(orientation: landscape)` |
+| tip | `print`, `screen` |
+| preferințe | `(prefers-color-scheme: dark)`, `(prefers-reduced-motion: reduce)` |
+| indicator | `(hover: none)`, `(pointer: coarse)` |
+
+Valori tipice: 600px, 900px, 1200px — alege-le după momentul în care **layout-ul se strică**, nu după „iPhone / iPad”.
+
+Condiții multiple: `@media (min-width: 700px) and (max-width: 999px)`. Sintaxă modernă: `@media (700px <= width < 1000px)`.
+</script>
+
+<div class="demo" data-title="Condiții de preferință și dispozitiv" data-desc="Previzualizarea arată ce raportează browserul tău acum: schimbă tema sistemului și reîncarcă." data-height="230">
+    <script type="text/css">
+.ind { padding: 6px 10px; margin: 4px 0; border-radius: 6px; background: #eceff1; }
+.ind::after { content: "nu"; float: right; font-weight: 700; color: #c62828; }
+
+@media (prefers-color-scheme: dark)      { .tema::after   { content: "da"; color: #2e7d32; } }
+@media (prefers-reduced-motion: reduce)  { .miscare::after { content: "da"; color: #2e7d32; } }
+@media (hover: none)                     { .hover::after  { content: "da"; color: #2e7d32; } }
+@media (pointer: coarse)                 { .tactil::after { content: "da"; color: #2e7d32; } }
+@media (orientation: landscape)          { .orizontal::after { content: "da"; color: #2e7d32; } }
+    </script>
+    <script type="text/html">
+<div class="ind tema">prefers-color-scheme: dark</div>
+<div class="ind miscare">prefers-reduced-motion: reduce</div>
+<div class="ind hover">hover: none</div>
+<div class="ind tactil">pointer: coarse (ecran tactil)</div>
+<div class="ind orizontal">orientation: landscape</div>
+    </script>
+</div>
+</section>
+
+
+<section class="lesson" id="s2" data-num="2" data-title="Unități, min/max, auto și clamp()">
+<script type="text/markdown">
+### 2.1. Unități relative
+
+| Unitate | Față de ce | La ce e bună |
+|---|---|---|
+| `%` | dimensiunea **părintelui** | lățimi relative |
+| `rem` | fontul lui `html` | text și spații previzibile |
+| `vw` / `vh` | 1% din fereastră | secțiuni / titluri fluide |
+| `px` | pixel | borduri, umbre, valori fine |
+
+### 2.2. Fix vs. `min-*` / `max-*`
+
+| Declarație | Comportament |
+|---|---|
+| `width: 400px` (fix) | **mereu** 400px — pe ecran îngust iese din pagină sau forțează scroll orizontal |
+| `max-width: 400px` | „cel mult 400px”: pe ecran lat se oprește la 400; pe ecran mai îngust **se strânge** odată cu părintele (dacă mai ai `width: 100%` sau e bloc) |
+| `min-width: 200px` | „cel puțin 200px”: nu se strânge sub 200, chiar dacă părintele e mai mic (poate provoca overflow) |
+| `min-height` / `max-height` | aceleași idei pe verticală |
+
+Combinația uzuală pentru un container de conținut:
+
+```css
+.continut {
+    width: 100%;           /* umple părintele (fluid) */
+    max-width: 1100px;     /* pe monitoare late nu se întinde la nesfârșit */
+    margin-inline: auto;   /* se centrează când e mai îngust decât ecranul */
+}
+```
+
+Diferența față de fix: cu `width: 1100px` pe telefon ai bară orizontală; cu `width: 100%` + `max-width: 1100px` pagina rămâne în ecran **și** arată bine pe desktop.
+</script>
+
+<div class="demo" data-title="width fix vs. max-width" data-desc="Trage de margine. Cutia albastră e fix 320px (iese). Verde: width 100% + max-width 320px (se strânge)." data-height="260" data-layout="stack" data-resizable data-tab="css">
+<script type="text/css" data-hidden>
+.scena { display: grid; gap: 12px; }
+.eticheta { font-size: 12px; color: #607d8b; margin: 0 0 4px; }
+.cutie { padding: 12px; border-radius: 8px; color: #fff; font-weight: 700; box-sizing: border-box; }
+</script>
+<script type="text/css">
+.fix {
+    width: 320px;
+    background: #c62828;
+}
+
+.fluid {
+    width: 100%;
+    max-width: 320px;
+    background: #2e7d32;
+}
+</script>
+<script type="text/html">
+<div class="scena">
+    <div>
+        <p class="eticheta">width: 320px (fix)</p>
+        <div class="cutie fix">ies din ecran dacă e mai îngust</div>
     </div>
+    <div>
+        <p class="eticheta">width: 100%; max-width: 320px</p>
+        <div class="cutie fluid">mă strâng cu părintele</div>
+    </div>
+</div>
+</script>
+</div>
+
+<script type="text/markdown">
+### 2.3. Valoarea `auto` la `width` / `height`
+
+`auto` înseamnă: **„calculează-mă tu, browserule, din context”** — nu am o lungime fixă.
+
+| Situație | Ce face `auto` |
+|---|---|
+| `width: auto` pe un **bloc** | ocupă tot spațiul disponibil al părintelui (minus margini) — comportamentul implicit al `div` |
+| `width: auto` pe **inline** / în flex ca item | lățimea vine din conținut (shrink-to-fit) |
+| `height: auto` | înălțimea vine din **conținut** (text, imagini, padding) — crește când adaugi paragrafe |
+| pe imagini: `height: auto` + `max-width: 100%` | păstrează **proporțiile** când lățimea se micșorează |
+
+**Când o folosești (sau o lași implicită):**
+
+- vrei ca cutia să se **adapteze la conținut** pe verticală → `height: auto` (nu `height: 400px` care taie sau lasă gol);
+- la imagini fluide → `height: auto` e obligatoriu pe lângă `max-width: 100%`, altfel se turtesc;
+- în Flex/Grid, `width: auto` / `height: auto` lasă itemul să urmeze regulile de `flex` / `fr`.
+
+**Cazul „pun `auto` la tot”** (`width: auto; height: auto` pe același element):
+
+- e aproape echivalent cu a **nu seta** deloc dimensiunile (valorile implicite sunt tot `auto`);
+- elementul revine la comportamentul natural: lățime de tip bloc (sau după display), înălțime după conținut;
+- util ca **reset** când o clasă anterioară pusese `width`/`height` fixe și vrei să anulezi (ex. pe mobil: `.card { width: auto; height: auto; }`);
+- **nu** „centrează” și **nu** „face responsive” singur — trebuie și părinte fluid / max-width / media queries.
+
+```css
+/* pe mobil anulezi un pătrat fix de pe desktop */
+@media (max-width: 600px) {
+    .hero-media {
+        width: auto;    /* lasă lățimea pe seama layout-ului */
+        height: auto;   /* lasă înălțimea pe seama imaginii/conținutului */
+        max-width: 100%;
+    }
+}
+```
+</script>
+
+<div class="demo" data-title="height: auto vs. height fix" data-desc="Adaugă text în HTML sau comută height. Cu auto, cutia crește; cu 80px, conținutul iese sau e tăiat dacă ai overflow." data-height="220" data-tab="css">
+<script type="text/css" data-hidden>
+.cutie { padding: 12px; border-radius: 8px; background: #e3f2fd; border: 2px solid #1565c0; }
+</script>
+<script type="text/css">
+.cutie {
+    height: auto;
+    overflow: visible;
+}
+</script>
+<script type="text/html">
+<div class="cutie">
+    <strong>Card</strong>
+    <p>Un paragraf. Dacă înălțimea e auto, cutia crește cu textul.</p>
+    <p>Încă un paragraf pentru a vedea diferența.</p>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"height","sel":".cutie","prop":"height","options":["auto","80px","120px"]},
+  {"label":"overflow","sel":".cutie","prop":"overflow","options":["visible","hidden","auto"]}
+]
+</script>
+</div>
+
+<script type="text/markdown">
+### 2.4. `clamp()` — mai pe îndelete
+
+Sintaxă:
+
+```css
+proprietate: clamp(MIN, PREFERAT, MAX);
+```
+
+Browserul alege **PREFERAT**, dar:
+
+- dacă PREFERAT ar fi **mai mic** decât MIN → folosește MIN;
+- dacă PREFERAT ar fi **mai mare** decât MAX → folosește MAX.
+
+Exemplu tipografie:
+
+```css
+h1 {
+    font-size: clamp(1.25rem, 4vw, 2.5rem);
+}
+```
+
+| Parte | Rol în exemplu |
+|---|---|
+| `1.25rem` | pe ecran foarte îngust titlul **nu** scade sub ~20px (dacă 1rem = 16px) |
+| `4vw` | „idealul” fluid: 4% din lățimea ferestrei — crește pe măsură ce lărgești |
+| `2.5rem` | pe monitor lat titlul **nu** explodează peste ~40px |
+
+Fără `clamp`, doar `font-size: 4vw` pe telefon poate fi prea mic, pe TV prea mare. Fără fluid, doar `2rem` e constant — nu profită de ecranul lat.
+
+Poți folosi `clamp()` și la spații sau lățimi: `padding: clamp(1rem, 3vw, 2.5rem);` sau `width: clamp(16rem, 50%, 40rem);`.
+
+> [!TIP]
+> Ordinea e mereu **min, preferat, max**. Dacă greșești ordinea (ex. min > max), rezultatul e confuz — ține min ≤ max.
+</script>
+
+<div class="demo" data-title="rem urmărește fontul din html" data-desc="Crește font-size de pe html. Textul în rem crește. Textul în px rămâne pe loc." data-height="150" data-tab="css">
+<script type="text/css">
+html { font-size: 16px; }
+.px { font-size: 16px; margin: 0 0 6px; }
+.rem { font-size: 1rem; margin: 0; font-weight: 700; color: #1565c0; }
+</script>
+<script type="text/html">
+<p class="px">16px — nu depinde de html</p>
+<p class="rem">1rem — egal cu fontul din html</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"html font-size","sel":"html","prop":"font-size","type":"range","min":12,"max":28,"step":1,"unit":"px"}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Procente din părinte" data-desc="Lățimea barei e un procent din cutia punctată. Trage glisorul." data-height="120" data-tab="css">
+<script type="text/css" data-hidden>
+.rama { border: 2px dashed #90a4ae; border-radius: 8px; padding: 8px; }
+</script>
+<script type="text/css">
+.bara {
+    width: 60%;
+    height: 28px;
+    border-radius: 6px;
+    background: #1565c0;
+}
+</script>
+<script type="text/html">
+<div class="rama"><div class="bara"></div></div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"width","sel":".bara","prop":"width","type":"range","min":10,"max":100,"step":5,"unit":"%"}
+]
+</script>
+</div>
+
+<div class="demo" data-title="vw urmărește lățimea previzualizării" data-desc="Trage de marginea din dreapta a previzualizării. 40vw înseamnă 40% din lățimea acestui cadru, nu a ecranului întreg." data-height="140" data-layout="stack" data-resizable data-tab="css">
+<script type="text/css">
+.lat {
+    width: 40vw;
+    max-width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background: #e3f2fd;
+    font-weight: 700;
+}
+</script>
+<script type="text/html">
+<div class="lat">40vw</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"width","sel":".lat","prop":"width","options":["20vw","40vw","70vw","100vw"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Text fluid cu clamp()" data-desc="Trage de margine: titlul crește cu 4vw, dar rămâne între 1rem și 2.5rem. Compară cu doar 4vw (poate ieși din limite)." data-height="220" data-layout="stack" data-resizable>
+    <script type="text/css">
+.titlu {
+    font-size: clamp(1rem, 4vw, 2.5rem);
+    margin: 0 0 8px;
+}
+
+.imagine {
+    max-width: 100%;
+    height: auto;
+}
+    </script>
+    <script type="text/css" data-hidden>
+.imagine { width: 600px; aspect-ratio: 4 / 1; border-radius: 10px; background: linear-gradient(135deg, #0d47a1, #42a5f5); }
+.mic { font-size: 13px; color: #607d8b; }
+    </script>
+    <script type="text/html">
+<h1 class="titlu">Obiecte făcute cu grijă</h1>
+<p class="mic">clamp(1rem, 4vw, 2.5rem) — min · preferat · max</p>
+<div class="imagine"></div>
+    </script>
+    <script type="application/json" data-knobs>
+    [{"label":"font-size","sel":".titlu","prop":"font-size","options":["clamp(1rem, 4vw, 2.5rem)","4vw","1.5rem","clamp(1.25rem, 3vw + 1rem, 3rem)"]}]
+    </script>
+</div>
+</section>
+
+
+<section class="lesson" id="s3" data-num="3" data-title="Imagini responsive">
+<script type="text/markdown">
+### 3.1. Imagini fluide
+
+Regula minimă pe care o pui aproape în orice proiect:
+
+```css
+img, video {
+    max-width: 100%;
+    height: auto;
+}
+```
+
+- `max-width: 100%` — nu depășește părintele (spre deosebire de `width: 800px` fix);
+- `height: auto` — browserul recalculează înălțimea ca să **păstreze proporțiile** când lățimea scade.
+
+Fără `height: auto`, dacă HTML-ul are `height="400"` și tu forțezi doar lățimea, imaginea se poate turtui.
+
+### 3.2. `srcset` — aceeași imagine, mai multe rezoluții
+
+Browserul alege fișierul potrivit densității ecranului sau lățimii disponibile:
+
+```html
+<img src="cana-400.jpg"
+     srcset="cana-400.jpg 400w, cana-800.jpg 800w, cana-1200.jpg 1200w"
+     sizes="(max-width: 600px) 100vw, 400px"
+     alt="Cană ceramică">
+```
+
+- `srcset` + descriptori `w` = lățimi disponibile;
+- `sizes` = cât spațiu ocupă imaginea în layout;
+- `src` = rezervă pentru browsere vechi.
+
+### 3.3. `<picture>` — art direction
+
+Când pe mobil vrei **altă încadrare** (nu doar altă rezoluție), folosești `<picture>` cu `<source media="…">`:
+</script>
+
+<div class="demo" data-title="max-width pe imagine" data-desc="Trage de marginea previzualizării. Imaginea rămâne în cutie; fără max-width ar ieși." data-height="240" data-layout="stack" data-resizable data-tab="css">
+<script type="text/css" data-hidden>
+.rama { border: 2px dashed #90a4ae; border-radius: 10px; padding: 8px; max-width: 100%; }
+</script>
+<script type="text/css">
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+</script>
+<script type="text/html">
+<div class="rama">
+    <img width="720" height="240" alt="Peisaj" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='240'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%230d47a1'/%3E%3Cstop offset='1' stop-color='%2342a5f5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='720' height='240' fill='url(%23g)'/%3E%3Ctext x='24' y='130' fill='white' font-size='28' font-family='sans-serif'%3E720px lățime nativă%3C/text%3E%3C/svg%3E">
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"max-width","sel":"img","prop":"max-width","options":["100%","none","50%"]}]
+</script>
+</div>
+
+<div class="demo" data-title="srcset și sizes (schemă)" data-desc="Inspectează HTML-ul: srcset oferă variante; sizes spune browserului lățimea afișată. Aici folosim SVG-uri colorate ca „fișiere” diferite." data-height="260" data-tab="html">
+<script type="text/css">
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    border: 2px solid #1565c0;
+}
+.nota { font-size: 13px; color: #607d8b; margin-top: 8px; }
+</script>
+<script type="text/html">
+<img
+    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='160'%3E%3Crect width='400' height='160' fill='%2390caf9'/%3E%3Ctext x='20' y='90' font-size='22' font-family='sans-serif'%3Esrc 400w%3C/text%3E%3C/svg%3E"
+    srcset="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='160'%3E%3Crect width='400' height='160' fill='%2390caf9'/%3E%3Ctext x='20' y='90' font-size='22' font-family='sans-serif'%3E400w%3C/text%3E%3C/svg%3E 400w,
+             data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='160'%3E%3Crect width='800' height='160' fill='%231565c0'/%3E%3Ctext x='20' y='90' fill='white' font-size='28' font-family='sans-serif'%3E800w%3C/text%3E%3C/svg%3E 800w"
+    sizes="(max-width: 500px) 100vw, 400px"
+    width="400"
+    height="160"
+    alt="Exemplu srcset">
+<p class="nota">Pe ecrane late browserul poate alege varianta 800w (fundal mai închis). Pe îngust, 400w.</p>
+</script>
+</div>
+
+<div class="demo" data-title="picture: art direction" data-desc="Trage previzualizarea sub / peste 600px — sursa se schimbă (încadrare diferită), nu doar rezoluția." data-height="280" data-layout="stack" data-resizable data-tab="html">
+<script type="text/css">
+img { max-width: 100%; height: auto; display: block; border-radius: 10px; }
+.prag { font-weight: 600; color: #1565c0; margin: 0 0 8px; }
+.prag::after { content: " ≥ 600px → peisaj lat"; }
+@media (max-width: 599px) {
+    .prag::after { content: " < 600px → cadrare verticală"; }
+}
+</script>
+<script type="text/html">
+<p class="prag">Prag:</p>
+<picture>
+    <source media="(max-width: 599px)"
+            srcset="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='400'%3E%3Crect width='320' height='400' fill='%2300897b'/%3E%3Ctext x='24' y='200' fill='white' font-size='22' font-family='sans-serif'%3Emobil portret%3C/text%3E%3C/svg%3E">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='240'%3E%3Crect width='720' height='240' fill='%23f4511e'/%3E%3Ctext x='24' y='130' fill='white' font-size='26' font-family='sans-serif'%3Edesktop peisaj%3C/text%3E%3C/svg%3E"
+         width="720" height="240"
+         alt="Produs — încadrare adaptată">
+</picture>
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s4" data-num="4" data-title="Variabile CSS și calc()">
+<script type="text/markdown">
+### 4.1. Variabile CSS (`--nume`)
+
+Declarate de obicei pe `:root`, folosite cu `var(--nume)` sau `var(--nume, rezervă)`:
+
+```css
+:root {
+    --accent: #1565c0;
+    --spatiu: 16px;
+}
+.buton {
+    background: var(--accent);
+    padding: calc(var(--spatiu) / 2) var(--spatiu);
+}
+```
+
+- se **moștenesc** — poți redefini `--accent` pe un părinte;
+- se schimbă la **rulare** (media query, `:hover`, JavaScript);
+- `calc()` combină unități: `calc(100% - 2rem)`.
+</script>
+<div class="demo" data-title="Variabile și moștenire" data-desc="Încearcă: schimbă --accent în :root, apoi --raza în .alerta, și urmărește ce butoane se modifică." data-height="210">
+    <script type="text/css">
+:root {
+    --accent: #1565c0;
+    --raza: 8px;
+    --spatiu: 16px;
+}
+
+.buton {
+    background: var(--accent);
+    border-radius: var(--raza);
+    padding: calc(var(--spatiu) / 2) var(--spatiu);
+    color: #fff;
+    border: 0;
+    font: inherit;
+}
+
+.alerta { --accent: #c62828; }        /* butoanele din .alerta devin roșii */
+
+.verde  { --accent: #2e7d32; --raza: 999px; }
+
+.fara   { background: var(--inexistenta, #607d8b); }  /* valoare de rezervă */
+    </script>
+    <script type="text/css" data-hidden>
+.zona { padding: 12px; margin-bottom: 10px; border: 2px dashed #b0bec5; border-radius: 10px; }
+.zona small { display: block; margin-bottom: 6px; color: #607d8b; }
+    </script>
+    <script type="text/html">
+<div class="zona"><small>:root</small><button class="buton">Salvează</button> <button class="buton fara">Rezervă</button></div>
+<div class="zona alerta"><small>.alerta { --accent: #c62828 }</small><button class="buton">Șterge</button></div>
+<div class="zona verde"><small>.verde { --accent; --raza }</small><button class="buton">Confirmă</button></div>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"--accent (:root)","sel":":root","prop":"--accent","options":["#1565c0","#8e24aa","#f4511e","#00897b"]},
+ {"label":"--raza (:root)","sel":":root","prop":"--raza","type":"range","min":0,"max":24,"step":1,"unit":"px"},
+ {"label":"--spatiu (:root)","sel":":root","prop":"--spatiu","type":"range","min":8,"max":32,"step":2,"unit":"px"}]
+    </script>
   </div>
-  <script src="../../assets/course-nav.js"></script>
+
+<div class="demo" data-title="Variabile schimbate la rulare" data-desc="Încearcă: treci cu mouse-ul peste carduri; doar variabila se schimbă, regulile rămân aceleași." data-height="190">
+    <script type="text/css">
+.card {
+    --ridicare: 0px;
+    --umbra: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+    transform: translateY(calc(-1 * var(--ridicare)));
+    box-shadow: var(--umbra);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    --ridicare: 6px;
+    --umbra: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+    </script>
+    <script type="text/css" data-hidden>
+body { display: flex; gap: 16px; padding-top: 28px; }
+.card { flex: 1; padding: 18px; border-radius: 10px; background: #fff; text-align: center; }
+    </script>
+    <script type="text/html">
+<div class="card">Cană</div>
+<div class="card">Lumânare</div>
+<div class="card">Ceai</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 17.5. Temă întunecată
+
+Cele două teme diferă doar prin valorile variabilelor. Restul CSS-ului folosește `var(...)` și nu știe ce temă e activă.
+  </script>
+
+<script type="text/markdown">
+### 4.2. Temă cu variabile
+
+Două teme = aceleași reguli, alte valori pentru `--fundal`, `--text`, `--accent`. Poți urma sistemul (`prefers-color-scheme`) sau un comutator în pagină.
+</script>
+<div class="demo" data-title="Temă după sistemul de operare" data-desc="Previzualizarea urmează tema sistemului tău. Schimb-o din setările sistemului (sau din DevTools → Rendering) ca să vezi cealaltă variantă." data-height="200">
+    <script type="text/css">
+:root {
+    color-scheme: light dark;
+    --fundal: #ffffff;
+    --text: #263238;
+    --suprafata: #f5f7fa;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --fundal: #121821;
+        --text: #eceff1;
+        --suprafata: #1c2530;
+    }
+}
+
+html, body {
+    background: var(--fundal);
+    color: var(--text);
+}
+
+.card { background: var(--suprafata); padding: 16px; border-radius: 10px; }
+    </script>
+    <script type="text/html">
+<div class="card">
+    <h3 style="margin-top:0">Cardul meu</h3>
+    <p>Culorile vin din variabile; tema sistemului alege valorile.</p>
+    <input type="text" placeholder="Câmpurile native se adaptează și ele">
+</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Uneori vrei și un buton de temă în pagină. Cu `:has()` și o casetă bifată, comutarea se face fără JavaScript: dacă rădăcina **conține** caseta bifată, variabilele primesc valorile întunecate.
+  </script>
+</section>
+
+
+<section class="lesson" id="s5" data-num="5" data-title="Organizarea codului CSS">
+<script type="text/markdown">
+### 5.1. Structura fișierelor
+
+În proiecte mici: `index.html` + `css/stil.css`. În proiecte medii, împarte CSS-ul pe roluri, de exemplu:
+
+```text
+css/
+  reset.css       /* sau normalize */
+  variabile.css
+  baza.css        /* tipografie, linkuri */
+  layout.css
+  componente.css
+  utilitare.css
+```
+
+Într-un singur fișier, o ordine clară ajută:
+
+1. variabile (`:root`) și reset;
+2. stiluri generale (`body`, titluri, linkuri);
+3. layout (antet, coloane, subsol);
+4. componente (card, buton, formular);
+5. variante și stări;
+6. media queries (lângă componenta afectată);
+7. print / `prefers-reduced-motion`.
+
+### 5.2. Reset vs. normalize
+
+| Abordare | Ideea |
+|---|---|
+| **reset** | anulează stilurile implicite ale browserului (margini 0, list-style none…) |
+| **normalize** / modern reset | păstrează utilele, corectează inconsistențele între browsere |
+
+Exemplu minimal des întâlnit:
+
+```css
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+img, picture, video { max-width: 100%; display: block; }
+```
+
+### 5.3. Convenția BEM
+
+`bloc__element--modificator`: `.card`, `.card__titlu`, `.card--evidentiat`. Numele spun **ce este**, nu **cum arată** (`.eroare`, nu `.rosu`).
+</script>
+<div class="demo" data-title="BEM: bloc, element, modificator" data-desc="Încearcă: adaugă card--evidentiat la primul card din tabul HTML." data-height="250" data-tab="html">
+    <script type="text/css">
+.card {                         /* blocul */
+    flex: 1;
+    padding: 14px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card__titlu {                  /* un element din bloc */
+    margin: 0 0 6px;
+    font-size: 17px;
+}
+
+.card__pret {
+    font-weight: 700;
+    color: #1565c0;
+}
+
+.card--evidentiat {             /* o variantă a blocului */
+    outline: 3px solid gold;
+}
+
+.card--evidentiat .card__titlu::after { content: " ★"; color: #f9a825; }
+    </script>
+    <script type="text/css" data-hidden>
+body { display: flex; gap: 16px; align-items: flex-start; }
+    </script>
+    <script type="text/html">
+<article class="card">
+    <h3 class="card__titlu">Cană ceramică</h3>
+    <p class="card__pret">79 lei</p>
+</article>
+<article class="card card--evidentiat">
+    <h3 class="card__titlu">Set de ceai</h3>
+    <p class="card__pret">65 lei</p>
+</article>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 18.3. Imbricarea nativă
+
+Browserele actuale permit scrierea regulilor una în alta, ca în preprocesoare (Sass, Less). `&` înseamnă „selectorul părinte".
+  </script>
+
+<script type="text/markdown">
+### 5.4. Imbricare nativă și obiceiuri
+
+Browserele actuale permit reguli imbricate (`&` = selectorul părinte). Păstrează 2–3 niveluri. Evită `#id` și `!important` pentru stilul de zi cu zi.
+</script>
+<div class="demo" data-title="Imbricare nativă cu &" data-desc="Încearcă: treci cu mouse-ul peste carduri, apoi lărgește previzualizarea peste 700px ca să vezi padding-ul imbricat în @media." data-height="240" data-layout="stack" data-resizable>
+    <script type="text/css">
+.card {
+    padding: 16px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.2s;
+
+    & h3 { margin: 0; }                 /* .card h3 */
+    &:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+    &.evidentiat { border: 2px solid gold; }
+
+    @media (min-width: 700px) {
+        padding: 24px;
+    }
+}
+    </script>
+    <script type="text/css" data-hidden>
+body { display: grid; gap: 14px; }
+    </script>
+    <script type="text/html">
+<div class="card"><h3>Card obișnuit</h3></div>
+<div class="card evidentiat"><h3>Card evidențiat</h3></div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Păstrează imbricarea la două-trei niveluri; altfel specificitatea crește fără rost.
+
+### 18.4. Obiceiuri bune
+
+- evită `!important` (cu excepția regulilor generale ca `prefers-reduced-motion`);
+- evită selectorii lungi și `#id` pentru stil; preferă clase;
+- repeți o valoare de două ori? pune-o într-o variabilă;
+- nu stiliza după structura întâmplătoare a paginii (`div > div > span`), ci după clase sau atribute cu sens;
+- verifică în cel puțin două browsere și pe un ecran îngust.
+  </script>
+
+<div class="demo" data-title="De ce evităm #id și !important" data-desc="Încearcă: fă butonul principal roșu doar adăugând .pericol în HTML. Nu merge — #trimite are specificitate mai mare. Apoi înlocuiește #trimite cu .principal." data-height="180" data-tab="css">
+    <script type="text/css">
+.buton    { padding: 8px 16px; border: 0; border-radius: 6px; color: #fff; background: #607d8b; font: inherit; }
+#trimite  { background: #1565c0; }   /* specificitate 1-0-0 */
+.pericol  { background: #c62828; }   /* specificitate 0-1-0: pierde */
+    </script>
+    <script type="text/html">
+<button class="buton" id="trimite">Trimite</button>
+<button class="buton pericol">Șterge</button>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 18.5. Depanare cu DevTools
+
+Deschide cu **F12** (sau clic dreapta → Inspect). Poți exersa chiar pe previzualizările din această pagină: clic dreapta pe un demo → Inspect.
+
+| Ce vrei să afli | Unde |
+|---|---|
+| ce reguli se aplică și care sunt înlocuite (tăiate) | panoul „Styles" |
+| dimensiunile finale: content, padding, border, margin | schema casetei din „Computed" / „Layout" |
+| de ce o proprietate are valoarea X | „Computed" → clic pe proprietate → regula sursă |
+| cum arată elementul în stările `:hover`, `:focus`, `:active` | butonul **:hov** din „Styles" |
+| cum arată pagina pe telefon | bara de dispozitive (Ctrl+Shift+M) |
+| elementul care iese din pagină | selectezi elementele pe rând, urmărești marginile evidențiate |
+| greșeli de scriere | proprietățile invalide apar tăiate sau cu avertisment |
+
+Pași de depanare, când „nu merge":
+
+1. verifică în „Styles" dacă regula **apare** (dacă nu, selectorul nu se potrivește sau fișierul nu s-a încărcat; verifică calea `href`);
+2. dacă apare, dar e **tăiată**, o altă regulă o înlocuiește: compară specificitatea;
+3. dacă nu e tăiată, dar nu se vede, verifică proprietatea (greșeală de scriere, valoare invalidă, element de tip `inline`);
+4. reîncarcă forțat (Ctrl+F5), apoi validează fișierul cu validatorul W3C ([jigsaw.w3.org/css-validator](https://jigsaw.w3.org/css-validator/)).
+  </script>
+</section>
+
+
+<section class="lesson" id="s6" data-num="6" data-title="Compatibilitate între browsere">
+<script type="text/markdown">
+### 6.1. Verifică pe caniuse.com
+
+Înainte să te bazezi pe o proprietate nouă (`@container`, `color-mix()`, `:has()`), caut-o pe [caniuse.com](https://caniuse.com). Vezi:
+
+- ce % din utilizatori o au;
+- pe ce browsere lipsește;
+- dacă ai nevoie de fallback.
+
+### 6.2. Prefixe de vendor (istoric scurt)
+
+Unele proprietăți au avut nevoie de `-webkit-`, `-moz-`, `-ms-` în perioada de experiment. Astăzi majoritatea sunt nestandardizate fără prefix; uneori rămâne forma cu prefix ca alias (ex. `-webkit-line-clamp`). Nu adăuga prefixe „din reflex” — verifică documentația.
+
+### 6.3. Fallback-uri și `@supports`
+
+Scrii **întâi** varianta sigură, apoi îmbunătățirea. `@supports` aplică reguli doar dacă browserul înțelege testul:
+
+```css
+.card {
+    background: #e3f2fd;              /* fallback */
+    background: color-mix(in srgb, #1565c0 20%, white);
+}
+
+@supports (display: grid) {
+    .galerie { display: grid; gap: 1rem; }
+}
+```
+</script>
+
+<div class="demo" data-title="@supports: grid vs. fallback" data-desc="Dacă browserul suportă grid, vezi grila; altfel rămâne fluxul bloc. Knob-ul simulează principiu prin display." data-height="220" data-tab="css">
+<script type="text/css" data-hidden>
+.item { padding: 14px; border-radius: 8px; background: #e3f2fd; text-align: center; font-weight: 600; }
+.nota { font-size: 13px; color: #607d8b; }
+</script>
+<script type="text/css">
+/* fallback: elemente una sub alta */
+.galerie {
+    display: block;
+}
+
+.galerie .item {
+    margin-bottom: 8px;
+}
+
+@supports (display: grid) {
+    .galerie {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    .galerie .item { margin-bottom: 0; }
+}
+</script>
+<script type="text/html">
+<p class="nota">Cu @supports (display: grid) — două coloane. Fără suport — stivă.</p>
+<div class="galerie">
+    <div class="item">A</div>
+    <div class="item">B</div>
+    <div class="item">C</div>
+    <div class="item">D</div>
+</div>
+</script>
+</div>
+
+<div class="demo" data-title="Fallback de culoare înainte de var()" data-desc="Browserul ignoră declarațiile pe care nu le înțelege. Ordinea: valoare clasică, apoi var()." data-height="160" data-tab="css">
+<script type="text/css">
+:root { --accent: #1565c0; }
+
+.buton {
+    font: inherit;
+    font-weight: 600;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: #1565c0;           /* fallback */
+    background: var(--accent);     /* modern */
+}
+</script>
+<script type="text/html">
+<button class="buton" type="button">Cu fallback</button>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"--accent","sel":":root","prop":"--accent","options":["#1565c0","#2e7d32","#c62828","#8e24aa"]}]
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s7" data-num="7" data-title="Validare, performanță și accesibilitate">
+<script type="text/markdown">
+### 7.1. Validare
+
+Verifică HTML și CSS pe validatoarele W3C:
+
+- HTML: [validator.w3.org](https://validator.w3.org/)
+- CSS: [jigsaw.w3.org/css-validator](https://jigsaw.w3.org/css-validator/)
+
+Erorile de sintaxă (etichetă neînchisă, proprietate greșită) apar aici înainte să „vânezi” bug-uri de layout.
+
+### 7.2. Performanță (bază)
+
+| Practică | De ce |
+|---|---|
+| imagini la dimensiunea potrivită (`srcset`) | mai puține KB pe mobil |
+| CSS/JS minime, fără fișiere uriașe nefolosite | încărcare mai rapidă |
+| animă `transform` / `opacity` | mai puțin reflow (prelegerea 5) |
+| `font-display: swap` la webfonturi | text vizibil mai repede |
+| evită layout shift | setează `width`/`height` sau `aspect-ratio` pe media |
+
+### 7.3. Accesibilitate de bază
+
+- structură semantică (`header`, `nav`, `main`, `button` real, nu `div` clicabil);
+- contrast text/fundal ≥ 4,5:1 (verifică în DevTools);
+- `alt` pe imagini informative; `alt=""` pe decorative;
+- focus vizibil (`:focus-visible`); nu scoate `outline` fără înlocuitor;
+- ținte de clic suficient de mari pe tactil;
+- respectă `prefers-reduced-motion`.
+</script>
+
+<div class="demo" data-title="Focus vizibil pe buton și link" data-desc="Navighează cu Tab. Conturul apare la focus-visible; hover rămâne separat." data-height="160" data-tab="css">
+<script type="text/css">
+a, .btn {
+    font: inherit;
+    font-weight: 600;
+    color: #1565c0;
+}
+
+.btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: #e3f2fd;
+    cursor: pointer;
+}
+
+a:focus-visible,
+.btn:focus-visible {
+    outline: 3px solid #1565c0;
+    outline-offset: 3px;
+}
+
+a:hover { text-decoration-thickness: 2px; }
+.btn:hover { background: #bbdefb; }
+</script>
+<script type="text/html">
+<p><a href="#produse">Vezi produsele</a> &nbsp; <button class="btn" type="button">Adaugă</button></p>
+</script>
+</div>
+
+<div class="demo" data-title="Contrast: greu vs. lizibil" data-desc="Comută culoarea textului. Galben pe alb e greu de citit; navy pe alb trece testul de contrast." data-height="180" data-tab="css">
+<script type="text/css">
+.card {
+    padding: 16px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #cfd8dc;
+    color: #f9a825;   /* contrast slab */
+}
+</script>
+<script type="text/html">
+<div class="card">
+    <strong>Titlu pe fundal alb</strong>
+    <p>Textul trebuie să rămână lizibil pentru toți utilizatorii.</p>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"color","sel":".card","prop":"color","options":["#f9a825","#90a4ae","#263238","#0d47a1"]}]
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s8" data-num="8" data-title="Recapitulare și pași următori">
+<script type="text/markdown">
+### 8.1. Recapitulare — tot cursul HTML & CSS
+
+| Prelegere | Axă |
+|---|---|
+| 1–2 | document HTML, semantică, tabele, formulare, media |
+| 3 | selectori, cascadă, unități, culori, text |
+| 4 | box model, Flexbox, Grid |
+| 5 | position, transform, transition, animații |
+| 6 | responsive, variabile, organizare, calitate |
+
+### 8.2. Pași următori
+
+**JavaScript** — interactivitate dincolo de CSS: meniuri mobile, validare avansată, fetch de date, componente dinamice. HTML/CSS rămân baza; JS le completează.
+
+**Bootstrap** (sau alt framework CSS) — grilă, componente și utilitare gata făcute. Îl înțelegi mai bine **după** ce știi Flexbox/Grid și media queries: poți citi ce generează și când merită să scrii CSS propriu.
+
+Checklist înainte de a „închide” un proiect static:
+
+1. viewport + mobile-first verificat pe ecran îngust;
+2. imagini cu `max-width` (și `srcset` unde contează greutatea);
+3. variabile pentru culori / spații;
+4. validare W3C fără erori bloante;
+5. contrast + focus + `alt`;
+6. test în Chrome **și** Firefox (sau Safari).
+</script>
+</section>
+
+
+<section class="lesson" id="s9" data-num="9" data-title="Greșeli frecvente">
+<script type="text/markdown">
+| Problemă | Cauză tipică | Remediu |
+|---|---|---|
+| Pagina e „mică” pe telefon | lipsește `viewport` | meta în `<head>` |
+| Layout rupt doar pe mobil | lățimi fixe în px | `width: 100%` + `max-width` / flex / grid + MQ |
+| Imaginea sparge layout-ul | fără `max-width: 100%` (sau `height` fix fără `auto`) | `max-width: 100%; height: auto` |
+| Temă greu de schimbat | culori hardcodate | variabile pe `:root` |
+| Clase de tip `.rosu-mare` | stil, nu rol | BEM / nume semantice |
+| Feature nouă „nu merge” | browser fără suport | caniuse + `@supports` + fallback |
+| Site greu de folosit din tastatură | `outline: none` | `:focus-visible` vizibil |
+</script>
+</section>
+
+
+<section class="lesson" id="s10" data-num="10" data-title="Întrebări de autoverificare">
+<script type="text/markdown">
+Deschide răspunsul după ce ai formulat unul propriu.
+</script>
+
+<details class="qa"><summary>1. Ce diferență e între responsive și adaptive?</summary><div class="qa-a"><strong>Responsive</strong> = layout fluid care se întinde/strânge continuu (%, fr, max-width, clamp). <strong>Adaptive</strong> = salturi pe trepte la breakpoint-uri (media queries: 1→2→3 coloane). În practică le combini: fluid între praguri, trepte la praguri.</div></details>
+
+<details class="qa"><summary>2. Ce face metaeticheta viewport?</summary><div class="qa-a">Spune browserului mobil să folosească lățimea dispozitivului (<code>width=device-width</code>) și scala 1, în loc să simuleze un ecran de ~980px și să micșoreze pagina.</div></details>
+
+<details class="qa"><summary>3. Ce diferență e între width: 400px și max-width: 400px?</summary><div class="qa-a"><code>width: 400px</code> e mereu 400px (pe ecran îngust poate ieși din pagină). <code>max-width: 400px</code> e un plafon: pe ecran lat se oprește la 400; pe ecran mai mic se poate strânge (cu <code>width: 100%</code>).</div></details>
+
+<details class="qa"><summary>4. Ce înseamnă height: auto și când pui auto la width și height?</summary><div class="qa-a"><code>auto</code> = browserul calculează din context/conținut. <code>height: auto</code> lasă cutia să crească cu textul; la imagini păstrează proporțiile cu <code>max-width: 100%</code>. <code>width: auto; height: auto</code> împreună e ca un reset la comportamentul natural — nu centrează singur; e util să anulezi dimensiuni fixe pe mobil.</div></details>
+
+<details class="qa"><summary>5. Ce face clamp(1rem, 4vw, 2.5rem)?</summary><div class="qa-a">Folosește 4vw ca mărime preferată, dar nu coboară sub 1rem (min) și nu urcă peste 2.5rem (max). Ordinea e mereu min, preferat, max.</div></details>
+
+<details class="qa"><summary>6. Când folosești picture în loc de doar srcset?</summary><div class="qa-a"><code>srcset</code> alege rezoluția aceleiași încadrări. <code>&lt;picture&gt;</code> schimbă <strong>fișierul / încadrarea</strong> după media query (art direction).</div></details>
+
+<details class="qa"><summary>7. Ce avantaj au variabilele CSS față de a repeta #1565c0?</summary><div class="qa-a">Schimbi o valoare pe <code>:root</code> (sau pe un părinte) și se actualizează tot ce folosește <code>var(--accent)</code>; poți avea teme și fallback cu <code>var(--accent, #1565c0)</code>.</div></details>
+
+<details class="qa"><summary>8. Ce este BEM pe scurt?</summary><div class="qa-a">Convenție de denumire: <code>bloc__element--modificator</code> (ex. <code>card__titlu</code>, <code>card--evidentiat</code>), ca stilurile să rămână clare și reutilizabile.</div></details>
+
+<details class="qa"><summary>9. La ce folosește @supports?</summary><div class="qa-a">Aplică un bloc de CSS doar dacă browserul înțelege o proprietate/valoare. Îți permite enhancement progresiv peste un fallback.</div></details>
+
+<details class="qa"><summary>10. Citește trei verificări de accesibilitate de bază.</summary><div class="qa-a">Exemple: contrast suficient, <code>alt</code> pe imagini, focus vizibil, HTML semantic, ținte de clic mari, <code>prefers-reduced-motion</code>.</div></details>
+</section>
+
+
+            <footer class="page-foot">
+                <p>Prelegerea 6. Exemplele rulează izolat; modificările din editor nu se salvează. Material adaptat din CSS avansat și din prelegerile anterioare ale cursului.</p>
+            </footer>
+        </main>
+    </div>
+
+    <button class="icon-btn to-top" type="button" aria-label="Înapoi sus">↑ Sus</button>
+
+    <script src="assets/app.js"></script>
+    <script src="../../assets/course-nav.js"></script>
 </body>
 </html>

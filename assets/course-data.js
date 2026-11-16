@@ -40,14 +40,14 @@ window.ATELIER_COURSE = {
       slug: "05-pozitionare-animatii",
       title: "Poziționare, transformări, tranziții și animații",
       blurb: "position, transform, transition și @keyframes în practică.",
-      status: "soon"
+      status: "ready"
     },
     {
       id: "06",
       slug: "06-adaptivitate",
       title: "Adaptivitate, responsivitate și bune practici",
       blurb: "Viewport, media queries, imagini fluide și obiceiuri de proiect.",
-      status: "soon"
+      status: "ready"
     }
   ]
 };

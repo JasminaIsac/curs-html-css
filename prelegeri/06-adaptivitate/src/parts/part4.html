@@ -1,0 +1,154 @@
+<section class="lesson" id="s7" data-num="7" data-title="Validare, performanță și accesibilitate">
+<script type="text/markdown">
+### 7.1. Validare
+
+Verifică HTML și CSS pe validatoarele W3C:
+
+- HTML: [validator.w3.org](https://validator.w3.org/)
+- CSS: [jigsaw.w3.org/css-validator](https://jigsaw.w3.org/css-validator/)
+
+Erorile de sintaxă (etichetă neînchisă, proprietate greșită) apar aici înainte să „vânezi” bug-uri de layout.
+
+### 7.2. Performanță (bază)
+
+| Practică | De ce |
+|---|---|
+| imagini la dimensiunea potrivită (`srcset`) | mai puține KB pe mobil |
+| CSS/JS minime, fără fișiere uriașe nefolosite | încărcare mai rapidă |
+| animă `transform` / `opacity` | mai puțin reflow (prelegerea 5) |
+| `font-display: swap` la webfonturi | text vizibil mai repede |
+| evită layout shift | setează `width`/`height` sau `aspect-ratio` pe media |
+
+### 7.3. Accesibilitate de bază
+
+- structură semantică (`header`, `nav`, `main`, `button` real, nu `div` clicabil);
+- contrast text/fundal ≥ 4,5:1 (verifică în DevTools);
+- `alt` pe imagini informative; `alt=""` pe decorative;
+- focus vizibil (`:focus-visible`); nu scoate `outline` fără înlocuitor;
+- ținte de clic suficient de mari pe tactil;
+- respectă `prefers-reduced-motion`.
+</script>
+
+<div class="demo" data-title="Focus vizibil pe buton și link" data-desc="Navighează cu Tab. Conturul apare la focus-visible; hover rămâne separat." data-height="160" data-tab="css">
+<script type="text/css">
+a, .btn {
+    font: inherit;
+    font-weight: 600;
+    color: #1565c0;
+}
+
+.btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: #e3f2fd;
+    cursor: pointer;
+}
+
+a:focus-visible,
+.btn:focus-visible {
+    outline: 3px solid #1565c0;
+    outline-offset: 3px;
+}
+
+a:hover { text-decoration-thickness: 2px; }
+.btn:hover { background: #bbdefb; }
+</script>
+<script type="text/html">
+<p><a href="#produse">Vezi produsele</a> &nbsp; <button class="btn" type="button">Adaugă</button></p>
+</script>
+</div>
+
+<div class="demo" data-title="Contrast: greu vs. lizibil" data-desc="Comută culoarea textului. Galben pe alb e greu de citit; navy pe alb trece testul de contrast." data-height="180" data-tab="css">
+<script type="text/css">
+.card {
+    padding: 16px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #cfd8dc;
+    color: #f9a825;   /* contrast slab */
+}
+</script>
+<script type="text/html">
+<div class="card">
+    <strong>Titlu pe fundal alb</strong>
+    <p>Textul trebuie să rămână lizibil pentru toți utilizatorii.</p>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"color","sel":".card","prop":"color","options":["#f9a825","#90a4ae","#263238","#0d47a1"]}]
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s8" data-num="8" data-title="Recapitulare și pași următori">
+<script type="text/markdown">
+### 8.1. Recapitulare — tot cursul HTML & CSS
+
+| Prelegere | Axă |
+|---|---|
+| 1–2 | document HTML, semantică, tabele, formulare, media |
+| 3 | selectori, cascadă, unități, culori, text |
+| 4 | box model, Flexbox, Grid |
+| 5 | position, transform, transition, animații |
+| 6 | responsive, variabile, organizare, calitate |
+
+### 8.2. Pași următori
+
+**JavaScript** — interactivitate dincolo de CSS: meniuri mobile, validare avansată, fetch de date, componente dinamice. HTML/CSS rămân baza; JS le completează.
+
+**Bootstrap** (sau alt framework CSS) — grilă, componente și utilitare gata făcute. Îl înțelegi mai bine **după** ce știi Flexbox/Grid și media queries: poți citi ce generează și când merită să scrii CSS propriu.
+
+Checklist înainte de a „închide” un proiect static:
+
+1. viewport + mobile-first verificat pe ecran îngust;
+2. imagini cu `max-width` (și `srcset` unde contează greutatea);
+3. variabile pentru culori / spații;
+4. validare W3C fără erori bloante;
+5. contrast + focus + `alt`;
+6. test în Chrome **și** Firefox (sau Safari).
+</script>
+</section>
+
+
+<section class="lesson" id="s9" data-num="9" data-title="Greșeli frecvente">
+<script type="text/markdown">
+| Problemă | Cauză tipică | Remediu |
+|---|---|---|
+| Pagina e „mică” pe telefon | lipsește `viewport` | meta în `<head>` |
+| Layout rupt doar pe mobil | lățimi fixe în px | `width: 100%` + `max-width` / flex / grid + MQ |
+| Imaginea sparge layout-ul | fără `max-width: 100%` (sau `height` fix fără `auto`) | `max-width: 100%; height: auto` |
+| Temă greu de schimbat | culori hardcodate | variabile pe `:root` |
+| Clase de tip `.rosu-mare` | stil, nu rol | BEM / nume semantice |
+| Feature nouă „nu merge” | browser fără suport | caniuse + `@supports` + fallback |
+| Site greu de folosit din tastatură | `outline: none` | `:focus-visible` vizibil |
+</script>
+</section>
+
+
+<section class="lesson" id="s10" data-num="10" data-title="Întrebări de autoverificare">
+<script type="text/markdown">
+Deschide răspunsul după ce ai formulat unul propriu.
+</script>
+
+<details class="qa"><summary>1. Ce diferență e între responsive și adaptive?</summary><div class="qa-a"><strong>Responsive</strong> = layout fluid care se întinde/strânge continuu (%, fr, max-width, clamp). <strong>Adaptive</strong> = salturi pe trepte la breakpoint-uri (media queries: 1→2→3 coloane). În practică le combini: fluid între praguri, trepte la praguri.</div></details>
+
+<details class="qa"><summary>2. Ce face metaeticheta viewport?</summary><div class="qa-a">Spune browserului mobil să folosească lățimea dispozitivului (<code>width=device-width</code>) și scala 1, în loc să simuleze un ecran de ~980px și să micșoreze pagina.</div></details>
+
+<details class="qa"><summary>3. Ce diferență e între width: 400px și max-width: 400px?</summary><div class="qa-a"><code>width: 400px</code> e mereu 400px (pe ecran îngust poate ieși din pagină). <code>max-width: 400px</code> e un plafon: pe ecran lat se oprește la 400; pe ecran mai mic se poate strânge (cu <code>width: 100%</code>).</div></details>
+
+<details class="qa"><summary>4. Ce înseamnă height: auto și când pui auto la width și height?</summary><div class="qa-a"><code>auto</code> = browserul calculează din context/conținut. <code>height: auto</code> lasă cutia să crească cu textul; la imagini păstrează proporțiile cu <code>max-width: 100%</code>. <code>width: auto; height: auto</code> împreună e ca un reset la comportamentul natural — nu centrează singur; e util să anulezi dimensiuni fixe pe mobil.</div></details>
+
+<details class="qa"><summary>5. Ce face clamp(1rem, 4vw, 2.5rem)?</summary><div class="qa-a">Folosește 4vw ca mărime preferată, dar nu coboară sub 1rem (min) și nu urcă peste 2.5rem (max). Ordinea e mereu min, preferat, max.</div></details>
+
+<details class="qa"><summary>6. Când folosești picture în loc de doar srcset?</summary><div class="qa-a"><code>srcset</code> alege rezoluția aceleiași încadrări. <code>&lt;picture&gt;</code> schimbă <strong>fișierul / încadrarea</strong> după media query (art direction).</div></details>
+
+<details class="qa"><summary>7. Ce avantaj au variabilele CSS față de a repeta #1565c0?</summary><div class="qa-a">Schimbi o valoare pe <code>:root</code> (sau pe un părinte) și se actualizează tot ce folosește <code>var(--accent)</code>; poți avea teme și fallback cu <code>var(--accent, #1565c0)</code>.</div></details>
+
+<details class="qa"><summary>8. Ce este BEM pe scurt?</summary><div class="qa-a">Convenție de denumire: <code>bloc__element--modificator</code> (ex. <code>card__titlu</code>, <code>card--evidentiat</code>), ca stilurile să rămână clare și reutilizabile.</div></details>
+
+<details class="qa"><summary>9. La ce folosește @supports?</summary><div class="qa-a">Aplică un bloc de CSS doar dacă browserul înțelege o proprietate/valoare. Îți permite enhancement progresiv peste un fallback.</div></details>
+
+<details class="qa"><summary>10. Citește trei verificări de accesibilitate de bază.</summary><div class="qa-a">Exemple: contrast suficient, <code>alt</code> pe imagini, focus vizibil, HTML semantic, ținte de clic mari, <code>prefers-reduced-motion</code>.</div></details>
+</section>

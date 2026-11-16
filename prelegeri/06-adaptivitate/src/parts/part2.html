@@ -1,0 +1,242 @@
+<section class="lesson" id="s3" data-num="3" data-title="Imagini responsive">
+<script type="text/markdown">
+### 3.1. Imagini fluide
+
+Regula minimă pe care o pui aproape în orice proiect:
+
+```css
+img, video {
+    max-width: 100%;
+    height: auto;
+}
+```
+
+- `max-width: 100%` — nu depășește părintele (spre deosebire de `width: 800px` fix);
+- `height: auto` — browserul recalculează înălțimea ca să **păstreze proporțiile** când lățimea scade.
+
+Fără `height: auto`, dacă HTML-ul are `height="400"` și tu forțezi doar lățimea, imaginea se poate turtui.
+
+### 3.2. `srcset` — aceeași imagine, mai multe rezoluții
+
+Browserul alege fișierul potrivit densității ecranului sau lățimii disponibile:
+
+```html
+<img src="cana-400.jpg"
+     srcset="cana-400.jpg 400w, cana-800.jpg 800w, cana-1200.jpg 1200w"
+     sizes="(max-width: 600px) 100vw, 400px"
+     alt="Cană ceramică">
+```
+
+- `srcset` + descriptori `w` = lățimi disponibile;
+- `sizes` = cât spațiu ocupă imaginea în layout;
+- `src` = rezervă pentru browsere vechi.
+
+### 3.3. `<picture>` — art direction
+
+Când pe mobil vrei **altă încadrare** (nu doar altă rezoluție), folosești `<picture>` cu `<source media="…">`:
+</script>
+
+<div class="demo" data-title="max-width pe imagine" data-desc="Trage de marginea previzualizării. Imaginea rămâne în cutie; fără max-width ar ieși." data-height="240" data-layout="stack" data-resizable data-tab="css">
+<script type="text/css" data-hidden>
+.rama { border: 2px dashed #90a4ae; border-radius: 10px; padding: 8px; max-width: 100%; }
+</script>
+<script type="text/css">
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+</script>
+<script type="text/html">
+<div class="rama">
+    <img width="720" height="240" alt="Peisaj" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='240'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%230d47a1'/%3E%3Cstop offset='1' stop-color='%2342a5f5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='720' height='240' fill='url(%23g)'/%3E%3Ctext x='24' y='130' fill='white' font-size='28' font-family='sans-serif'%3E720px lățime nativă%3C/text%3E%3C/svg%3E">
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"max-width","sel":"img","prop":"max-width","options":["100%","none","50%"]}]
+</script>
+</div>
+
+<div class="demo" data-title="srcset și sizes (schemă)" data-desc="Inspectează HTML-ul: srcset oferă variante; sizes spune browserului lățimea afișată. Aici folosim SVG-uri colorate ca „fișiere” diferite." data-height="260" data-tab="html">
+<script type="text/css">
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    border: 2px solid #1565c0;
+}
+.nota { font-size: 13px; color: #607d8b; margin-top: 8px; }
+</script>
+<script type="text/html">
+<img
+    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='160'%3E%3Crect width='400' height='160' fill='%2390caf9'/%3E%3Ctext x='20' y='90' font-size='22' font-family='sans-serif'%3Esrc 400w%3C/text%3E%3C/svg%3E"
+    srcset="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='160'%3E%3Crect width='400' height='160' fill='%2390caf9'/%3E%3Ctext x='20' y='90' font-size='22' font-family='sans-serif'%3E400w%3C/text%3E%3C/svg%3E 400w,
+             data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='160'%3E%3Crect width='800' height='160' fill='%231565c0'/%3E%3Ctext x='20' y='90' fill='white' font-size='28' font-family='sans-serif'%3E800w%3C/text%3E%3C/svg%3E 800w"
+    sizes="(max-width: 500px) 100vw, 400px"
+    width="400"
+    height="160"
+    alt="Exemplu srcset">
+<p class="nota">Pe ecrane late browserul poate alege varianta 800w (fundal mai închis). Pe îngust, 400w.</p>
+</script>
+</div>
+
+<div class="demo" data-title="picture: art direction" data-desc="Trage previzualizarea sub / peste 600px — sursa se schimbă (încadrare diferită), nu doar rezoluția." data-height="280" data-layout="stack" data-resizable data-tab="html">
+<script type="text/css">
+img { max-width: 100%; height: auto; display: block; border-radius: 10px; }
+.prag { font-weight: 600; color: #1565c0; margin: 0 0 8px; }
+.prag::after { content: " ≥ 600px → peisaj lat"; }
+@media (max-width: 599px) {
+    .prag::after { content: " < 600px → cadrare verticală"; }
+}
+</script>
+<script type="text/html">
+<p class="prag">Prag:</p>
+<picture>
+    <source media="(max-width: 599px)"
+            srcset="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='400'%3E%3Crect width='320' height='400' fill='%2300897b'/%3E%3Ctext x='24' y='200' fill='white' font-size='22' font-family='sans-serif'%3Emobil portret%3C/text%3E%3C/svg%3E">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='240'%3E%3Crect width='720' height='240' fill='%23f4511e'/%3E%3Ctext x='24' y='130' fill='white' font-size='26' font-family='sans-serif'%3Edesktop peisaj%3C/text%3E%3C/svg%3E"
+         width="720" height="240"
+         alt="Produs — încadrare adaptată">
+</picture>
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s4" data-num="4" data-title="Variabile CSS și calc()">
+<script type="text/markdown">
+### 4.1. Variabile CSS (`--nume`)
+
+Declarate de obicei pe `:root`, folosite cu `var(--nume)` sau `var(--nume, rezervă)`:
+
+```css
+:root {
+    --accent: #1565c0;
+    --spatiu: 16px;
+}
+.buton {
+    background: var(--accent);
+    padding: calc(var(--spatiu) / 2) var(--spatiu);
+}
+```
+
+- se **moștenesc** — poți redefini `--accent` pe un părinte;
+- se schimbă la **rulare** (media query, `:hover`, JavaScript);
+- `calc()` combină unități: `calc(100% - 2rem)`.
+</script>
+<div class="demo" data-title="Variabile și moștenire" data-desc="Încearcă: schimbă --accent în :root, apoi --raza în .alerta, și urmărește ce butoane se modifică." data-height="210">
+    <script type="text/css">
+:root {
+    --accent: #1565c0;
+    --raza: 8px;
+    --spatiu: 16px;
+}
+
+.buton {
+    background: var(--accent);
+    border-radius: var(--raza);
+    padding: calc(var(--spatiu) / 2) var(--spatiu);
+    color: #fff;
+    border: 0;
+    font: inherit;
+}
+
+.alerta { --accent: #c62828; }        /* butoanele din .alerta devin roșii */
+
+.verde  { --accent: #2e7d32; --raza: 999px; }
+
+.fara   { background: var(--inexistenta, #607d8b); }  /* valoare de rezervă */
+    </script>
+    <script type="text/css" data-hidden>
+.zona { padding: 12px; margin-bottom: 10px; border: 2px dashed #b0bec5; border-radius: 10px; }
+.zona small { display: block; margin-bottom: 6px; color: #607d8b; }
+    </script>
+    <script type="text/html">
+<div class="zona"><small>:root</small><button class="buton">Salvează</button> <button class="buton fara">Rezervă</button></div>
+<div class="zona alerta"><small>.alerta { --accent: #c62828 }</small><button class="buton">Șterge</button></div>
+<div class="zona verde"><small>.verde { --accent; --raza }</small><button class="buton">Confirmă</button></div>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"--accent (:root)","sel":":root","prop":"--accent","options":["#1565c0","#8e24aa","#f4511e","#00897b"]},
+ {"label":"--raza (:root)","sel":":root","prop":"--raza","type":"range","min":0,"max":24,"step":1,"unit":"px"},
+ {"label":"--spatiu (:root)","sel":":root","prop":"--spatiu","type":"range","min":8,"max":32,"step":2,"unit":"px"}]
+    </script>
+  </div>
+
+<div class="demo" data-title="Variabile schimbate la rulare" data-desc="Încearcă: treci cu mouse-ul peste carduri; doar variabila se schimbă, regulile rămân aceleași." data-height="190">
+    <script type="text/css">
+.card {
+    --ridicare: 0px;
+    --umbra: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+    transform: translateY(calc(-1 * var(--ridicare)));
+    box-shadow: var(--umbra);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    --ridicare: 6px;
+    --umbra: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+    </script>
+    <script type="text/css" data-hidden>
+body { display: flex; gap: 16px; padding-top: 28px; }
+.card { flex: 1; padding: 18px; border-radius: 10px; background: #fff; text-align: center; }
+    </script>
+    <script type="text/html">
+<div class="card">Cană</div>
+<div class="card">Lumânare</div>
+<div class="card">Ceai</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 17.5. Temă întunecată
+
+Cele două teme diferă doar prin valorile variabilelor. Restul CSS-ului folosește `var(...)` și nu știe ce temă e activă.
+  </script>
+
+<script type="text/markdown">
+### 4.2. Temă cu variabile
+
+Două teme = aceleași reguli, alte valori pentru `--fundal`, `--text`, `--accent`. Poți urma sistemul (`prefers-color-scheme`) sau un comutator în pagină.
+</script>
+<div class="demo" data-title="Temă după sistemul de operare" data-desc="Previzualizarea urmează tema sistemului tău. Schimb-o din setările sistemului (sau din DevTools → Rendering) ca să vezi cealaltă variantă." data-height="200">
+    <script type="text/css">
+:root {
+    color-scheme: light dark;
+    --fundal: #ffffff;
+    --text: #263238;
+    --suprafata: #f5f7fa;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --fundal: #121821;
+        --text: #eceff1;
+        --suprafata: #1c2530;
+    }
+}
+
+html, body {
+    background: var(--fundal);
+    color: var(--text);
+}
+
+.card { background: var(--suprafata); padding: 16px; border-radius: 10px; }
+    </script>
+    <script type="text/html">
+<div class="card">
+    <h3 style="margin-top:0">Cardul meu</h3>
+    <p>Culorile vin din variabile; tema sistemului alege valorile.</p>
+    <input type="text" placeholder="Câmpurile native se adaptează și ele">
+</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+Uneori vrei și un buton de temă în pagină. Cu `:has()` și o casetă bifată, comutarea se face fără JavaScript: dacă rădăcina **conține** caseta bifată, variabilele primesc valorile întunecate.
+  </script>
+</section>

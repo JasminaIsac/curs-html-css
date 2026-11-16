@@ -1,0 +1,343 @@
+<section class="lesson" id="s6" data-num="6" data-title="Exemple practice">
+<script type="text/markdown">
+### Șase tipare pe care le vei refolosi
+
+Combină `position`, `transform`, `transition` și (uneori) `@keyframes`. Derulează, treci cu mouse-ul, editează valorile.
+</script>
+
+<script type="text/markdown">
+### Meniu dropdown
+
+Părintele e `relative`; panoul e `absolute` sub buton. La `:hover` / `:focus-within` panoul apare (`opacity` + `visibility` sau `transform`), ca să poți anima fără a rupe layout-ul.
+</script>
+
+<div class="demo" data-title="Meniu dropdown" data-desc="Treci cu mouse-ul sau focalizează cu Tab — panoul coboară. Schimbă top sau transform." data-height="260" data-tab="css">
+<script type="text/css" data-hidden>
+body { padding: 16px; min-height: 220px; }
+</script>
+<script type="text/css">
+.dd {
+    position: relative;
+    display: inline-block;
+}
+
+.dd > button {
+    font: inherit;
+    font-weight: 600;
+    padding: 8px 14px;
+    border: 1px solid #90a4ae;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.dd > button:hover,
+.dd > button:focus-visible {
+    border-color: #1565c0;
+    outline: none;
+}
+
+.panou {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 180px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #cfd8dc;
+    border-radius: 10px;
+    box-shadow: 0 10px 28px rgba(29, 36, 48, 0.18);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+    z-index: 5;
+}
+
+.dd:hover .panou,
+.dd:focus-within .panou {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.panou a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: #263238;
+    text-decoration: none;
+}
+
+.panou a:hover,
+.panou a:focus-visible {
+    background: #e3f2fd;
+    color: #0d47a1;
+}
+</script>
+<script type="text/html">
+<div class="dd">
+    <button type="button">Produse ▾</button>
+    <ul class="panou">
+        <li><a href="#ceai">Ceaiuri</a></li>
+        <li><a href="#cana">Căni</a></li>
+        <li><a href="#lumanari">Lumânări</a></li>
+    </ul>
+</div>
+</script>
+</div>
+
+<script type="text/markdown">
+### Buton cu efect la hover
+</script>
+<div class="demo" data-title="Buton cu tranziție de culoare" data-desc="Încearcă: mută transition în regula :hover — la ieșirea mouse-ului schimbarea devine bruscă." data-height="120">
+    <script type="text/css">
+.buton {
+    font: inherit;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 6px;
+    color: #fff;
+    background: #1565c0;
+    transition: background-color 0.4s ease-in-out;
+}
+
+.buton:hover {
+    background: #e65100;
+}
+    </script>
+    <script type="text/html">
+<button class="buton">Treci cu mouse-ul</button>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"transition","sel":".buton","prop":"transition","options":["background-color 0.4s ease-in-out","background-color 1.5s linear","background-color 0.4s 0.5s","none"]}]
+    </script>
+  </div>
+
+<div class="demo" data-title="Card care se ridică" data-desc="Încearcă: mărește translateY la -10px și umbra la 0 20px 30px." data-height="230">
+    <script type="text/css">
+.card {
+    width: 220px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+    </script>
+    <script type="text/html">
+<div style="padding:20px">
+    <div class="card">
+        <h3 style="margin:0 0 6px">Cană ceramică</h3>
+        <p class="muted" style="margin:0">Lucrată manual, glazurată în culori calde.</p>
+        <strong>79 lei</strong>
+    </div>
+</div>
+    </script>
+  </div>
+
+<script type="text/markdown">
+### Card care se întoarce (flip)
+
+Fața și spatele sunt pe același loc (`absolute` + `inset: 0`). Pe container: `perspective` + `transform-style: preserve-3d`. La hover: `rotateY(180deg)`. Spatele are `rotateY(180deg)` din start ca să fie pe cealaltă față.
+</script>
+
+<div class="demo" data-title="Card care se întoarce" data-desc="Treci cu mouse-ul peste card. Schimbă durata sau unghiul." data-height="280" data-tab="css">
+<script type="text/css" data-hidden>
+.scena { display: grid; place-items: center; padding: 20px; perspective: 900px; }
+</script>
+<script type="text/css">
+.flip {
+    width: 200px;
+    height: 140px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+    cursor: pointer;
+}
+
+.scena:hover .flip {
+    transform: rotateY(180deg);
+}
+
+.fata,
+.spate {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    backface-visibility: hidden;
+    font-weight: 700;
+    color: #fff;
+    padding: 12px;
+    text-align: center;
+}
+
+.fata {
+    background: linear-gradient(135deg, #1565c0, #00897b);
+}
+
+.spate {
+    background: linear-gradient(135deg, #f4511e, #c62828);
+    transform: rotateY(180deg);
+}
+</script>
+<script type="text/html">
+<div class="scena">
+    <div class="flip">
+        <div class="fata">Cană ceramică<br><span style="font-weight:500;opacity:.9">față</span></div>
+        <div class="spate">89 MDL<br><span style="font-weight:500;opacity:.9">verso — preț</span></div>
+    </div>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"transition","sel":".flip","prop":"transition","options":["transform 0.6s ease","transform 1.2s ease","transform 0.3s linear","transform 0.8s cubic-bezier(.68,-0.6,.32,1.6)"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### Loader (indicator de încărcare)
+</script>
+<div class="demo" data-title="Indicator de încărcare" data-desc="Încearcă: pune border-right-color tot albastru, sau schimbă linear în ease-in-out." data-height="120">
+    <script type="text/css">
+.rotitor {
+    width: 32px;
+    height: 32px;
+    border: 4px solid #cfd8dc;
+    border-top-color: #1565c0;
+    border-radius: 50%;
+    animation: rotire 0.8s linear infinite;
+}
+
+@keyframes rotire {
+    to { transform: rotate(360deg); }
+}
+    </script>
+    <script type="text/html">
+<div style="display:flex;align-items:center;gap:12px">
+    <div class="rotitor"></div> <span class="muted">Se încarcă produsele…</span>
+</div>
+    </script>
+  </div>
+
+<script type="text/markdown">
+### Bară sticky sau buton fixed
+
+Revezi demo-ul din secțiunea de poziționare: antet `sticky` + buton „sus” `fixed`.
+</script>
+<div class="demo" data-title="Antet sticky și buton fixed" data-desc="Încearcă: derulează previzualizarea; apoi comută antetul la relative și butonul la absolute." data-height="280">
+<script type="text/css" data-hidden>
+body { padding: 0; }
+.antet { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #1565c0; color: #fff; font-weight: 600; }
+.sus { padding: 8px 14px; border-radius: 999px; background: #f4511e; color: #fff; text-decoration: none; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,.25); }
+main { padding: 0 16px; }
+main p { color: #607d8b; }
+</script>
+<script type="text/css">
+.sus {                                   /* butonul „Înapoi sus", mereu vizibil */
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}
+
+.antet {                                 /* antet care rămâne sus la derulare */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+</script>
+<script type="text/html">
+<p style="padding: 0 16px" id="inceput">Un rând deasupra antetului.</p>
+<header class="antet">MagazinMic <span>Coș (2)</span></header>
+<main>
+    <h3>Produse</h3>
+    <p>Cană ceramică lucrată manual, glazurată în culori calde.</p>
+    <p>Lumânare parfumată din ceară de soia, cu fitil din bumbac.</p>
+    <p>Set de ceai din plante, în cutie de carton reciclat.</p>
+    <h3>Despre noi</h3>
+    <p>Atelier mic, din 2015. Fiecare obiect este făcut de mână.</p>
+    <p>Livrăm în toată țara în 1–3 zile lucrătoare.</p>
+    <h3>Contact</h3>
+    <p>Scrie-ne oricând; răspundem în aceeași zi.</p>
+    <p>Program: luni–vineri, 9–17.</p>
+</main>
+<a class="sus" href="#inceput">↑ Sus</a>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"position (.antet)","sel":".antet","prop":"position","options":["sticky","relative"]},{"label":"position (.sus)","sel":".sus","prop":"position","options":["fixed","absolute"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 4.4. Ordinea pe adâncime: `z-index`
+
+Elementele poziționate se pot suprapune. Care apare deasupra se decide cu `z-index` (număr întreg; mai mare = mai sus).
+
+Reguli:
+
+- `z-index` are efect doar la elemente poziționate (non-`static`) și la elemente flex/grid;
+- fără `z-index`, elementele mai târzii în cod apar deasupra;
+- valorile se compară doar în interiorul aceluiași **context de stivuire**. Un context nou apare, de exemplu, la un element cu `position` + `z-index`, la `opacity` sub 1, la `transform`, la `filter`. Un `z-index: 9999` într-un context nu poate depăși un element din alt context mai de sus;
+- evită valorile uriașe; folosește o scară mică (`1`, `10`, `100`).
+</script>
+</section>
+
+
+<section class="lesson" id="s7" data-num="7" data-title="Rezumat">
+<script type="text/markdown">
+| Temă | Reții |
+|---|---|
+| `position` | static → relative (reper) → absolute / fixed / sticky; `inset`; `z-index` + context de stivuire |
+| float | doar text în jurul imaginii; layout = flex/grid |
+| stări | `:hover`, `:focus-visible`, `:active`; LVHA la linkuri |
+| `transform` | translate / rotate / scale / skew; ordinea contează; `transform-origin` |
+| `transition` | property, duration, timing-function, delay |
+| `@keyframes` | animation-*; iteration, direction, fill-mode |
+| performanță | animă `transform` + `opacity`; `@media (prefers-reduced-motion: reduce)` |
+</script>
+</section>
+
+
+<section class="lesson" id="s8" data-num="8" data-title="Greșeli frecvente">
+<script type="text/markdown">
+| Problemă | Cauză tipică | Remediu |
+|---|---|---|
+| Insigna e în colțul paginii | lipsește `position: relative` pe card | reper pe părinte |
+| `sticky` nu „lipește” | fără `top` / strămoș cu `overflow` | setează `top`; verifică overflow |
+| `z-index: 9999` tot e sub antet | alt context de stivuire | urcă contextul părinte sau mută în DOM |
+| Vecinii sar la hover | animezi `width` / `margin` / `top` | `transform` + `opacity` |
+| Hover după apariție nu merge | `animation-fill-mode: forwards/both` pe `transform` | `backwards` sau animează doar `opacity` |
+| Animații deranjează | fără reduced-motion | `prefers-reduced-motion: reduce` |
+</script>
+</section>
+
+
+<section class="lesson" id="s9" data-num="9" data-title="Întrebări de autoverificare">
+<script type="text/markdown">
+Deschide răspunsul după ce ai formulat unul propriu.
+</script>
+
+<details class="qa"><summary>1. Ce diferență e între relative și absolute?</summary><div class="qa-a"><code>relative</code> rămâne în flux (locul e rezervat) și se deplasează față de poziția normală. <code>absolute</code> iese din flux și se raportează la cel mai apropiat strămoș poziționat (non-static).</div></details>
+
+<details class="qa"><summary>2. De ce pui position: relative pe un card fără top/left?</summary><div class="qa-a">Ca să devină <strong>reper</strong> pentru copiii <code>absolute</code> (insigne, meniuri, straturi), fără a muta cardul.</div></details>
+
+<details class="qa"><summary>3. Ce e un context de stivuire?</summary><div class="qa-a">Un „strat” în care se compară valorile <code>z-index</code>. Un element cu <code>position</code> + <code>z-index</code>, sau cu <code>transform</code> / <code>opacity</code> &lt; 1, creează un context nou — un copil cu 9999 nu poate trece peste un unchi din alt context mai sus.</div></details>
+
+<details class="qa"><summary>4. De ce se animă preferabil transform și opacity?</summary><div class="qa-a">Browserul le poate accelera pe GPU fără a recalcula layout-ul (reflow) la fiecare cadru. <code>width</code>, <code>top</code>, <code>margin</code> forțează relayout și sunt mai costisitoare.</div></details>
+
+<details class="qa"><summary>5. Ce fac transition-duration și transition-timing-function?</summary><div class="qa-a">Duration = cât durează schimbarea. Timing-function = ritmul (ease, linear, ease-out, cubic-bezier…).</div></details>
+
+<details class="qa"><summary>6. Ce diferență e între transition și @keyframes?</summary><div class="qa-a">Tranziția leagă două stări (ex. normal → :hover). Animația definește pași proprii, poate porni singură, se poate repeta și are direction / fill-mode.</div></details>
+
+<details class="qa"><summary>7. Ce face animation-fill-mode: forwards?</summary><div class="qa-a">Păstrează stilurile din ultimul keyframe după ce animația s-a terminat. Atenție: poate bloca un <code>transform</code> de pe <code>:hover</code>.</div></details>
+
+<details class="qa"><summary>8. Ce e prefers-reduced-motion?</summary><div class="qa-a">O media query care detectează dacă utilizatorul a cerut mai puțină mișcare. În acel caz oprești sau simplifici tranzițiile și animațiile decorative.</div></details>
+</section>

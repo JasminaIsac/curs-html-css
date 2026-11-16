@@ -1,0 +1,240 @@
+<section class="lesson" id="s5" data-num="5" data-title="Animații cu @keyframes">
+  <script type="text/markdown">
+Tranziția pornește la schimbarea stării. **Animația** poate porni singură, se poate repeta și poate avea mai mulți pași intermediari.
+
+### 5.1. Cele două părți
+
+1. definești animația cu `@keyframes` (un nume + pașii);
+2. o aplici cu proprietatea `animation`.
+  </script>
+
+  <div class="demo" data-title="Apariție cu from / to" data-desc="Încearcă: apasă Replay; schimbă translateY(16px) în translateX(-40px)." data-height="160">
+    <script type="text/css">
+@keyframes aparitie {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: aparitie 0.5s ease-out;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    max-width: 260px;
+}
+    </script>
+    <script type="text/html">
+<div class="card"><strong>Bun venit!</strong><br><span class="muted">Am apărut lin, de jos.</span></div>
+    </script>
+  </div>
+
+  <div class="demo" data-title="Mai mulți pași cu procente" data-desc="Încearcă: adaugă un pas 25% { transform: scale(1.3); }." data-height="140">
+    <script type="text/css">
+@keyframes puls {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+.inima {
+    display: inline-block;
+    font-size: 48px;
+    color: crimson;
+    animation: puls 1s ease-in-out infinite;
+}
+    </script>
+    <script type="text/html">
+<span class="inima">♥</span>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 5.2. Proprietățile animației
+
+| Proprietate | Valori | Rol |
+|---|---|---|
+| `animation-name` | numele din `@keyframes` | ce animație |
+| `animation-duration` | `1s` | cât durează un ciclu |
+| `animation-timing-function` | ca la tranziții | ritmul |
+| `animation-delay` | `0.3s` | întârzierea la pornire |
+| `animation-iteration-count` | `1`, `3`, `infinite` | de câte ori se repetă |
+| `animation-direction` | `normal`, `reverse`, `alternate` | sensul; `alternate` merge înainte și înapoi |
+| `animation-fill-mode` | `none`, `forwards`, `backwards`, `both` | ce stil are elementul **înainte** și **după** animație (vezi mai jos) |
+| `animation-play-state` | `running`, `paused` | pornit sau oprit (ex. `paused` la `:hover`) |
+
+Prescurtare: `animation: nume durată timing întârziere repetări direcție fill-mode;`
+
+### Ce este `animation-fill-mode`?
+
+Animația rulează doar pe durata ei. Întrebarea e: **ce stil are elementul în restul timpului?**
+
+- **înainte** să pornească (inclusiv pe durata lui `animation-delay`);
+- **după** ce s-a terminat (dacă nu e `infinite`).
+
+`animation-fill-mode` răspunde exact la asta:
+
+| Valoare | Înainte de animație (delay) | După ce s-a terminat |
+|---|---|---|
+| `none` (implicit) | stilul CSS normal | revine la stilul CSS normal |
+| `forwards` | stilul CSS normal | **păstrează** stilurile din **ultimul** keyframe |
+| `backwards` | aplică stilurile din **primul** keyframe (util în delay) | revine la stilul CSS normal |
+| `both` | ca `backwards` | ca `forwards` |
+
+**Exemplu mental:** un card care apare de jos (`from { opacity: 0; translateY(16px) }` → `to { opacity: 1; translateY(0) }`), cu `delay: 0.3s`:
+
+- `none` — în delay, cardul e deja vizibil (stilul normal), apoi „sare” în animație;
+- `backwards` — în delay, cardul stă **invizibil / jos** (starea `from`), apoi apare lin — de obicei ce vrei la apariții;
+- `forwards` — după animație rămâne pe starea finală (util dacă vrei să nu revină);
+- `both` — delay cu starea de start **și** păstrează starea finală.
+
+> [!TIP]
+> Pentru apariții cu întârziere, începe cu `animation-fill-mode: backwards` (sau `both` dacă trebuie să rămână pe starea finală). Atenție la capcana din §5.4 cu `:hover`.
+  </script>
+
+  <div class="demo" data-title="Panou de control al animației" data-desc="Încearcă: combină direction alternate cu iteration 3 și fill-mode forwards; ține mouse-ul peste pistă ca s-o pui pe pauză." data-height="190">
+    <script type="text/css" data-hidden>
+.pista { border: 2px dashed #b0bec5; border-radius: 10px; padding: 14px; }
+    </script>
+    <script type="text/css">
+@keyframes drum {
+    from { transform: translateX(0); background: #1565c0; }
+    to   { transform: translateX(240px); background: #f4511e; }
+}
+
+.cub {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    animation-name: drum;
+    animation-duration: 1.2s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 0.3s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-fill-mode: none;
+}
+
+.pista:hover .cub { animation-play-state: paused; }
+    </script>
+    <script type="text/html">
+<div class="pista"><div class="cub"></div></div>
+<p class="muted" style="font-size:13px">Mouse peste pistă = pauză.</p>
+    </script>
+    <script type="application/json" data-knobs>
+[{"label":"direction","sel":".cub","prop":"animation-direction","options":["alternate","normal","reverse","alternate-reverse"]},
+ {"label":"iteration-count","sel":".cub","prop":"animation-iteration-count","options":["infinite","1","3"]},
+ {"label":"fill-mode","sel":".cub","prop":"animation-fill-mode","options":["none","forwards","backwards","both"]},
+ {"label":"timing","sel":".cub","prop":"animation-timing-function","options":["ease-in-out","linear","steps(6)","cubic-bezier(.68,-0.6,.32,1.6)"]}]
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 5.3. Exemple
+
+Indicator de încărcare și apariție în cascadă a elementelor (decalaj cu `:nth-child`).
+  </script>
+
+  <div class="demo" data-title="Indicator de încărcare" data-desc="Încearcă: pune border-right-color tot albastru, sau schimbă linear în ease-in-out." data-height="120">
+    <script type="text/css">
+.rotitor {
+    width: 32px;
+    height: 32px;
+    border: 4px solid #cfd8dc;
+    border-top-color: #1565c0;
+    border-radius: 50%;
+    animation: rotire 0.8s linear infinite;
+}
+
+@keyframes rotire {
+    to { transform: rotate(360deg); }
+}
+    </script>
+    <script type="text/html">
+<div style="display:flex;align-items:center;gap:12px">
+    <div class="rotitor"></div> <span class="muted">Se încarcă produsele…</span>
+</div>
+    </script>
+  </div>
+
+  <div class="demo" data-title="Apariție în cascadă" data-desc="Încearcă: apasă Replay; schimbă backwards în none ca să vezi cardurile „clipind” înainte să pornească." data-height="200" data-layout="stack">
+    <script type="text/css" data-hidden>
+.grila { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.card { padding: 18px 12px; border-radius: 10px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15); text-align: center; }
+    </script>
+    <script type="text/css">
+@keyframes aparitie {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: aparitie 0.5s ease-out backwards;
+}
+
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.2s; }
+.card:nth-child(4) { animation-delay: 0.3s; }
+    </script>
+    <script type="text/html">
+<div class="grila">
+    <div class="card">☕<br>Cană</div>
+    <div class="card">🕯️<br>Lumânare</div>
+    <div class="card">🍵<br>Ceai</div>
+    <div class="card">🍯<br>Miere</div>
+</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 5.4. Capcană: `fill-mode` și efectele la `:hover`
+
+Cât timp o animație „ține” stilurile (în timpul rulării **sau** după, cu `forwards` / `both`), valorile din keyframe **înlocuiesc** alte stiluri pe aceleași proprietăți — inclusiv pe `:hover`.
+
+Exemplu: animația setează `transform`. După ce se termină, cu `forwards`/`both` elementul **rămâne** pe `transform` din ultimul keyframe. Un `.card:hover { transform: translateY(-10px); }` nu mai are efect, pentru că animația încă „ocupă” `transform`.
+
+Soluții tipice: `backwards` (nu păstrează finalul), sau animezi doar `opacity` și lazi `transform` liber pentru hover.
+  </script>
+
+  <div class="demo" data-title="Capcana fill-mode: both vs backwards" data-desc="Încearcă: după ce apar, treci cu mouse-ul peste ambele carduri — doar cel din dreapta se ridică." data-height="210">
+    <script type="text/css" data-hidden>
+.doua { display: flex; gap: 24px; padding: 20px 10px; }
+.card { width: 180px; padding: 16px; border-radius: 10px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15); transition: transform .2s; }
+.card code { font-size: 12px; }
+    </script>
+    <script type="text/css">
+@keyframes aparitie {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card:hover { transform: translateY(-10px); }
+
+/* greșit: hover-ul cu transform nu mai funcționează după animație */
+.gresit { animation: aparitie 0.5s both; }
+
+/* corect: backwards aplică doar starea de pornire în timpul întârzierii */
+.corect { animation: aparitie 0.5s backwards; }
+    </script>
+    <script type="text/html">
+<div class="doua">
+    <div class="card gresit"><strong>✗ both</strong><br><span class="muted">hover nu mă mișcă</span></div>
+    <div class="card corect"><strong>✓ backwards</strong><br><span class="muted">hover mă ridică</span></div>
+</div>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 5.5. Sfaturi
+
+- animă `transform` și `opacity`, nu `width`, `height`, `top`, `left`;
+- nu pune animații infinite pe zone mari sau pe text: distrag atenția;
+- animațiile care semnalează o stare (încărcare) sunt utile, cele decorative trebuie să respecte `prefers-reduced-motion`.
+  </script>
+</section>
+

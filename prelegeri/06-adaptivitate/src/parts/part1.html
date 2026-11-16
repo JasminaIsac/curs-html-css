@@ -1,0 +1,387 @@
+<section class="lesson" id="s0" data-num="0" data-title="Obiective">
+<script type="text/markdown">
+### 0.1. Ce învățăm
+
+Ultima prelegere din cursul HTML & CSS leagă **layout-ul** de **ecrane diferite** și de **obiceiuri de proiect**:
+
+| Temă | Ideea |
+|---|---|
+| Responsive / adaptive | ce înseamnă fiecare, diferența, cum le realizezi |
+| Media queries | viewport, mobile-first, breakpoint-uri |
+| Unități & limite | `rem`/`%`/`vw`, `min`/`max-width`, `auto`, `clamp()` |
+| Imagini | `max-width`, `srcset`, `<picture>` |
+| Variabile | `--culoare`, `var()`, `calc()` |
+| Organizare | structură CSS, BEM, reset / normalize |
+| Compatibilitate | caniuse.com, `@supports`, fallback-uri |
+| Calitate | validare W3C, performanță, accesibilitate |
+| Urmează | JavaScript și Bootstrap |
+</script>
+</section>
+
+
+<section class="lesson" id="s1" data-num="1" data-title="Responsive vs adaptive și media queries">
+<script type="text/markdown">
+### 1.1. Responsive și adaptive — ce înseamnă
+
+Ambele urmăresc același scop: pagina să fie **folosibilă pe ecrane diferite**. Diferă **cum** se potrivește layout-ul.
+
+| | **Responsive** (receptiv / fluid) | **Adaptive** (adaptiv pe trepte) |
+|---|---|---|
+| Ideea | layout-ul **curge** continuu cu lățimea ferestrei | layout-ul **sare** între câteva variante discrete |
+| Metaforă | apă într-un vas — se întinde / se strânge lin | trepte pe o scară — stai pe o treaptă, apoi pe alta |
+| Cum se face | lățimi fluide (`%`, `fr`, `minmax`), imagini cu `max-width`, tipografie cu `clamp()`, uneori și media queries fine | **media queries** (sau detectare de dispozitiv) care schimbă numărul de coloane, meniul, ordinea blocurilor la praguri |
+| Exemplu | o grilă `1fr 1fr 1fr` care se îngustează; cardurile se micșorează | sub 700px: 1 coloană; peste 700px: 2; peste 1000px: 3 |
+
+În practică, site-urile bune sunt **amestec**: fluid (responsive) **între** praguri și salturi de layout (adaptive) **la** praguri. De aceea în vorbirea de zi cu zi „responsive design” acoperă adesea ambele.
+
+> [!INFO]
+> Nu confunda „adaptive” cu „pagină separată pentru mobil” (`m.site.com`). Acolo ai **versiuni diferite** de site. Aici vorbim de **un singur HTML/CSS** care se potrivește ecranului.
+
+### 1.2. Cum le realizezi concret
+
+**Responsive (fluid)** — fără să „știi” modelul de telefon:
+
+1. `meta viewport` (obligatoriu pe mobil);
+2. containere cu lățime relativă (`width: 100%`, `max-width: 1100px`), nu `width: 960px` fix;
+3. Flexbox / Grid cu `fr`, `gap`, `minmax`;
+4. `img { max-width: 100%; height: auto; }`;
+5. tipografie fluidă: `clamp()` sau `vw` cu limite.
+
+**Adaptive (pe trepte)** — când layout-ul trebuie să se **rearanjeze**:
+
+1. media queries: `@media (min-width: 700px) { … }`;
+2. schimbări de structură: 1 → 2 → 3 coloane, meniu hamburger → bară orizontală, sidebar care coboară sub conținut;
+3. uneori `<picture>` cu `media` (altă încadrare pe mobil);
+4. preferințe: `prefers-color-scheme`, `prefers-reduced-motion`.
+
+Abordarea **mobile-first**: scrii stilul de bază pentru ecran îngust (fluid + simplu), apoi adaugi trepte adaptive cu `min-width` pe măsură ce ecranul crește.
+
+### 1.3. Metaeticheta `viewport`
+
+Fără această linie în `<head>`, telefoanele randează pagina ca pe un ecran larg (~980px), apoi o micșorează până textul e greu de citit:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+
+`width=device-width` aliniază lățimea CSS la lățimea ecranului; `initial-scale=1` pornește fără zoom artificial.
+</script>
+
+<div class="demo" data-title="Mobile-first: 1 → 2 → 3 coloane" data-desc="Trage de marginea previzualizării. Între praguri e fluid (responsive); la 700px și 1000px layout-ul sare pe trepte (adaptive)." data-height="300" data-layout="stack" data-resizable>
+    <script type="text/css">
+/* bază = telefon (mobile-first); treptele = adaptive */
+.coloane { display: grid; gap: 16px; }
+
+@media (min-width: 700px) {
+    .coloane { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1000px) {
+    .coloane { grid-template-columns: repeat(3, 1fr); }
+}
+
+.prag::after               { content: "telefon (< 700px) — 1 coloană"; }
+@media (min-width: 700px)  { .prag::after { content: "tabletă (≥ 700px) — 2 coloane"; } }
+@media (min-width: 1000px) { .prag::after { content: "monitor (≥ 1000px) — 3 coloane"; } }
+    </script>
+    <script type="text/css" data-hidden>
+.prag { margin: 0 0 12px; font-weight: 600; color: #1565c0; }
+.coloane > div { padding: 18px; border-radius: 10px; background: #e3f2fd; text-align: center; }
+    </script>
+    <script type="text/html">
+<p class="prag">Prag activ: </p>
+<div class="coloane">
+    <div>Cană</div>
+    <div>Lumânare</div>
+    <div>Ceai</div>
+</div>
+    </script>
+</div>
+
+<script type="text/markdown">
+### 1.4. Media queries și breakpoint-uri
+
+| Condiție | Exemplu |
+|---|---|
+| lățimea ferestrei | `(min-width: 700px)`, `(max-width: 600px)` |
+| orientarea | `(orientation: landscape)` |
+| tip | `print`, `screen` |
+| preferințe | `(prefers-color-scheme: dark)`, `(prefers-reduced-motion: reduce)` |
+| indicator | `(hover: none)`, `(pointer: coarse)` |
+
+Valori tipice: 600px, 900px, 1200px — alege-le după momentul în care **layout-ul se strică**, nu după „iPhone / iPad”.
+
+Condiții multiple: `@media (min-width: 700px) and (max-width: 999px)`. Sintaxă modernă: `@media (700px <= width < 1000px)`.
+</script>
+
+<div class="demo" data-title="Condiții de preferință și dispozitiv" data-desc="Previzualizarea arată ce raportează browserul tău acum: schimbă tema sistemului și reîncarcă." data-height="230">
+    <script type="text/css">
+.ind { padding: 6px 10px; margin: 4px 0; border-radius: 6px; background: #eceff1; }
+.ind::after { content: "nu"; float: right; font-weight: 700; color: #c62828; }
+
+@media (prefers-color-scheme: dark)      { .tema::after   { content: "da"; color: #2e7d32; } }
+@media (prefers-reduced-motion: reduce)  { .miscare::after { content: "da"; color: #2e7d32; } }
+@media (hover: none)                     { .hover::after  { content: "da"; color: #2e7d32; } }
+@media (pointer: coarse)                 { .tactil::after { content: "da"; color: #2e7d32; } }
+@media (orientation: landscape)          { .orizontal::after { content: "da"; color: #2e7d32; } }
+    </script>
+    <script type="text/html">
+<div class="ind tema">prefers-color-scheme: dark</div>
+<div class="ind miscare">prefers-reduced-motion: reduce</div>
+<div class="ind hover">hover: none</div>
+<div class="ind tactil">pointer: coarse (ecran tactil)</div>
+<div class="ind orizontal">orientation: landscape</div>
+    </script>
+</div>
+</section>
+
+
+<section class="lesson" id="s2" data-num="2" data-title="Unități, min/max, auto și clamp()">
+<script type="text/markdown">
+### 2.1. Unități relative
+
+| Unitate | Față de ce | La ce e bună |
+|---|---|---|
+| `%` | dimensiunea **părintelui** | lățimi relative |
+| `rem` | fontul lui `html` | text și spații previzibile |
+| `vw` / `vh` | 1% din fereastră | secțiuni / titluri fluide |
+| `px` | pixel | borduri, umbre, valori fine |
+
+### 2.2. Fix vs. `min-*` / `max-*`
+
+| Declarație | Comportament |
+|---|---|
+| `width: 400px` (fix) | **mereu** 400px — pe ecran îngust iese din pagină sau forțează scroll orizontal |
+| `max-width: 400px` | „cel mult 400px”: pe ecran lat se oprește la 400; pe ecran mai îngust **se strânge** odată cu părintele (dacă mai ai `width: 100%` sau e bloc) |
+| `min-width: 200px` | „cel puțin 200px”: nu se strânge sub 200, chiar dacă părintele e mai mic (poate provoca overflow) |
+| `min-height` / `max-height` | aceleași idei pe verticală |
+
+Combinația uzuală pentru un container de conținut:
+
+```css
+.continut {
+    width: 100%;           /* umple părintele (fluid) */
+    max-width: 1100px;     /* pe monitoare late nu se întinde la nesfârșit */
+    margin-inline: auto;   /* se centrează când e mai îngust decât ecranul */
+}
+```
+
+Diferența față de fix: cu `width: 1100px` pe telefon ai bară orizontală; cu `width: 100%` + `max-width: 1100px` pagina rămâne în ecran **și** arată bine pe desktop.
+</script>
+
+<div class="demo" data-title="width fix vs. max-width" data-desc="Trage de margine. Cutia albastră e fix 320px (iese). Verde: width 100% + max-width 320px (se strânge)." data-height="260" data-layout="stack" data-resizable data-tab="css">
+<script type="text/css" data-hidden>
+.scena { display: grid; gap: 12px; }
+.eticheta { font-size: 12px; color: #607d8b; margin: 0 0 4px; }
+.cutie { padding: 12px; border-radius: 8px; color: #fff; font-weight: 700; box-sizing: border-box; }
+</script>
+<script type="text/css">
+.fix {
+    width: 320px;
+    background: #c62828;
+}
+
+.fluid {
+    width: 100%;
+    max-width: 320px;
+    background: #2e7d32;
+}
+</script>
+<script type="text/html">
+<div class="scena">
+    <div>
+        <p class="eticheta">width: 320px (fix)</p>
+        <div class="cutie fix">ies din ecran dacă e mai îngust</div>
+    </div>
+    <div>
+        <p class="eticheta">width: 100%; max-width: 320px</p>
+        <div class="cutie fluid">mă strâng cu părintele</div>
+    </div>
+</div>
+</script>
+</div>
+
+<script type="text/markdown">
+### 2.3. Valoarea `auto` la `width` / `height`
+
+`auto` înseamnă: **„calculează-mă tu, browserule, din context”** — nu am o lungime fixă.
+
+| Situație | Ce face `auto` |
+|---|---|
+| `width: auto` pe un **bloc** | ocupă tot spațiul disponibil al părintelui (minus margini) — comportamentul implicit al `div` |
+| `width: auto` pe **inline** / în flex ca item | lățimea vine din conținut (shrink-to-fit) |
+| `height: auto` | înălțimea vine din **conținut** (text, imagini, padding) — crește când adaugi paragrafe |
+| pe imagini: `height: auto` + `max-width: 100%` | păstrează **proporțiile** când lățimea se micșorează |
+
+**Când o folosești (sau o lași implicită):**
+
+- vrei ca cutia să se **adapteze la conținut** pe verticală → `height: auto` (nu `height: 400px` care taie sau lasă gol);
+- la imagini fluide → `height: auto` e obligatoriu pe lângă `max-width: 100%`, altfel se turtesc;
+- în Flex/Grid, `width: auto` / `height: auto` lasă itemul să urmeze regulile de `flex` / `fr`.
+
+**Cazul „pun `auto` la tot”** (`width: auto; height: auto` pe același element):
+
+- e aproape echivalent cu a **nu seta** deloc dimensiunile (valorile implicite sunt tot `auto`);
+- elementul revine la comportamentul natural: lățime de tip bloc (sau după display), înălțime după conținut;
+- util ca **reset** când o clasă anterioară pusese `width`/`height` fixe și vrei să anulezi (ex. pe mobil: `.card { width: auto; height: auto; }`);
+- **nu** „centrează” și **nu** „face responsive” singur — trebuie și părinte fluid / max-width / media queries.
+
+```css
+/* pe mobil anulezi un pătrat fix de pe desktop */
+@media (max-width: 600px) {
+    .hero-media {
+        width: auto;    /* lasă lățimea pe seama layout-ului */
+        height: auto;   /* lasă înălțimea pe seama imaginii/conținutului */
+        max-width: 100%;
+    }
+}
+```
+</script>
+
+<div class="demo" data-title="height: auto vs. height fix" data-desc="Adaugă text în HTML sau comută height. Cu auto, cutia crește; cu 80px, conținutul iese sau e tăiat dacă ai overflow." data-height="220" data-tab="css">
+<script type="text/css" data-hidden>
+.cutie { padding: 12px; border-radius: 8px; background: #e3f2fd; border: 2px solid #1565c0; }
+</script>
+<script type="text/css">
+.cutie {
+    height: auto;
+    overflow: visible;
+}
+</script>
+<script type="text/html">
+<div class="cutie">
+    <strong>Card</strong>
+    <p>Un paragraf. Dacă înălțimea e auto, cutia crește cu textul.</p>
+    <p>Încă un paragraf pentru a vedea diferența.</p>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"height","sel":".cutie","prop":"height","options":["auto","80px","120px"]},
+  {"label":"overflow","sel":".cutie","prop":"overflow","options":["visible","hidden","auto"]}
+]
+</script>
+</div>
+
+<script type="text/markdown">
+### 2.4. `clamp()` — mai pe îndelete
+
+Sintaxă:
+
+```css
+proprietate: clamp(MIN, PREFERAT, MAX);
+```
+
+Browserul alege **PREFERAT**, dar:
+
+- dacă PREFERAT ar fi **mai mic** decât MIN → folosește MIN;
+- dacă PREFERAT ar fi **mai mare** decât MAX → folosește MAX.
+
+Exemplu tipografie:
+
+```css
+h1 {
+    font-size: clamp(1.25rem, 4vw, 2.5rem);
+}
+```
+
+| Parte | Rol în exemplu |
+|---|---|
+| `1.25rem` | pe ecran foarte îngust titlul **nu** scade sub ~20px (dacă 1rem = 16px) |
+| `4vw` | „idealul” fluid: 4% din lățimea ferestrei — crește pe măsură ce lărgești |
+| `2.5rem` | pe monitor lat titlul **nu** explodează peste ~40px |
+
+Fără `clamp`, doar `font-size: 4vw` pe telefon poate fi prea mic, pe TV prea mare. Fără fluid, doar `2rem` e constant — nu profită de ecranul lat.
+
+Poți folosi `clamp()` și la spații sau lățimi: `padding: clamp(1rem, 3vw, 2.5rem);` sau `width: clamp(16rem, 50%, 40rem);`.
+
+> [!TIP]
+> Ordinea e mereu **min, preferat, max**. Dacă greșești ordinea (ex. min > max), rezultatul e confuz — ține min ≤ max.
+</script>
+
+<div class="demo" data-title="rem urmărește fontul din html" data-desc="Crește font-size de pe html. Textul în rem crește. Textul în px rămâne pe loc." data-height="150" data-tab="css">
+<script type="text/css">
+html { font-size: 16px; }
+.px { font-size: 16px; margin: 0 0 6px; }
+.rem { font-size: 1rem; margin: 0; font-weight: 700; color: #1565c0; }
+</script>
+<script type="text/html">
+<p class="px">16px — nu depinde de html</p>
+<p class="rem">1rem — egal cu fontul din html</p>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"html font-size","sel":"html","prop":"font-size","type":"range","min":12,"max":28,"step":1,"unit":"px"}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Procente din părinte" data-desc="Lățimea barei e un procent din cutia punctată. Trage glisorul." data-height="120" data-tab="css">
+<script type="text/css" data-hidden>
+.rama { border: 2px dashed #90a4ae; border-radius: 8px; padding: 8px; }
+</script>
+<script type="text/css">
+.bara {
+    width: 60%;
+    height: 28px;
+    border-radius: 6px;
+    background: #1565c0;
+}
+</script>
+<script type="text/html">
+<div class="rama"><div class="bara"></div></div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"width","sel":".bara","prop":"width","type":"range","min":10,"max":100,"step":5,"unit":"%"}
+]
+</script>
+</div>
+
+<div class="demo" data-title="vw urmărește lățimea previzualizării" data-desc="Trage de marginea din dreapta a previzualizării. 40vw înseamnă 40% din lățimea acestui cadru, nu a ecranului întreg." data-height="140" data-layout="stack" data-resizable data-tab="css">
+<script type="text/css">
+.lat {
+    width: 40vw;
+    max-width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background: #e3f2fd;
+    font-weight: 700;
+}
+</script>
+<script type="text/html">
+<div class="lat">40vw</div>
+</script>
+<script type="application/json" data-knobs>
+[
+  {"label":"width","sel":".lat","prop":"width","options":["20vw","40vw","70vw","100vw"]}
+]
+</script>
+</div>
+
+<div class="demo" data-title="Text fluid cu clamp()" data-desc="Trage de margine: titlul crește cu 4vw, dar rămâne între 1rem și 2.5rem. Compară cu doar 4vw (poate ieși din limite)." data-height="220" data-layout="stack" data-resizable>
+    <script type="text/css">
+.titlu {
+    font-size: clamp(1rem, 4vw, 2.5rem);
+    margin: 0 0 8px;
+}
+
+.imagine {
+    max-width: 100%;
+    height: auto;
+}
+    </script>
+    <script type="text/css" data-hidden>
+.imagine { width: 600px; aspect-ratio: 4 / 1; border-radius: 10px; background: linear-gradient(135deg, #0d47a1, #42a5f5); }
+.mic { font-size: 13px; color: #607d8b; }
+    </script>
+    <script type="text/html">
+<h1 class="titlu">Obiecte făcute cu grijă</h1>
+<p class="mic">clamp(1rem, 4vw, 2.5rem) — min · preferat · max</p>
+<div class="imagine"></div>
+    </script>
+    <script type="application/json" data-knobs>
+    [{"label":"font-size","sel":".titlu","prop":"font-size","options":["clamp(1rem, 4vw, 2.5rem)","4vw","1.5rem","clamp(1.25rem, 3vw + 1rem, 3rem)"]}]
+    </script>
+</div>
+</section>

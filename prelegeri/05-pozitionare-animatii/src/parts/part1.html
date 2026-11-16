@@ -1,0 +1,510 @@
+<section class="lesson" id="s0" data-num="0" data-title="Obiective">
+<script type="text/markdown">
+### 0.1. Ce învățăm
+
+După layout cu Flexbox și Grid, urmează **unde** stau elementele față de pagină și cum **se mișcă** lin:
+
+| Temă | Ideea |
+|---|---|
+| `position` | static, relative, absolute, fixed, sticky; `inset`; `z-index` |
+| float (istoric) | text în jurul imaginii — layout-ul modern e flex/grid |
+| stări | `:hover`, `:focus`, `:active` pe linkuri și butoane |
+| `transform` | translate, rotate, scale, skew — fără a muta vecinii |
+| `transition` | schimbări line între stări |
+| `@keyframes` | animații cu pași, iterații, direcție, fill-mode |
+| performanță | animă `transform` și `opacity`; respectă `prefers-reduced-motion` |
+
+Exemplele de la final: meniu dropdown, buton cu hover, card care se întoarce, loader, bară sticky/fixed.
+</script>
+</section>
+
+
+<section class="lesson" id="s1" data-num="1" data-title="Poziționarea elementelor">
+<script type="text/markdown">
+Proprietatea `position` scoate elementele din fluxul normal și le așază după reguli proprii.
+
+### 1.1. Valorile lui `position`
+
+| Valoare | Comportament |
+|---|---|
+| `static` (implicit) | flux normal; `top`/`left` nu au efect |
+| `relative` | rămâne în flux (își păstrează locul), dar poate fi **deplasat** față de poziția normală |
+| `absolute` | **iese din flux**; se poziționează față de cel mai apropiat strămoș poziționat (non-`static`) |
+| `fixed` | iese din flux; se poziționează față de **fereastra** browserului și rămâne pe loc la derulare |
+| `sticky` | se comportă ca `relative`, până când ajunge la un prag, apoi „se lipește" |
+
+Deplasarea se face cu `top`, `right`, `bottom`, `left` (sau scurt, `inset`).
+</script>
+
+<div class="demo" data-title="Toate valorile lui position" data-desc="Încearcă fiecare valoare: la relative locul rămâne rezervat (conturul punctat), la absolute frații urcă." data-height="300">
+<script type="text/css" data-hidden>
+body { height: 600px; }
+.scena { border: 2px dashed #b0bec5; border-radius: 10px; padding: 10px; margin-top: 30px; }
+.scena > div { padding: 10px; margin: 6px 0; border-radius: 6px; color: #fff; font-weight: 600; }
+.unu { background: #00897b; }
+.trei { background: #8e24aa; }
+.mutat { background: #f4511e; outline: 2px dotted #f4511e; outline-offset: 2px; }
+.nota { font-size: 12px; }
+</script>
+<script type="text/css">
+.scena {
+    position: relative;      /* reperul pentru absolute */
+}
+
+.mutat {
+    position: relative;
+    top: 20px;
+    left: 40px;
+}
+</script>
+<script type="text/html">
+<p class="nota muted">Containerul punctat este .scena (position: relative). Pentru fixed și sticky derulează previzualizarea.</p>
+<div class="scena">
+    <div class="unu">Element 1</div>
+    <div class="mutat">Element 2 — top: 20px; left: 40px</div>
+    <div class="trei">Element 3</div>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"position (.mutat)","sel":".mutat","prop":"position","options":["relative","static","absolute","fixed","sticky"]}]
+</script>
+</div>
+
+<div class="demo" data-title="Colț și acoperire completă cu inset" data-desc="Încearcă: schimbă inset — 0 acoperă tot, 20px lasă o ramă, auto îl face să dispară în colț." data-height="230">
+<script type="text/css" data-hidden>
+.cutie { position: relative; height: 180px; border-radius: 10px; background: #e3f2fd; padding: 14px; }
+.eticheta { background: #c62828; color: #fff; padding: 2px 10px; border-radius: 999px; font-size: 12px; z-index: 1; }
+.acopera { background: rgba(21, 101, 192, 0.35); border: 2px solid #1565c0; border-radius: 8px; display: grid; place-items: center; color: #0d47a1; font-weight: 600; }
+</script>
+<script type="text/css">
+.eticheta {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.acopera {
+    position: absolute;
+    inset: 0;               /* top, right, bottom, left: 0 → acoperă tot strămoșul */
+}
+</script>
+<script type="text/html">
+<div class="cutie">
+    Conținutul casetei
+    <span class="eticheta">Nou</span>
+    <div class="acopera">.acopera</div>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"inset (.acopera)","sel":".acopera","prop":"inset","options":["0","20px","20px 60px","50% 0 0 0"]},{"label":"top (.eticheta)","sel":".eticheta","prop":"top","type":"range","min":0,"max":150,"step":1,"unit":"px"}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.2. Regula cu strămoșul poziționat
+
+Un element `absolute` caută în sus, printre strămoși, primul care are `position` diferit de `static`. Dacă nu găsește niciunul, se raportează la pagină. De aceea, containerul se marchează de obicei cu `position: relative` (fără nicio deplasare), doar pentru a deveni reper.
+
+Dacă uiți `position: relative` pe `.card`, insigna se va plasa în colțul paginii.
+</script>
+
+<div class="demo" data-title="Insignă: reperul contează" data-desc="Încearcă: comută .card la static — insigna fuge în colțul paginii." data-height="210">
+<script type="text/css" data-hidden>
+.card { width: 220px; margin: 20px auto 0; padding: 16px; border-radius: 10px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.card h3 { margin: 0 0 4px; }
+.card p { margin: 0; color: #607d8b; }
+.insigna { padding: 2px 10px; border-radius: 999px; background: crimson; color: #fff; font-size: 12px; }
+</script>
+<script type="text/css">
+.card    { position: relative; }          /* devine reperul */
+.insigna { position: absolute; top: 8px; right: 8px; }
+</script>
+<script type="text/html">
+<div class="card">
+    <span class="insigna">Nou</span>
+    <h3>Set de ceai</h3>
+    <p>Trei sortimente din plante.</p>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"position (.card)","sel":".card","prop":"position","options":["relative","static"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.3. `fixed` și `sticky`
+
+Pentru `sticky` ai nevoie de **cel puțin o valoare** `top`/`bottom`/`left`/`right`. Nu funcționează dacă un strămoș are `overflow: hidden` sau `auto` (între el și zona care se derulează).
+</script>
+
+<div class="demo" data-title="Antet sticky și buton fixed" data-desc="Încearcă: derulează previzualizarea; apoi comută antetul la relative și butonul la absolute." data-height="280">
+<script type="text/css" data-hidden>
+body { padding: 0; }
+.antet { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #1565c0; color: #fff; font-weight: 600; }
+.sus { padding: 8px 14px; border-radius: 999px; background: #f4511e; color: #fff; text-decoration: none; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,.25); }
+main { padding: 0 16px; }
+main p { color: #607d8b; }
+</script>
+<script type="text/css">
+.sus {                                   /* butonul „Înapoi sus", mereu vizibil */
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}
+
+.antet {                                 /* antet care rămâne sus la derulare */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+</script>
+<script type="text/html">
+<p style="padding: 0 16px" id="inceput">Un rând deasupra antetului.</p>
+<header class="antet">MagazinMic <span>Coș (2)</span></header>
+<main>
+    <h3>Produse</h3>
+    <p>Cană ceramică lucrată manual, glazurată în culori calde.</p>
+    <p>Lumânare parfumată din ceară de soia, cu fitil din bumbac.</p>
+    <p>Set de ceai din plante, în cutie de carton reciclat.</p>
+    <h3>Despre noi</h3>
+    <p>Atelier mic, din 2015. Fiecare obiect este făcut de mână.</p>
+    <p>Livrăm în toată țara în 1–3 zile lucrătoare.</p>
+    <h3>Contact</h3>
+    <p>Scrie-ne oricând; răspundem în aceeași zi.</p>
+    <p>Program: luni–vineri, 9–17.</p>
+</main>
+<a class="sus" href="#inceput">↑ Sus</a>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"position (.antet)","sel":".antet","prop":"position","options":["sticky","relative"]},{"label":"position (.sus)","sel":".sus","prop":"position","options":["fixed","absolute"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.4. Ordinea pe adâncime: `z-index`
+
+Elementele poziționate se pot suprapune. Care apare deasupra se decide cu `z-index` (număr întreg; mai mare = mai sus).
+
+Reguli:
+
+- `z-index` are efect doar la elemente poziționate (non-`static`) și la elemente flex/grid;
+- fără `z-index`, elementele mai târzii în cod apar deasupra;
+- valorile se compară doar în interiorul aceluiași **context de stivuire**. Un context nou apare, de exemplu, la un element cu `position` + `z-index`, la `opacity` sub 1, la `transform`, la `filter`. Un `z-index: 9999` într-un context nu poate depăși un element din alt context mai de sus;
+- evită valorile uriașe; folosește o scară mică (`1`, `10`, `100`).
+</script>
+
+<div class="demo" data-title="Trei cărți suprapuse" data-desc="Încearcă: urcă z-index-ul lui .albastru; apoi pune position: static și observă că z-index nu mai contează." data-height="230">
+<script type="text/css" data-hidden>
+.masa { position: relative; height: 190px; }
+.masa > div { position: absolute; width: 140px; height: 110px; padding: 10px; border-radius: 10px; color: #fff; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,.25); }
+.verde { left: 0; top: 0; background: #00897b; }
+.albastru { left: 60px; top: 35px; background: #1565c0; }
+.portocaliu { left: 120px; top: 70px; background: #f4511e; }
+</script>
+<script type="text/css">
+.verde      { z-index: 2; }
+.albastru   {
+    position: absolute;
+    z-index: 1;
+}
+.portocaliu { z-index: 3; }
+</script>
+<script type="text/html">
+<div class="masa">
+    <div class="verde">verde</div>
+    <div class="albastru">albastru</div>
+    <div class="portocaliu">portocaliu</div>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"z-index (.albastru)","sel":".albastru","prop":"z-index","type":"range","min":0,"max":5,"step":1,"unit":""},{"label":"position (.albastru)","sel":".albastru","prop":"position","options":["absolute","static"]}]
+</script>
+</div>
+
+<div class="demo" data-title="Capcana contextului de stivuire" data-desc="Încearcă: schimbă z-index-ul lui .parinte în auto — fereastra modală cu 9999 urcă în sfârșit deasupra antetului." data-height="250">
+<script type="text/css" data-hidden>
+body { padding: 0; }
+.antet { height: 60px; padding: 0 16px; display: flex; align-items: center; background: #263238; color: #fff; font-weight: 600; }
+.parinte { padding: 16px; }
+.modala { top: 30px; left: 40px; width: 260px; padding: 16px; border-radius: 10px; background: #fff; border: 3px solid #f4511e; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+</script>
+<script type="text/css">
+.antet {
+    position: relative;
+    z-index: 2;
+}
+
+.parinte {
+    position: relative;
+    z-index: 1;          /* creează un context de stivuire nou */
+}
+
+.modala {
+    position: absolute;
+    z-index: 9999;       /* valabil doar ÎN contextul lui .parinte */
+}
+</script>
+<script type="text/html">
+<header class="antet">Antet (z-index: 2)</header>
+<div class="parinte">
+    <p>Conținutul paginii (.parinte, z-index: 1)</p>
+    <div class="modala"><strong>Fereastră modală</strong><br>z-index: 9999 — și totuși antetul o acoperă!</div>
+</div>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"z-index (.parinte)","sel":".parinte","prop":"z-index","options":["1","3","auto"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.5. Centrarea: toate tehnicile
+
+| Scop | Soluție |
+|---|---|
+| text în mijloc (orizontal) | `text-align: center` pe părinte |
+| bloc cu lățime fixă, orizontal | `margin-left: auto; margin-right: auto;` |
+| orice pe ambele axe | părinte `display: flex; justify-content: center; align-items: center;` |
+| orice pe ambele axe (grid) | părinte `display: grid; place-items: center;` |
+| element absolut pe ambele axe | `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);` |
+
+Cea mai scurtă și mai sigură: `display: grid; place-items: center;`.
+</script>
+
+<div class="demo" data-title="Cinci tehnici de centrare" data-desc="Încearcă: la .t5 șterge transform — colțul de sus-stânga ajunge în centru, nu elementul." data-height="330" data-layout="stack">
+<script type="text/css" data-hidden>
+.grila { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.grila > div { height: 130px; border: 2px dashed #b0bec5; border-radius: 10px; background: linear-gradient(#cfd8dc, #cfd8dc) center / 100% 1px no-repeat, linear-gradient(#cfd8dc, #cfd8dc) center / 1px 100% no-repeat; }
+.grila small { display: block; font: 12px monospace; color: #607d8b; padding: 4px 6px; }
+.x { display: inline-block; padding: 6px 10px; border-radius: 6px; background: #1565c0; color: #fff; font-weight: 600; }
+.t2 .x { display: block; }
+</script>
+<script type="text/css">
+.t1 { text-align: center; }
+
+.t2 .x { width: 80px; margin-left: auto; margin-right: auto; }
+
+.t3 { display: flex; justify-content: center; align-items: center; }
+
+.t4 { display: grid; place-items: center; }
+
+.t5 { position: relative; }
+.t5 .x {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+</script>
+<script type="text/html">
+<div class="grila">
+    <div class="t1"><span class="x">text</span></div>
+    <div class="t2"><span class="x">auto</span></div>
+    <div class="t3"><span class="x">flex</span></div>
+    <div class="t4"><span class="x">grid</span></div>
+    <div class="t5"><span class="x">absolute</span></div>
+</div>
+<p class="muted" style="font-size:13px">1 · text-align &nbsp; 2 · margin auto &nbsp; 3 · flex &nbsp; 4 · grid &nbsp; 5 · absolute + translate. Doar 3, 4 și 5 centrează și pe verticală.</p>
+</script>
+</div>
+
+<script type="text/markdown">
+### 1.6. Exemplu: un card cu insignă și strat de acoperire
+
+Exemplul combină: reper `relative`, insignă `absolute`, strat `inset: 0` centrat cu grid, ascuns cu `opacity: 0` și dezvăluit lin la `:hover`. `overflow: hidden` taie stratul la colțurile rotunjite ale cardului.
+</script>
+
+<div class="demo" data-title="Card cu insignă și strat la hover" data-desc="Încearcă: treci cu mouse-ul peste card; apoi scoate overflow: hidden și rotunjește mai mult colțurile." data-height="220" data-tab="html">
+<script type="text/css">
+.card {
+    position: relative;
+    overflow: hidden;
+    width: 220px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.insigna {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: crimson;
+    color: #fff;
+    font-size: 12px;
+}
+
+.strat {
+    position: absolute;
+    inset: 0;                                /* acoperă tot cardul */
+    display: grid;
+    place-items: center;
+    background: rgba(21, 101, 192, 0.85);
+    color: #fff;
+    opacity: 0;                              /* invizibil, dar prezent */
+    transition: opacity 0.25s;
+}
+
+.card:hover .strat { opacity: 1; }
+</script>
+<script type="text/html">
+<div class="card">
+    <span class="insigna">-20%</span>
+    <h3>Cană ceramică</h3>
+    <p>Lucrată manual.</p>
+    <div class="strat">Detalii</div>
+</div>
+</script>
+</div>
+</section>
+
+
+<section class="lesson" id="s2" data-num="2" data-title="Float și clear (istoric)">
+<script type="text/markdown">
+### Ce este `float`, pe scurt
+
+`float` spune browserului: **„lipește acest element la stânga (sau la dreapta) și lasă textul să curgă pe lângă el”**.
+
+Imaginează o fotografie în ziar: poza e pe o parte, iar articolul o **înconjoară**. Exact asta face `float` pe web.
+
+### Ce se întâmplă tehnic
+
+1. Elementul cu `float` este **scos parțial din fluxul normal** — frații ulteriori pot urca pe lângă el.
+2. Este împins la **marginea stângă** (`float: left`) sau **dreaptă** (`float: right`) a containerului.
+3. Conținutul care urmează (paragrafe, inline) **umple spațiul liber** de lângă el.
+4. Cu `float: none` (implicit) elementul stă din nou în flux, ca orice bloc obișnuit.
+
+### Context istoric
+
+Înainte de Flexbox și Grid, layout-ul de pagină se făcea adesea cu `float` (coloane, meniuri). Astăzi **nu** mai e metoda potrivită pentru layout-ul paginii — rămâne util mai ales pentru **text în jurul unei imagini** (sau o inițială tipografică).
+
+| Proprietate | Rol |
+|---|---|
+| `float: left` | lipește elementul la stânga; textul curge în dreapta lui |
+| `float: right` | lipește la dreapta; textul curge în stânga |
+| `float: none` | fără float — comportament normal |
+| `clear: left \| right \| both` | următorul element **nu** mai stă pe lângă float: începe **sub** el |
+| `display: flow-root` | pe container: înălțimea include copiii flotante (înlocuiește clearfix) |
+
+**De ce există `clear`?** Dacă o notă / un buton trebuie să înceapă **sub** imagine (nu pe lângă ea), pui `clear: both` pe acel element.
+
+> [!WARN]
+> Nu construi layout-uri de pagină cu float — folosește **Flexbox** / **Grid**.
+</script>
+<div class="demo" data-title="Text în jurul imaginii" data-desc="Încearcă: comută float la right sau none; apoi schimbă clear pe .nota." data-height="300" data-resizable>
+<script type="text/css" data-hidden>
+p { margin: 0 0 10px; }
+.nota { padding: 8px 10px; border-radius: 6px; background: #fff8e1; font-size: 14px; }
+</script>
+<script type="text/css">
+.poza-text {
+    float: left;
+    margin: 0 16px 8px 0;
+    width: 150px;
+    border-radius: 8px;
+}
+
+.nota {
+    clear: none;
+}
+</script>
+<script type="text/html">
+<img class="poza-text" alt="Cană" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 120'%3E%3Crect width='150' height='120' fill='%23ffccbc'/%3E%3Crect x='45' y='35' width='50' height='55' rx='6' fill='%23f4511e'/%3E%3Cpath d='M95 48 q22 0 22 17 t-22 17' fill='none' stroke='%23f4511e' stroke-width='7'/%3E%3C/svg%3E">
+<p>Cana noastră este lucrată manual dintr-un lut local și arsă de două ori, la temperatură înaltă. Glazura caldă, în nuanțe de portocaliu, face ca fiecare piesă să fie puțin diferită de celelalte.</p>
+<p>Se poate spăla în mașina de vase, dar recomandăm spălarea de mână pentru a păstra luciul glazurii.</p>
+<p class="nota">Notă: capacitate 300 ml. (Cu clear: both, nota începe sub imagine.)</p>
+</script>
+<script type="application/json" data-knobs>
+[{"label":"float","sel":".poza-text","prop":"float","options":["left","right","none"]},{"label":"clear (.nota)","sel":".nota","prop":"clear","options":["none","left","both"]}]
+</script>
+</div>
+
+<script type="text/markdown">
+Remediul clasic pentru containerul „prăbușit", **clearfix**, folosește un pseudo-element plasat după toți copiii, care are `clear: both` și deci împinge marginea de jos a containerului sub elementul flotant. (Varianta modernă: `display: flow-root` pe container.)
+</script>
+</section>
+
+
+<section class="lesson" id="s3" data-num="3" data-title="Stări interactive">
+<script type="text/markdown">
+### `:hover`, `:focus`, `:active`
+
+Pe elementele interactive (linkuri, butoane, câmpuri) stilurile se schimbă după starea utilizatorului:
+
+| Pseudo-clasă | Când |
+|---|---|
+| `:hover` | cursorul e deasupra |
+| `:focus` / `:focus-visible` | elementul e focalizat (Tab, clic pe câmp); preferă `:focus-visible` pentru contur |
+| `:active` | în timpul apăsării |
+
+Pentru linkuri, ordinea clasică e **LVHA**: `:link`, `:visited`, `:hover`, `:active`. Pune `:focus` / `:focus-visible` înaintea lui `:hover`.
+</script>
+<div class="demo" data-title="LVHA: stările unei legături" data-desc="Încearcă: dă clic pe un link (devine vizitat), ține apăsat (:active), navighează cu Tab (:focus-visible). Mută a:hover deasupra lui a:visited și vezi ce se strică." data-height="170">
+    <script type="text/css">
+a:link    { color: #1565c0; }
+a:visited { color: #6a1b9a; }
+a:focus-visible { outline: 2px solid #1565c0; outline-offset: 2px; }
+a:hover   { color: #e65100; }
+a:active  { color: #d50000; }
+
+a:any-link { font-weight: 600; }
+a:not([href]) { color: #90a4ae; }
+    </script>
+    <script type="text/html">
+<ul>
+    <li><a href="#a1">Ceaiuri de iarnă</a></li>
+    <li><a href="#a2">Lumânări parfumate</a></li>
+    <li><a href="#a3">Căni pictate</a></li>
+    <li><a>Fără href (nu e legătură)</a></li>
+</ul>
+    </script>
+  </div>
+
+  <script type="text/markdown">
+### 15.3. Meniu de navigare
+
+Atributul `aria-current="page"` este corect pentru cititoarele de ecran **și** servește ca selector de atribut.
+  </script>
+
+<script type="text/markdown">
+### Buton: aceleași stări
+
+Pe un `<button>`, `:hover` / `:focus-visible` / `:active` schimbă fundalul, umbra sau scala. Combină-le cu `transition` ca schimbarea să fie lină (vezi secțiunea următoare).
+</script>
+
+<div class="demo" data-title="Buton: hover, focus, active" data-desc="Treci cu mouse-ul, navighează cu Tab, ține apăsat — fiecare stare are stil propriu." data-height="160" data-tab="css">
+<script type="text/css">
+.btn {
+    font: inherit;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 8px;
+    background: #1565c0;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    background: #0d47a1;
+    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4);
+}
+
+.btn:focus-visible {
+    outline: 3px solid #90caf9;
+    outline-offset: 3px;
+}
+
+.btn:active {
+    background: #0277bd;
+    transform: scale(0.97);
+}
+</script>
+<script type="text/html">
+<button class="btn" type="button">Adaugă în coș</button>
+</script>
+</div>
+</section>
